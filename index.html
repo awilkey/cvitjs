@@ -2,17 +2,20 @@
 <html>
 	<head>
 		<title> Cvit Test </title>
-		<link rel="icon" type="image/png" href="img/favicon-32x32.png" sizes="32x32" />
-		<link rel="icon" type="image/png" href="img/favicon-16x16.png" sizes="16x16" />	
-		<link rel="stylesheet" href="js/lib/bootstrap/css/bootstrap.min.css" />
+		<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+		<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />	
+		<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
 		<!-- CViTjs uses requireJS, so all that is needed is this single line   -->
 		<!-- to include the scritps. require-config sets up the environment and -->
 		<!-- then calls js/main.js, providing a single entry point into CViTjs  -->
 
-		<script data-main="js/lib/require/require-config" src="js/lib/require/require.js"></script>
+		<script data-main="lib/require/require-config" src="lib/require/require.js"></script>
 	</head>
 	<body>
-        <a href="cvit.html?data=test1">Check out the demo</a>
+        <a href="?data=test1">Check out the demo</a>
 		</div>
+        <div id="cvit-div">
+            <!-- canvas id="cvit-canvas" style="background-color:#6f6f6f;" resize></canvas> -->
+        </div>
 	</body>
 </html>

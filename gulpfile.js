@@ -30,7 +30,7 @@ gulp.task('watch', function(){
 gulp.task('default',['lint','beautify','watch']);
 
 gulp.task('deploy', function() {
-	return gulp.src(['./js/cvit/**/*.js', './*.html'])
-		.pipe(ghPages());
+	return gulp.src(['img/**', 'js/**', 'data/**', 'index.html'])
+	.pipe(ghPages());
 });
 
