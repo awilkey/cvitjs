@@ -1,0 +1,139 @@
+/*
+ * file: zoom.js
+ *
+ * purpose: logic for zooming and panning the canvas
+ *
+ * main methods:
+ *  enableZoom:   	Sets up the canvas to allow zoom controls 
+ *  changeZoom:   	Change zoom at constant factor due to triggering event
+ *  changePan:		Pan view based on delta
+ *  compensateZoom:	Move popover in response to change in zoom or pan.
+ *
+ */
+
+define( [ "jquery", 'mousewheel' ],
+  function( $ ) {
+
+    return {
+      /**
+       * Setup mouse zoom and pan events
+       *
+       * @param {object} startView - The original positioning of the canvas.
+       * @param {paper.group} group - Paper group that holds the backbomes.
+       * @param {object} view - object that contains configuration information.
+       * @param {paper.group} glyphGroup - Paper group that will hold the range.
+       */
+      enableZoom: function( startView ) {
+        thisC = this;
+        this.originalCenter = paper.view.center;
+        // Attach listener to mousewheel using jquery plugin to watch for scrollwheel zoom
+        // delta means that zoom will center around the mouse pointer	
+        $( "#cvit-canvas" ).mousewheel( function( event ) {
+          var mousePos = new paper.Point( event.offsetX, event.offsetY );
+          var viewPos = paper.view.viewToProject( mousePos );
+          var newZoom = thisC.changeZoom( paper.view.zoom, event.deltaY, paper.view.center, viewPos );
+          paper.view.zoom = newZoom[ 0 ];
+          paper.view.center = paper.view.center.add( newZoom[ 1 ] );
+          if ( paper.view.bounds.x < 0 ) {
+            paper.view.translate( new paper.Point( -paper.view.bounds.x, 0 ) );
+          }
+          // popdiv is the div that contains the popover that contains feature information
+          // need to reposition it as the view changes, as it is an overlay, not part of canvas.
+          if ( $( '#popdiv' ).length ) {
+            thisC.compensateZoom( newZoom[ 0 ] );
+          }
+          event.preventDefault();
+          paper.view.draw();
+        } );
+
+        //initialize paper tool on canvas to watch for "click and drag" style events for panning
+        var tool = new paper.Tool();
+        tool.onMouseDown = function( event ) {
+          tool.path = new paper.Point();
+          tool.path.add( paper.view.center );
+        };
+        tool.onMouseDrag = function( event ) {
+          thisC.changePan( event.downPoint, event.point, startView );
+          event.preventDefault();
+          if ( $( '#popdiv' ).length ) {
+            thisC.compensateZoom( paper.view.zoom );
+          }
+          paper.view.draw();
+
+        };
+
+      },
+
+      /**
+       * Calculate change in zooe level
+       *
+       * @param {float} current     - The current zoom level.
+       * @param {float} delta       - Which direction the mousewheel scrolled.
+       * @param {object} center     - Current centerpoint of the canvas.
+       * @param {paper.group} mouse - Point of the mouse on the canvas, 
+       * 			      allows for zoom centering on mouse point.
+       *
+       *@return {array} New zoom level and how far to offset the centerpoint to
+       *                track the mouse pointer if scrollwheel used
+       *
+       */
+      changeZoom: function( current, delta, center, mouse ) {
+        var zoomLevel = current;
+        var factor = 1.05;
+        if ( delta < 0 ) {
+          zoomLevel = current / factor;
+        }
+        if ( delta > 0 ) {
+          zoomLevel = current * factor;
+        }
+        zoomLevel = zoomLevel < 1 ? 1 : zoomLevel < 8 ? zoomLevel : 8;
+
+        var scale = current / zoomLevel;
+        var pos = mouse.subtract( center );
+        var offset = mouse.subtract( pos.multiply( scale ) ).subtract( center );
+        console.log( offset );
+        return [ zoomLevel, offset ];
+      },
+
+      /**
+       * Move canvas to follow a click and drag event
+       *
+       * @param {object} downPoint - Where the mousedown event occured.
+       * @param {object} point - Where the mouse event is currently located (drag location)
+       * @param {object} startView - Original orientation of the canvas.
+       */
+      changePan: function( downPoint, point, startView ) {
+        var deltaX = downPoint.x - point.x;
+        var deltaY = downPoint.y - point.y;
+
+        // Calculate boundries so the pan can't go past the limits of the cavas.	
+        var xEdge = paper.view.bounds.x;
+        var yEdge = paper.view.bounds.x;
+
+        var xBound = xEdge + deltaX;
+        var yBound = yEdge + deltaY;
+
+        var xLimit = startView.width - paper.view.bounds.width;
+        var yLimit = startView.height - paper.view.bounds.height;
+        var delta = new paper.Point( deltaX, deltaY );
+        var oldCenter = paper.view.center;
+        paper.project.view.center = oldCenter.add( delta );
+      },
+
+      /**
+       * Move popover due to new zoom
+       *
+       * @param {Float} zoom - The cuttent zoom level.
+       */
+      compensateZoom: function( zoom ) {
+        var divData = $( '#popdiv' ).data( "pos" );
+        $( '#popdiv' ).show();
+        $( '#popdiv' ).css( 'top', ( divData.y - paper.view.center._owner.y ) * zoom );
+        $( '#popdiv' ).css( 'left', ( divData.x - paper.view.center._owner.x ) * zoom );
+        $( '#popdiv' ).css( 'width', divData.width * zoom );
+        $( '#popdiv' ).css( 'height', divData.height * zoom );
+        $( '.popover' ).popover( 'show' );
+        $( '#popdiv' ).hide();
+      }
+    };
+  } );
