@@ -15,6 +15,72 @@ define( [ "jquery", 'mousewheel' ],
   function( $ ) {
 
     return {
+
+      /**
+	   *
+       * Add zoom and pan controls to overlay over the
+	   * cvit canvas 
+       *
+       */
+      addZoomControl: function() {
+		var zoomGroup = $( '<div id="zoom-ctrl" class="btn-group-vertical btn-group-xs" role="group" aria-label="Zoom controls">' );
+        $( zoomGroup ).css( "top", "10px" );
+        $( zoomGroup ).css( "left", "10px" );
+        var zIn = $( '<button type="button" class="btn btn-default" aria-label="Zoom in"></button>' );
+        $( zIn ).append( '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>' );
+        var zOut = $( '<button type="button" class="btn btn-default" aria-label="Zoom out" disabled="true"></button>' );
+        $( zOut ).append( '<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>' );
+        var zReset = $( '<button type="button" class="btn btn-default aria-label="Reset zoom"></button>' );
+        $( zReset ).append( '<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>' );
+
+        // setup click logic for zoom in/out/reset
+        var originalCenter = paper.view.center;
+        $( zIn ).on( 'click', function( event ) {
+          event.preventDefault();
+          var oldZoom = paper.view.zoom;
+          var newZoom = thisC.changeZoom( paper.view.zoom, 1, paper.view.center, paper.view.center );
+          if ( newZoom[ 0 ] === 8 ) {
+            $( zIn ).prop( 'disabled', true );
+          } else if ( newZoom[ 0 ] > 1 ) {
+            $( zOut ).prop( 'disabled', false );
+          }
+          paper.view.zoom = newZoom[ 0 ];
+          if ( $( '#popdiv' ).length ) {
+            compensateZoom( newZoom[ 0 ] );
+          }
+          paper.view.draw();
+        } );
+
+        $( zOut ).on( 'click', function( event ) {
+          event.preventDefault();
+          var newZoom = thisC.changeZoom( paper.view.zoom, -1, paper.view.center, paper.view.center );
+          if ( newZoom[ 0 ] === 1 ) {
+            $( zOut ).prop( 'disabled', true );
+          } else if ( newZoom[ 0 ] < 8 ) {
+            $( zIn ).prop( 'disabled', false );
+          }
+
+          paper.view.zoom = newZoom[ 0 ];
+          paper.view.draw();
+        } );
+
+        $( zReset ).on( 'click', function( event ) {
+          event.preventDefault();
+          paper.view.zoom = 1;
+          paper.view.center = originalCenter;
+          compensateZoom( 1 );
+          $( zOut ).prop( 'disabled', true );
+          $( zIn ).prop( 'disabled', false );
+          paper.view.draw();
+        } );
+
+        $( zoomGroup ).append( zIn );
+        $( zoomGroup ).append( zReset );
+        $( zoomGroup ).append( zOut );
+
+        $( '#overlay' ).append( zoomGroup );
+      },
+
       /**
        * Setup mouse zoom and pan events
        *

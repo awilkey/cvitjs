@@ -26,6 +26,7 @@ require.config({
 		jquery : 'jquery/jquery-1.12.3.min',
 		mousewheel : 'jquery-mousewheel/jquery.mousewheel.min',
 		paper: 'paper/paper-core.min',
+        hopscotch: 'hopscotch/js/hopscotch.min',
 		cvit: '../cvit',
 		draw: '../cvit/draw',
 		glyph: '../cvit/draw/glyph'

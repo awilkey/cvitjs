@@ -1,0 +1,5 @@
+#bp -- generated via seqlen.awk
+#chromosome,	source,	type,	start,	stop,	score,	strand,	phase,	attributes
+chr5	Pchr	range	1	150189435	.	.	.	Name=testRange1;ID=testRange1
+chr5	Pchr	position	1	150189435	.	.	.	Name=testRange1;ID=testpos2
+c5	Pchr	position	1	150189435	.	.	.	Name=testRange1;ID=testpos3

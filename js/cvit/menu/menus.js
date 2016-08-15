@@ -15,8 +15,9 @@
  *
  */
 
-define( [ 'jquery', 'cvit/zoom/zoom', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities', 'bootstrap' ],
-  function( $, zoom, file, glyph, utility ) {
+define( [ 'jquery', 'cvit/zoom/zoom', 'cvit/menu/modals/exportmodal',
+		  'cvit/menu/modals/uploadmodal','cvit/menu/modals/helpmodal','bootstrap' ],
+  function( $, zoom, exportMod, uploadMod, helpMod ) {
     return {
       //** builds menu stack */
       build: function( conf, view, group ) {
@@ -31,68 +32,22 @@ define( [ 'jquery', 'cvit/zoom/zoom', 'cvit/file/file', 'draw/glyph/glyph', 'gly
 
       /**
        *
-       * Adding a button panel for zooming in, out and resetting view
+       * Add a button ovelay to cvit camvas for the zoom controls (in out reset)
+	   * call the function from zoom here in case of later additions to menu.
        *
        */
       addZoomControl: function() {
-        var zoomGroup = $( '<div class="btn-group-vertical btn-group-xs" role="group" aria-label="Zoom controls">' );
-        $( zoomGroup ).css( "top", "10px" );
-        $( zoomGroup ).css( "left", "10px" );
-        var zIn = $( '<button type="button" class="btn btn-default" aria-label="Zoom in"></button>' );
-        $( zIn ).append( '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>' );
-        var zOut = $( '<button type="button" class="btn btn-default" aria-label="Zoom out" disabled="true"></button>' );
-        $( zOut ).append( '<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>' );
-        var zReset = $( '<button type="button" class="btn btn-default aria-label="Reset zoom"></button>' );
-        $( zReset ).append( '<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>' );
-
-        // setup click logic for zoom in/out/reset		
-        var originalCenter = paper.view.center;
-        $( zIn ).on( 'click', function( event ) {
-          event.preventDefault();
-          var oldZoom = paper.view.zoom;
-          var newZoom = thisC.changeZoom( paper.view.zoom, 1, paper.view.center, paper.view.center );
-          if ( newZoom[ 0 ] === 8 ) {
-            $( zIn ).prop( 'disabled', true );
-          } else if ( newZoom[ 0 ] > 1 ) {
-            $( zOut ).prop( 'disabled', false );
-          }
-          paper.view.zoom = newZoom[ 0 ];
-          if ( $( '#popdiv' ).length ) {
-            zoom.compensateZoom( newZoom[ 0 ] );
-          }
-          paper.view.draw();
-        } );
-
-        $( zOut ).on( 'click', function( event ) {
-          event.preventDefault();
-          var newZoom = thisC.changeZoom( paper.view.zoom, -1, paper.view.center, paper.view.center );
-          if ( newZoom[ 0 ] === 1 ) {
-            $( zOut ).prop( 'disabled', true );
-          } else if ( newZoom[ 0 ] < 8 ) {
-            $( zIn ).prop( 'disabled', false );
-          }
-
-          paper.view.zoom = newZoom[ 0 ];
-          paper.view.draw();
-        } );
-
-        $( zReset ).on( 'click', function( event ) {
-          event.preventDefault();
-          paper.view.zoom = 1;
-          paper.view.center = originalCenter;
-          zoom.compensateZoom( 1 );
-          $( zOut ).prop( 'disabled', true );
-          $( zIn ).prop( 'disabled', false );
-          paper.view.draw();
-        } );
-
-        $( zoomGroup ).append( zIn );
-        $( zoomGroup ).append( zReset );
-        $( zoomGroup ).append( zOut );
-
-        $( '#overlay' ).append( zoomGroup );
+        zoom.addZoomControl();
       },
 
+      /**
+       *
+       * Add a menu for Cvitjs. This menu appears as a "hamburger" icon and
+	   * hosts the "Export to image", "View your data" and "Help" menus.
+	   * Each menu pops up as its own modal dialog from accessing the 
+	   * corresponding menu option.
+       *
+       */
       addOptionsMenu: function() {
         var thisc = this;
         var leftedge = paper.view.bounds.width;
@@ -133,19 +88,19 @@ define( [ 'jquery', 'cvit/zoom/zoom', 'cvit/file/file', 'draw/glyph/glyph', 'gly
         $( mExport ).on( 'click', function( event ) {
           var exportModal = thisc.makeModal( 'export-modal' );
           $( '#cvit-div' ).append( exportModal );
-          thisc.populateExportModal();
+          exportMod.populate();
         } );
 
         $( mUpload ).on( 'click', function( event ) {
           var uploadModal = thisc.makeModal( 'upload-modal' );
           $( '#cvit-div' ).append( uploadModal );
-          thisc.populateUploadModal( thisc );
+          uploadMod.populate( thisc );
         } );
 
         $( mHelp ).on( 'click', function( event ) {
           var helpModal = thisc.makeModal( 'help-modal' );
           $( '#cvit-div' ).append( helpModal );
-          thisc.populateHelpModal();
+          helpMod.populate();
         } );
 
         $( menuGroup ).append( mExport );
@@ -156,7 +111,12 @@ define( [ 'jquery', 'cvit/zoom/zoom', 'cvit/file/file', 'draw/glyph/glyph', 'gly
         $( '#cvit-div' ).prepend( mg );
       },
 
-      //** builds menu to manipulate view */
+      /**
+       *
+       * Adds a menu to allow user to toggle off and on the display of feature
+	   * groups. By default, every group starts as displayed.
+	   *
+       */
       addViewMenu: function() {
         var thisc = this;
         var viewGroup = $( '<div class="btn-group btn-group-justified" role="group">' );
@@ -193,104 +153,6 @@ define( [ 'jquery', 'cvit/zoom/zoom', 'cvit/file/file', 'draw/glyph/glyph', 'gly
 
       },
 
-      //** Decoration and logic for Export option */
-      populateExportModal: function() {
-
-        $( '#export-modal .modal-title' ).text( "Export View to Image" );
-        $( '#export-modal .modal-body' ).html( '<p class="lead">Save your current view as an image.</p>' +
-          '<h4>Export As</h4><div class="container"><div class="row">' +
-          '<form role="form" class="form-inline"><div class="form-group">' +
-          '<label for="format-select" style="padding-right:1em;">Select format:</label>' +
-          '<select class="form-control" id="format-select"><option>png</option>' +
-          '<option>svg</option></select></div><div class="btn-group" style="padding-left:1em;">' +
-          '<button type="button" class="btn btn-primary" id="export-button">Export</button></div></form></div></div>'
-        );
-        $( '#export-modal .form-control' ).css( 'width', 'auto' );
-
-        $( '#export-button' ).on( 'click', function( event ) {
-          var dl = document.createElement( 'a' );
-          // Paper logic to export as svg
-          if ( $( '#format-select' ).val() === 'svg' ) {
-            dl.setAttribute( 'href', "data:image/svg+xml;utf8," + encodeURIComponent( paper.project.exportSVG( {
-              asString: true
-            } ) ) );
-            dl.setAttribute( 'download', 'cvit.svg' );
-            $( document.body ).append( dl );
-            dl.click();
-            $( dl ).remove();
-          }
-          // HTML5 logic to export as png
-          if ( $( '#format-select' ).val() === 'png' ) {
-            var image = $( '#cvit-canvas' )[ 0 ].toDataURL( 'image/png' );
-            dl.setAttribute( 'href', image );
-            dl.setAttribute( 'download', 'cvit.png' );
-            $( document.body ).append( dl );
-            dl.click();
-            $( dl ).remove();
-          }
-        } );
-      },
-
-      //** Decoration and logic for Upload option */
-      populateUploadModal: function( thisc ) {
-        $( '#upload-modal .modal-title' ).text( "Upload Your Data" );
-        // Need to test if local file upload is supported by browser.
-        // Will essentially only return false if using IE<8
-        if ( window.File && window.FileReader && window.FileList && window.Blob ) {
-          var fileTypes = [ 'gff', 'gff3' ];
-          $( '#upload-modal .modal-body' ).html( '<div><input type="file" id="files" name="files[]" multiple /><output id="list"></output></div>' );
-          $( '#files' ).on( 'change', function( event ) {
-            var files = event.target.files;
-            var output = [];
-            for ( var key in files ) {
-              var f = files[ key ];
-              var extension = f.name.split( '.' ).pop().toLowerCase();
-              if ( fileTypes.indexOf( extension ) < 0 ) {
-                continue;
-              }
-
-              output.push( '<li><strong>', escape( f.name ), '</strong> - ',
-                f.size, ' bytes, last modified: ',
-                f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-                '</li>' );
-              var fileReader = new FileReader();
-              // TODO: Support customizing glyph options.
-              $( fileReader ).on( 'load', function( event ) {
-                var fileContents = event.target;
-                var newFeatures = file.parse.gff( event.target.result );
-                for ( var fkey in newFeatures ) {
-                  thisc.view.viewName = "Uploaded";
-                  var rangeGet = glyph.drawGlyph( newFeatures[ fkey ], 'range:range', thisc.conf, thisc.view, thisc.group ).then( function() {
-                    paper.view.draw();
-                  } );
-                }
-              } );
-              fileReader.readAsText( f );
-            }
-
-            $( '#list' ).html( '<ul>' + output.join( '' ) + '</ul>' );
-
-          } );
-
-        } else {
-          $( '#upload-modal .modal-body' ).text( 'Uploading a local file is not currently supported in this browser. See help for supported browser list.' );
-        }
-
-      },
-      //** Populate help popup  TODO:Populate with better information and provide for a tour*/
-      populateHelpModal: function() {
-
-        $( '#help-modal .modal-title' ).text( "About CViTjs" );
-        $( '#help-modal .modal-body' ).html( '<p class="lead">Information and tour.</p>' +
-          '<h4>Export As</h4><div class="container"><div class="row">' +
-          '<form role="form" class="form-inline"><div class="form-group">' +
-          '<label for="format-select" style="padding-right:1em;">Select format:</label>' +
-          '<select class="form-control" id="format-select"><option>png</option>' +
-          '<option>svg</option></select></div><div class="btn-group" style="padding-left:1em;">' +
-          '<button type="button" class="btn btn-primary" id="export-button">Export</button></div></form></div></div>'
-        );
-        $( '.form-control' ).css( 'width', 'auto' );
-      },
       setFeatures: function( conf, view, group ) {
         this.conf = conf;
         this.view = view;

@@ -13,7 +13,7 @@
   - [Setup](#setup)
   - [Gulp](#gulp) 
     - [How to Gulp](#how-to-gulp)
-  - [Roadmap](#roadmap)
+  - [Roadmap](#roadmap)  
   
 ## About
 
@@ -60,7 +60,7 @@ Get Node here (or from your package manager): [Get Node](https://nodejs.org/ "No
 ## Roadmap
 
 Things to do on the way to the 1.0 release.
-
++ Uploaded file manager (glyph and name missmatch correction)
 + Advanced URI control. 
 + Basic Glyphs:
     + Border

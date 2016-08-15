@@ -100,6 +100,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
             console.log( thisC.data.chromosome.glyph );
 
             thisC.view.getBounds.call( thisC, thisC.data.chromosome );
+			console.log(thisC.data);
 
             thisC.viewInfo.xOffset = parseInt( thisC.conf.general.image_padding );
 
@@ -165,19 +166,18 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         getBounds: function( chromosomeData ) {
           var min = 0;
           var max = 0;
-
           chromosomeData.features.forEach( function( data ) {
+		  console.log(min +"::"+max+"\n"+parseInt(data.start)+":"+parseInt(data.end));
             if ( data.start < min ) {
               min = data.start;
             }
-            if ( data.end > max ) {
+            if (data.end > max ) {
               max = data.end;
             }
           } );
-
           // Set min and max of the chromosome
-          this.data.chromosome.min = min;
-          this.data.chromosome.max = max;
+          chromosomeData.min = min;
+          chromosomeData.max = max;
         },
 
         /**

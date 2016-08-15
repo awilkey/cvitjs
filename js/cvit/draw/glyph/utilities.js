@@ -99,15 +99,16 @@ define( [ 'jquery', 'bootstrap' ],
       },
       //** Generate a toggle button to hide/show a given group in the view.
       generateViewControl: function( groupName, group ) {
+		var gName = groupName.replace(/\s+/g,'-').toLowerCase();
         var viewTitle = $( '<span>' + groupName + '</span>"' );
-        var openButton = $( '<button type="button" class="btn btn-success" style="float:right; margin-right:10px;">Show</button>' ).on( 'click', function( event ) {
-          $( '#' + groupName + '-options .btn-success' ).toggleClass( 'btn-danger' );
+        var openButton = $( '<button type="button" class="btn btn-success view-toggle" style="float:right; margin-right:10px;">Show</button>' ).on( 'click', function( event ) {
+          $( '#' + gName + '-options .btn-success' ).toggleClass( 'btn-danger' );
           group.visible = group.visible ? false : true;
           paper.view.draw();
         } );
 
         var viewLi = $( '<li></li>' );
-        var viewDiv = $( '<div id="' + groupName + '-options"></div>' );
+        var viewDiv = $( '<div id="' + gName + '-options"></div>' );
         viewDiv.append( viewTitle );
         viewDiv.append( openButton );
         viewLi.append( viewDiv );

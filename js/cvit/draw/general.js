@@ -1,7 +1,7 @@
 /*
  * file: general.js
  *
- * purpose: Sets up canvas when drawing backbone, because it is a special snowflake.
+ * purpose: Sets up canvas when drawing backbone and rulers.
  *
  * main methods:
  *	drawGlyph :	Configure all the fiddly canvas options in GENERAL then draw backbone
@@ -9,8 +9,8 @@
  */
 
 
-define( [ 'require', 'jquery' ],
-  function( require, $ ) {
+define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
+  function( require, $, rulers ) {
 
     return {
       /**
@@ -67,8 +67,8 @@ define( [ 'require', 'jquery' ],
           title.fillColor = new paper.Color( config.general.title_color );
           title.name = 'cvitTitle';
         }
-
-
+		console.log("VIEW HERE");
+		console.log(view);
 
         var deferred = new $.Deferred();
         var glyph = track.match( /(.*)\:(.*)/ );
