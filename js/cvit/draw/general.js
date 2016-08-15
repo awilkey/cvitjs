@@ -45,7 +45,9 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
         // Set and place title
         if ( config.general.title ) {
           // console.log( "Setting title" );
-          var cvitTitle = config.general.title;
+          var cvitTitle = config.general.title.split(/\<[\/i]+\>/);
+		  console.log("TITLE");
+		  console.log(cvitTitle);
           var titleLoc;
           var titleSize = parseInt( config.general.title_font_size );
           var titleX = parseInt( config.general.image_padding ) + parseInt( config.general.border_width );
@@ -60,12 +62,17 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
           }
 
           titleLoc = new paper.Point( titleX, titleY );
-          var title = new paper.PointText( titleLoc );
-          title.content = cvitTitle;
-          title.fontSize = titleSize;
-          //console.log( 'tc: ' + config.general.title_color );
-          title.fillColor = new paper.Color( config.general.title_color );
-          title.name = 'cvitTitle';
+		  console.log("Title lengtht: "+ cvitTitle.length);
+		  for(var i = 0; i< cvitTitle.length; i++){
+            var title = new paper.PointText( titleLoc );
+            title.content = cvitTitle[i];
+            title.fontSize = titleSize;
+			title.fontWeight = (i%2)===1 ? "Italic":"normal";
+            //console.log( 'tc: ' + config.general.title_color );
+            title.fillColor = new paper.Color( config.general.title_color );
+			titleLoc.x += title.strokeBounds.width;
+		  }
+          //title.name = 'cvitTitle';
         }
 		console.log("VIEW HERE");
 		console.log(view);
