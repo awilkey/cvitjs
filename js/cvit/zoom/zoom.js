@@ -34,17 +34,23 @@ define( [ "jquery", 'mousewheel' ],
         $( zReset ).append( '<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>' );
 
         // setup click logic for zoom in/out/reset
-        var originalCenter = paper.view.center;
+        var originalCenter = paper.project.activeLayer.position;
+		var rulerCenter = paper.project.layers[1].position;
+		paper.project.layers[0].zoom = 1;
+		paper.project.layers[1].zoom =1;
+	
         $( zIn ).on( 'click', function( event ) {
           event.preventDefault();
-          var oldZoom = paper.view.zoom;
-          var newZoom = thisC.changeZoom( paper.view.zoom, 1, paper.view.center, paper.view.center );
+          var oldZoom = paper.project.activeLayer.zoom;
+          var newZoom = thisC.changeZoom( oldZoom, 1, paper.view.center, paper.view.center );
           if ( newZoom[ 0 ] === 8 ) {
             $( zIn ).prop( 'disabled', true );
           } else if ( newZoom[ 0 ] > 1 ) {
             $( zOut ).prop( 'disabled', false );
           }
-          paper.view.zoom = newZoom[ 0 ];
+          paper.project.activeLayer.scale(newZoom[ 0 ]/oldZoom);
+		  paper.project.layers[1].scale(1,newZoom[0]/oldZoom)
+		  paper.project.activeLayer.zoom = newZoom[0];
           if ( $( '#popdiv' ).length ) {
             compensateZoom( newZoom[ 0 ] );
           }
@@ -53,21 +59,30 @@ define( [ "jquery", 'mousewheel' ],
 
         $( zOut ).on( 'click', function( event ) {
           event.preventDefault();
-          var newZoom = thisC.changeZoom( paper.view.zoom, -1, paper.view.center, paper.view.center );
+		  var oldZoom = paper.project.activeLayer.zoom;
+          var newZoom = thisC.changeZoom( oldZoom, -1, paper.view.center, paper.view.center );
           if ( newZoom[ 0 ] === 1 ) {
             $( zOut ).prop( 'disabled', true );
           } else if ( newZoom[ 0 ] < 8 ) {
             $( zIn ).prop( 'disabled', false );
           }
-
-          paper.view.zoom = newZoom[ 0 ];
+          paper.project.activeLayer.scale(newZoom[ 0 ]/oldZoom);
+		  paper.project.layers[1].scale(1,newZoom[0]/oldZoom)
+		  paper.project.activeLayer.zoom = newZoom[0];
           paper.view.draw();
         } );
 
         $( zReset ).on( 'click', function( event ) {
           event.preventDefault();
-          paper.view.zoom = 1;
-          paper.view.center = originalCenter;
+		  var oldZoom = paper.project.activeLayer.zoom;
+		  if(paper.project.activeLayer.zoom !== 1){
+            paper.project.activeLayer.scale(1/oldZoom);
+		    paper.project.layers[1].scale(1,1/oldZoom)
+		    paper.project.activeLayer.zoom = 1;
+		  }
+          paper.project.activeLayer.position = originalCenter;
+		  paper.project.layers[1].position = rulerCenter;
+		  paper.view.draw();
           compensateZoom( 1 );
           $( zOut ).prop( 'disabled', true );
           $( zIn ).prop( 'disabled', false );
@@ -98,8 +113,8 @@ define( [ "jquery", 'mousewheel' ],
           var mousePos = new paper.Point( event.offsetX, event.offsetY );
           var viewPos = paper.view.viewToProject( mousePos );
           var newZoom = thisC.changeZoom( paper.view.zoom, event.deltaY, paper.view.center, viewPos );
-          paper.view.zoom = newZoom[ 0 ];
-          paper.view.center = paper.view.center.add( newZoom[ 1 ] );
+          paper.project.activeLayer.zoom = newZoom[ 0 ];
+          paper.project.activeLayer.position += newZoom[ 1 ] ;
           if ( paper.view.bounds.x < 0 ) {
             paper.view.translate( new paper.Point( -paper.view.bounds.x, 0 ) );
           }
@@ -172,6 +187,8 @@ define( [ "jquery", 'mousewheel' ],
         var deltaX = downPoint.x - point.x;
         var deltaY = downPoint.y - point.y;
 
+        var deltaX = downPoint.x - point.x;
+        var deltaY = downPoint.y - point.y;
         // Calculate boundries so the pan can't go past the limits of the cavas.	
         var xEdge = paper.view.bounds.x;
         var yEdge = paper.view.bounds.x;
@@ -179,11 +196,15 @@ define( [ "jquery", 'mousewheel' ],
         var xBound = xEdge + deltaX;
         var yBound = yEdge + deltaY;
 
+		var layerC = paper.project.activeLayer.position;	
         var xLimit = startView.width - paper.view.bounds.width;
         var yLimit = startView.height - paper.view.bounds.height;
-        var delta = new paper.Point( deltaX, deltaY );
+        var delta = new paper.Point( -deltaX, -deltaY );
         var oldCenter = paper.view.center;
-        paper.project.view.center = oldCenter.add( delta );
+		paper.project.activeLayer.position = oldCenter.add(delta);
+		paper.project.layers[1].position.y -=(layerC.y - paper.project.activeLayer.position.y);
+	
+        //paper.project.view.center = oldCenter.add( delta );
       },
 
       /**

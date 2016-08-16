@@ -30,7 +30,11 @@ define( [ 'jquery' ],
         //view.zoom = data.zoom;
         //view.xoffset = Math.floor( ( $( '#cvit-canvas' ).width() - 200 ) / chromosomes.length );
         //view.yoffset = 50;
-        view.xSep = Math.floor( ( $( '#cvit-canvas' ).width() - ( 2 * view.xOffset ) - ( view.chromWidth * chromosomes.length ) ) / ( chromosomes.length + 1 ) );
+		console.log("CHR");
+		console.log(config);
+		console.log(data);
+        view.xSep = Math.floor( ( $( '#cvit-canvas' ).width() - ( 2*view.xOffset ) - ( view.chromWidth * chromosomes.length ) ) / ( chromosomes.length + 1 ) );
+		console.log("xSep: "+ view.xSep);
         //console.log(view);
         chromosomes.forEach( function( chromosome ) {
           cGroup.addChild( thisC.placeChromosome( chromosome, cGroup, view ) );
