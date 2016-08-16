@@ -36,9 +36,10 @@ define( [ "jquery", 'mousewheel' ],
         // setup click logic for zoom in/out/reset
         var originalCenter = paper.project.activeLayer.position;
 		var rulerCenter = paper.project.layers[1].position;
+		paper.project.activeLayer.center = originalCenter;
 		paper.project.layers[0].zoom = 1;
 		paper.project.layers[1].zoom =1;
-	
+		paper.project.layers[1].layerOffset = paper.project.layers[0].position.y - paper.project.layers[1].position.y;	
         $( zIn ).on( 'click', function( event ) {
           event.preventDefault();
           var oldZoom = paper.project.activeLayer.zoom;
@@ -51,9 +52,11 @@ define( [ "jquery", 'mousewheel' ],
           paper.project.activeLayer.scale(newZoom[ 0 ]/oldZoom);
 		  paper.project.layers[1].scale(1,newZoom[0]/oldZoom)
 		  paper.project.activeLayer.zoom = newZoom[0];
+		  console.log(paper.project.layers[1]);
           if ( $( '#popdiv' ).length ) {
             compensateZoom( newZoom[ 0 ] );
           }
+		  paper.project.activeLayer.center = paper.project.activeLayer.position;
           paper.view.draw();
         } );
 
@@ -69,6 +72,7 @@ define( [ "jquery", 'mousewheel' ],
           paper.project.activeLayer.scale(newZoom[ 0 ]/oldZoom);
 		  paper.project.layers[1].scale(1,newZoom[0]/oldZoom)
 		  paper.project.activeLayer.zoom = newZoom[0];
+	      paper.project.activeLayer.center = paper.project.activeLayer.position;
           paper.view.draw();
         } );
 
@@ -86,6 +90,7 @@ define( [ "jquery", 'mousewheel' ],
           compensateZoom( 1 );
           $( zOut ).prop( 'disabled', true );
           $( zIn ).prop( 'disabled', false );
+		  paper.project.activeLayer.center = paper.project.activeLayer.position;
           paper.view.draw();
         } );
 
@@ -131,8 +136,11 @@ define( [ "jquery", 'mousewheel' ],
         var tool = new paper.Tool();
         tool.onMouseDown = function( event ) {
           tool.path = new paper.Point();
-          tool.path.add( paper.view.center );
+          tool.path.add( paper.project.activeLayer.position );
         };
+		tool.onMouseUp = function (event){
+			paper.project.activeLayer.center = paper.project.activeLayer.position;
+		};
         tool.onMouseDrag = function( event ) {
           thisC.changePan( event.downPoint, event.point, startView );
           event.preventDefault();
@@ -172,7 +180,6 @@ define( [ "jquery", 'mousewheel' ],
         var scale = current / zoomLevel;
         var pos = mouse.subtract( center );
         var offset = mouse.subtract( pos.multiply( scale ) ).subtract( center );
-        console.log( offset );
         return [ zoomLevel, offset ];
       },
 
@@ -184,8 +191,6 @@ define( [ "jquery", 'mousewheel' ],
        * @param {object} startView - Original orientation of the canvas.
        */
       changePan: function( downPoint, point, startView ) {
-        var deltaX = downPoint.x - point.x;
-        var deltaY = downPoint.y - point.y;
 
         var deltaX = downPoint.x - point.x;
         var deltaY = downPoint.y - point.y;
@@ -200,8 +205,8 @@ define( [ "jquery", 'mousewheel' ],
         var xLimit = startView.width - paper.view.bounds.width;
         var yLimit = startView.height - paper.view.bounds.height;
         var delta = new paper.Point( -deltaX, -deltaY );
-        var oldCenter = paper.view.center;
-		paper.project.activeLayer.position = oldCenter.add(delta);
+	
+		paper.project.activeLayer.position = paper.project.activeLayer.center.add(delta);
 		paper.project.layers[1].position.y -=(layerC.y - paper.project.activeLayer.position.y);
 	
         //paper.project.view.center = oldCenter.add( delta );

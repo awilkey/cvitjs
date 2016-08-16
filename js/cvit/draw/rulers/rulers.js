@@ -32,6 +32,9 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
           var rectangle = new paper.Rectangle( point, size );
           var r = new paper.Path.Rectangle( rectangle );
           r.fillColor = 'black';		  
+		  r.name = "rulerRight";
+		  r.strokeWidth =2;
+		  r.strokeColor = "black" 
 		  baseLayer.activate();
 		}
     };
