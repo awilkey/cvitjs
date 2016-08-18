@@ -105,6 +105,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
 
             //actually draw the darn glyohs
             var cvitView = new paper.Group();
+			cvitView.name = 'backbone';
             var group = general.drawGlyph( thisC.data, thisC.data.chromosome.glyph, thisC.conf, thisC.viewInfo ).then( function( group ) {
               paper.view.draw();
               group.name = 'view';

@@ -235,7 +235,7 @@ define( [ "jquery", 'mousewheel' ],
         $( '#popdiv' ).hide();
       },
       zoomRulers: function( ) {
-		var backbone = paper.project.layers[0].children[1].children["view"];
+		var backbone = paper.project.layers[0].children["backbone"].children["view"];
 		var minLoc = paper.project.layers[1].children["rulerRight"].minSeq;
 		paper.project.layers[1].children["rulerRight"].position.y = backbone.children[minLoc].position.y;
       }
