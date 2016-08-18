@@ -36,6 +36,7 @@ define( [ "jquery", 'mousewheel' ],
         // setup click logic for zoom in/out/reset
         var originalCenter = paper.project.activeLayer.position;
 		var rulerCenter = paper.project.layers[1].position;
+		paper.project.activeLayer.oc = originalCenter;
 		paper.project.activeLayer.center = originalCenter;
 		paper.project.layers[0].zoom = 1;
 		paper.project.layers[1].zoom =1;
@@ -52,9 +53,9 @@ define( [ "jquery", 'mousewheel' ],
           paper.project.activeLayer.scale(newZoom[ 0 ]/oldZoom);
 		  paper.project.layers[1].scale(1,newZoom[0]/oldZoom)
 		  paper.project.activeLayer.zoom = newZoom[0];
-		  console.log(paper.project.layers[1]);
+          paper.view.draw();
           if ( $( '#popdiv' ).length ) {
-            compensateZoom( newZoom[ 0 ] );
+           thisC.compensateZoom( newZoom[ 0 ] );
           }
 		  paper.project.activeLayer.center = paper.project.activeLayer.position;
           paper.view.draw();
@@ -72,6 +73,9 @@ define( [ "jquery", 'mousewheel' ],
           paper.project.activeLayer.scale(newZoom[ 0 ]/oldZoom);
 		  paper.project.layers[1].scale(1,newZoom[0]/oldZoom)
 		  paper.project.activeLayer.zoom = newZoom[0];
+          if ( $( '#popdiv' ).length ) {
+           thisC.compensateZoom( newZoom[ 0 ] );
+          }
 	      paper.project.activeLayer.center = paper.project.activeLayer.position;
           paper.view.draw();
         } );
@@ -86,8 +90,8 @@ define( [ "jquery", 'mousewheel' ],
 		  }
           paper.project.activeLayer.position = originalCenter;
 		  paper.project.layers[1].position = rulerCenter;
+          thisC.compensateZoom( 1 );
 		  paper.view.draw();
-          compensateZoom( 1 );
           $( zOut ).prop( 'disabled', true );
           $( zIn ).prop( 'disabled', false );
 		  paper.project.activeLayer.center = paper.project.activeLayer.position;
@@ -145,7 +149,7 @@ define( [ "jquery", 'mousewheel' ],
           thisC.changePan( event.downPoint, event.point, startView );
           event.preventDefault();
           if ( $( '#popdiv' ).length ) {
-            thisC.compensateZoom( paper.view.zoom );
+            thisC.compensateZoom( paper.project.activeLayer.zoom );
           }
           paper.view.draw();
 
@@ -154,7 +158,7 @@ define( [ "jquery", 'mousewheel' ],
       },
 
       /**
-       * Calculate change in zooe level
+       * Calculate change in zoom level
        *
        * @param {float} current     - The current zoom level.
        * @param {float} delta       - Which direction the mousewheel scrolled.
@@ -205,7 +209,6 @@ define( [ "jquery", 'mousewheel' ],
         var xLimit = startView.width - paper.view.bounds.width;
         var yLimit = startView.height - paper.view.bounds.height;
         var delta = new paper.Point( -deltaX, -deltaY );
-	
 		paper.project.activeLayer.position = paper.project.activeLayer.center.add(delta);
 		paper.project.layers[1].position.y -=(layerC.y - paper.project.activeLayer.position.y);
 	
@@ -215,13 +218,14 @@ define( [ "jquery", 'mousewheel' ],
       /**
        * Move popover due to new zoom
        *
-       * @param {Float} zoom - The cuttent zoom level.
+       * @param {Float} zoom - The current zoom level.
        */
       compensateZoom: function( zoom ) {
         var divData = $( '#popdiv' ).data( "pos" );
+		var bounds = $('#popdiv').data("item").bounds;
         $( '#popdiv' ).show();
-        $( '#popdiv' ).css( 'top', ( divData.y - paper.view.center._owner.y ) * zoom );
-        $( '#popdiv' ).css( 'left', ( divData.x - paper.view.center._owner.x ) * zoom );
+        $( '#popdiv' ).css( 'top', (divData.y + Math.round(bounds.y - divData.y)) );
+        $( '#popdiv' ).css( 'left', (divData.x + Math.round(bounds.x - divData.x)) );
         $( '#popdiv' ).css( 'width', divData.width * zoom );
         $( '#popdiv' ).css( 'height', divData.height * zoom );
         $( '.popover' ).popover( 'show' );

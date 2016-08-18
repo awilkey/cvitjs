@@ -27,6 +27,7 @@ define( [ 'jquery', 'bootstrap' ],
         $( '#popdiv' ).remove();
         var clickDiv = $( '<div id="popdiv" style="position:absolute;">&nbsp;</div>' );
         $( clickDiv ).data( 'pos', r.bounds );
+		$(clickDiv).data('item',r);
         $( clickDiv ).css( "top", ( r.bounds.y - paper.view.center._owner.y ) * paper.view.zoom );
         $( clickDiv ).css( "left", ( r.bounds.x - paper.view.center._owner.x ) * paper.view.zoom );
         $( clickDiv ).css( "height", r.bounds.height * paper.view.zoom );
