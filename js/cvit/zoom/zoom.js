@@ -51,13 +51,14 @@ define( [ "jquery", 'mousewheel' ],
             $( zOut ).prop( 'disabled', false );
           }
           paper.project.activeLayer.scale(newZoom[ 0 ]/oldZoom);
-		  paper.project.layers[1].scale(1,newZoom[0]/oldZoom)
+		  paper.project.layers[1].scale(1,newZoom[0]/oldZoom);
 		  paper.project.activeLayer.zoom = newZoom[0];
           paper.view.draw();
           if ( $( '#popdiv' ).length ) {
            thisC.compensateZoom( newZoom[ 0 ] );
           }
 		  paper.project.activeLayer.center = paper.project.activeLayer.position;
+		  thisC.zoomRulers();
           paper.view.draw();
         } );
 
@@ -77,6 +78,7 @@ define( [ "jquery", 'mousewheel' ],
            thisC.compensateZoom( newZoom[ 0 ] );
           }
 	      paper.project.activeLayer.center = paper.project.activeLayer.position;
+		  thisC.zoomRulers();
           paper.view.draw();
         } );
 
@@ -90,11 +92,13 @@ define( [ "jquery", 'mousewheel' ],
 		  }
           paper.project.activeLayer.position = originalCenter;
 		  paper.project.layers[1].position = rulerCenter;
-          thisC.compensateZoom( 1 );
+		  console.log("boom");
 		  paper.view.draw();
+          thisC.compensateZoom( 1 );
           $( zOut ).prop( 'disabled', true );
           $( zIn ).prop( 'disabled', false );
-		  paper.project.activeLayer.center = paper.project.activeLayer.position;
+		  paper.project.activeLayer.center = originalCenter;
+		  thisC.zoomRulers();
           paper.view.draw();
         } );
 
@@ -133,6 +137,7 @@ define( [ "jquery", 'mousewheel' ],
             thisC.compensateZoom( newZoom[ 0 ] );
           }
           event.preventDefault();
+		  thisC.zoomRulers();
           paper.view.draw();
         } );
 
@@ -211,8 +216,6 @@ define( [ "jquery", 'mousewheel' ],
         var delta = new paper.Point( -deltaX, -deltaY );
 		paper.project.activeLayer.position = paper.project.activeLayer.center.add(delta);
 		paper.project.layers[1].position.y -=(layerC.y - paper.project.activeLayer.position.y);
-	
-        //paper.project.view.center = oldCenter.add( delta );
       },
 
       /**
@@ -230,6 +233,11 @@ define( [ "jquery", 'mousewheel' ],
         $( '#popdiv' ).css( 'height', divData.height * zoom );
         $( '.popover' ).popover( 'show' );
         $( '#popdiv' ).hide();
+      },
+      zoomRulers: function( ) {
+		var backbone = paper.project.layers[0].children[1].children["view"];
+		var minLoc = paper.project.layers[1].children["rulerRight"].minSeq;
+		paper.project.layers[1].children["rulerRight"].position.y = backbone.children[minLoc].position.y;
       }
     };
   } );

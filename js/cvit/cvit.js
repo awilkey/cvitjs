@@ -95,24 +95,13 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
             var display;
             thisC.view.setGlyphs.call( thisC );
             console.log( "CViTjs: Drawing requested view." );
-
-            console.log( thisC.data );
-            console.log( thisC.data.chromosome.glyph );
-
             thisC.view.getBounds.call( thisC, thisC.data.chromosome );
-			console.log(thisC.data);
-
             thisC.viewInfo.xOffset = parseInt( thisC.conf.general.image_padding );
-
             thisC.viewInfo.yOffset = parseInt( thisC.conf.general.chrom_padding_top ) >= thisC.viewInfo.xOffset ? parseInt( thisC.conf.general.chrom_padding_top ) : thisC.viewInfo.xOffset;
             thisC.viewInfo.yScale = thisC.view.setZoom( thisC.data.chromosome.min, thisC.data.chromosome.max, thisC.viewInfo.yOffset );
             thisC.viewInfo.chromWidth = parseInt( thisC.conf.general.chrom_width );
             thisC.viewInfo.xMin = thisC.data.chromosome.min;
-
             thisC.data.zoom = thisC.view.setZoom( thisC.data.chromosome.min, thisC.data.chromosome.max );
-
-            console.log( "ViewInfo" );
-            console.log( thisC.viewInfo );
 
             //actually draw the darn glyohs
             var cvitView = new paper.Group();
@@ -166,18 +155,24 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         getBounds: function( chromosomeData ) {
           var min = 0;
           var max = 0;
+		  var chrMin = chromosomeData.features[0].seqName;
+		  var chrMax = chromosomeData.features[0].seqName;
           chromosomeData.features.forEach( function( data ) {
-		  console.log(min +"::"+max+"\n"+parseInt(data.start)+":"+parseInt(data.end));
+				  console.log(data);
             if ( data.start < min ) {
               min = data.start;
+			  chrMin = data.seqName;
             }
             if (data.end > max ) {
               max = data.end;
+			  chrMax = data.seqName;
             }
           } );
           // Set min and max of the chromosome
           chromosomeData.min = min;
+		  chromosomeData.minSeq = chrMin;
           chromosomeData.max = max;
+		  chromosomeData.maxSeq = chrMax;
         },
 
         /**

@@ -74,7 +74,7 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
 		  }
           //title.name = 'cvitTitle';
         }
-		rulers.draw(data.chromosome.min,data.chromosome.max,config,view);
+		rulers.draw(data.chromosome, config, view);
 		console.log("VIEW HERE");
 		console.log(view);
 		view.xOffset += parseInt(config.general.tick_line_width) + (data.chromosome.max.toString().length*4);
