@@ -237,7 +237,12 @@ define( [ "jquery", 'mousewheel' ],
       zoomRulers: function( ) {
 		var backbone = paper.project.layers[0].children["backbone"].children["view"];
 		var minLoc = paper.project.layers[1].children["rulerRight"].minSeq;
-		paper.project.layers[1].children["rulerRight"].position.y = backbone.children[minLoc].position.y;
+		var rulerLayer = paper.project.layers[1];
+		rulerLayer.children["rulerRight"].position.y = backbone.children[minLoc].position.y;
+		rulerLayer.children["rightTicks"].position.y = backbone.children[minLoc].position.y-5;
+
+		console.log(rulerLayer);
+
       }
     };
   } );
