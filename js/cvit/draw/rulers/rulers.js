@@ -76,7 +76,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
 				ticGroup.addChild(mTic);
 				textGroup.addChild(label);
 		  }
-			ticGroup.addChild(textGroup);
+			//ticGroup.addChild(textGroup);
 		  baseLayer.activate();
 		}
     };

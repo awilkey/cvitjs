@@ -32,7 +32,8 @@ define( [ "jquery", 'mousewheel' ],
         $( zOut ).append( '<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>' );
         var zReset = $( '<button type="button" class="btn btn-default aria-label="Reset zoom"></button>' );
         $( zReset ).append( '<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>' );
-
+		thisC.zoomRulers(2,1);
+		thisC.zoomRulers(1,2);
         // setup click logic for zoom in/out/reset
         var originalCenter = paper.project.activeLayer.position;
 		var rulerCenter = paper.project.layers[1].position;
@@ -50,15 +51,11 @@ define( [ "jquery", 'mousewheel' ],
           } else if ( newZoom[ 0 ] > 1 ) {
             $( zOut ).prop( 'disabled', false );
           }
-          paper.project.activeLayer.scale(newZoom[ 0 ]/oldZoom);
-		  paper.project.layers[1].scale(1,newZoom[0]/oldZoom);
-		  paper.project.activeLayer.zoom = newZoom[0];
-          paper.view.draw();
+		  thisC.zoomRulers(newZoom[0], oldZoom);
           if ( $( '#popdiv' ).length ) {
            thisC.compensateZoom( newZoom[ 0 ] );
           }
 		  paper.project.activeLayer.center = paper.project.activeLayer.position;
-		  thisC.zoomRulers();
           paper.view.draw();
         } );
 
@@ -71,14 +68,11 @@ define( [ "jquery", 'mousewheel' ],
           } else if ( newZoom[ 0 ] < 8 ) {
             $( zIn ).prop( 'disabled', false );
           }
-          paper.project.activeLayer.scale(newZoom[ 0 ]/oldZoom);
-		  paper.project.layers[1].scale(1,newZoom[0]/oldZoom)
-		  paper.project.activeLayer.zoom = newZoom[0];
+		  thisC.zoomRulers(newZoom[0],oldZoom);
           if ( $( '#popdiv' ).length ) {
            thisC.compensateZoom( newZoom[ 0 ] );
           }
 	      paper.project.activeLayer.center = paper.project.activeLayer.position;
-		  thisC.zoomRulers();
           paper.view.draw();
         } );
 
@@ -86,11 +80,9 @@ define( [ "jquery", 'mousewheel' ],
           event.preventDefault();
 		  var oldZoom = paper.project.activeLayer.zoom;
 		  if(paper.project.activeLayer.zoom !== 1){
-            paper.project.activeLayer.scale(1/oldZoom);
-		    paper.project.layers[1].scale(1,1/oldZoom)
-		    paper.project.activeLayer.zoom = 1;
+		    thisC.zoomRulers(1,oldZoom);
 		  }
-          paper.project.activeLayer.position = originalCenter;
+          paper.project.layers[0].position = originalCenter;
 		  paper.project.layers[1].position = rulerCenter;
 		  console.log("boom");
 		  paper.view.draw();
@@ -234,13 +226,23 @@ define( [ "jquery", 'mousewheel' ],
         $( '.popover' ).popover( 'show' );
         $( '#popdiv' ).hide();
       },
-      zoomRulers: function( ) {
+      zoomRulers: function(newZoom, oldZoom) {
 		var backbone = paper.project.layers[0].children["backbone"].children["view"];
 		var minLoc = paper.project.layers[1].children["rulerRight"].minSeq;
 		var rulerLayer = paper.project.layers[1];
-		rulerLayer.children["rulerRight"].position.y = backbone.children[minLoc].position.y;
-		rulerLayer.children["rightTicks"].position.y = backbone.children[minLoc].position.y-5;
-
+        paper.project.activeLayer.scale(newZoom/oldZoom);
+	    paper.project.layers[1].children["rulerRight"].scale(1,newZoom/oldZoom);
+		paper.project.layers[1].children["rightTicks"].scale(1,newZoom/oldZoom);
+		paper.project.layers[1].children["rightText"].scale(1,newZoom/oldZoom);
+		for(var text in  paper.project.layers[1].children["rightText"].children){
+		  paper.project.layers[1].children["rightText"].children[text].scale(1,oldZoom/newZoom);
+		};
+		paper.view.draw();
+		paper.project.activeLayer.zoom = newZoom;
+		var ymove = backbone.children[minLoc].position.y;
+		rulerLayer.children["rulerRight"].position.y = ymove;
+		rulerLayer.children["rightTicks"].position.y = ymove;
+		rulerLayer.children["rightText"].position.y = ymove;
 		console.log(rulerLayer);
 
       }
