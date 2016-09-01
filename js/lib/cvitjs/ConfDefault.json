@@ -27,7 +27,7 @@
         "ruler_font": 1,
         "ruler_font_size": 6,
         "tick_line_width": 8,
-        "tick_interval": 10000,
+        "tick_interval": 50000,
         "minor_tick_divisions": 2
 	},
 

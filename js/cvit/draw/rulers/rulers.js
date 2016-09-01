@@ -64,17 +64,19 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
 		  console.log(ticInt);
 		  var intDivision = Math.round(ticInt/parseInt(config.general.minor_tick_divisions));
 		  console.log("TicLoop");
-		  for(var i = ticInt; i < max; i= i+ ticInt){
+		  for(var i = intDivision; i < max; i= i+ intDivision){
 				console.log(i + " : " + max);
 		     	var mTicP = new paper.Point(xPos, yPos+(i*view.yScale));
 		    	var mTic = new paper.Path.Line(mTicP, mTicP.add(ticO));
 		  		mTic.strokeColor = config.general.ruler_color; 
 		  		mTic.strokeWidth= 2;
+				if(i%ticInt ==0){
 		  		var label = new paper.PointText(mTicP.x+ticO.x+1, mTicP.y);
 		  		label.content =i;
 		  		label.fontSize = 10+'px';
-				ticGroup.addChild(mTic);
 				textGroup.addChild(label);
+				}
+				ticGroup.addChild(mTic);
 		  }
 			//ticGroup.addChild(textGroup);
 		  baseLayer.activate();
