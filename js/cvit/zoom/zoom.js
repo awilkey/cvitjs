@@ -84,6 +84,7 @@ define( [ "jquery", 'mousewheel' ],
 		  }
           paper.project.layers[0].position = originalCenter;
 		  paper.project.layers[1].position = rulerCenter;
+		  paper.project.layers[0].center = originalCenter;
 		  console.log("boom");
 		  paper.view.draw();
           thisC.compensateZoom( 1 );
@@ -111,25 +112,36 @@ define( [ "jquery", 'mousewheel' ],
        */
       enableZoom: function( startView ) {
         thisC = this;
-        this.originalCenter = paper.view.center;
+        this.originalCenter = paper.project.layers[0].position;
+		console.log(paper.project.layers[0].position);
         // Attach listener to mousewheel using jquery plugin to watch for scrollwheel zoom
         // delta means that zoom will center around the mouse pointer	
         $( "#cvit-canvas" ).mousewheel( function( event ) {
           var mousePos = new paper.Point( event.offsetX, event.offsetY );
-          var viewPos = paper.view.viewToProject( mousePos );
-          var newZoom = thisC.changeZoom( paper.view.zoom, event.deltaY, paper.view.center, viewPos );
+          var viewPos = paper.project.activeLayer.globalToLocal( mousePos );
+		  var originalZoom = paper.project.activeLayer.zoom;
+          var newZoom = thisC.changeZoom( paper.project.activeLayer.zoom, event.deltaY, paper.project.layers[0].position, viewPos );
           paper.project.activeLayer.zoom = newZoom[ 0 ];
-          paper.project.activeLayer.position += newZoom[ 1 ] ;
-          if ( paper.view.bounds.x < 0 ) {
-            paper.view.translate( new paper.Point( -paper.view.bounds.x, 0 ) );
-          }
+		  //paper.project.activeLayer.position.y += (paper.project.activeLayer.center - mousePos.y);
+		  //paper.project.activeLayer.center = paper.project.activeLayer.position;
+          //if ( paper.view.bounds.x < 0 ) {
+          //  paper.view.translate( new paper.Point( -paper.view.bounds.x, 0 ) );
+          //}
           // popdiv is the div that contains the popover that contains feature information
           // need to reposition it as the view changes, as it is an overlay, not part of canvas.
-          if ( $( '#popdiv' ).length ) {
-            thisC.compensateZoom( newZoom[ 0 ] );
-          }
+        //  if ( $( '#popdiv' ).length ) {
+        //    thisC.compensateZoom( newZoom[ 0 ] );
+        //  }
           event.preventDefault();
-		  thisC.zoomRulers();
+		  thisC.zoomRulers(newZoom[0],originalZoom);
+		  console.log(paper.project.activeLayer.center);
+		  console.log(paper.project.activeLayer.position);
+		  console.log(newZoom[1]);
+		  paper.project.activeLayer.center = paper.project.activeLayer.center.subtract(newZoom[1]);
+		  paper.project.activeLayer.position = paper.project.activeLayer.center;
+		  console.log(paper.project.activeLayer.center);
+		  console.log(paper.project.activeLayer.position);
+		  console.log(newZoom[1]);
           paper.view.draw();
         } );
 
