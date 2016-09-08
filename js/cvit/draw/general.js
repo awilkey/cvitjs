@@ -44,18 +44,13 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
 
         // Set and place title
         if ( config.general.title ) {
-          // console.log( "Setting title" );
+          console.log( "CViTjs: Setting title" );
           var cvitTitle = config.general.title.split(/\<[\/i]+\>/);
-		  console.log("TITLE");
-		  console.log(cvitTitle);
           var titleLoc;
           var titleSize = parseInt( config.general.title_font_size );
           var titleX = parseInt( config.general.image_padding ) + parseInt( config.general.border_width );
-          //console.log( titleX );
           var titleY = titleX + titleSize;
-          //console.log( titleSize + " " + titleX + "," + titleY );
           if ( config.general.title_location ) {
-            //console.log( "setting loc " + config.general.title_location );
             var titlePos = config.general.title_location.match( /\((.*)\,(.*)\)/ );
             titleX += parseInt( titlePos[ 1 ] );
             titleY += parseInt( titlePos[ 2 ] );
@@ -74,10 +69,11 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
 		  }
           //title.name = 'cvitTitle';
         }
+        console.log( "CViTjs: Setting rulers" );
 		rulers.draw(data.chromosome, config, view);
-		console.log("VIEW HERE");
-		console.log(view);
-		view.xOffset += parseInt(config.general.tick_line_width) + (data.chromosome.max.toString().length*4);
+        
+		var rFSize = parseInt(config.general.ruler_font_size);
+		view.xOffset += parseInt(config.general.tick_line_width) + (data.chromosome.max.toString().length * rFSize);
         var deferred = new $.Deferred();
         var glyph = track.match( /(.*)\:(.*)/ );
         var myGlyph = 'glyph/' + glyph[ 1 ] + '/' + glyph[ 2 ];

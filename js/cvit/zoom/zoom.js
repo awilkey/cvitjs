@@ -35,10 +35,10 @@ define( [ "jquery", 'mousewheel' ],
 		thisC.zoomRulers(2,1);
 		thisC.zoomRulers(1,2);
         // setup click logic for zoom in/out/reset
-        var originalCenter = paper.project.activeLayer.position;
+        var originalCenter = paper.project.layers[0].position;
 		var rulerCenter = paper.project.layers[1].position;
-		paper.project.activeLayer.oc = originalCenter;
-		paper.project.activeLayer.center = originalCenter;
+		paper.project.layers[0].oc = originalCenter;
+		paper.project.layers[0].center = originalCenter;
 		paper.project.layers[0].zoom = 1;
 		paper.project.layers[1].zoom =1;
 		paper.project.layers[1].layerOffset = paper.project.layers[0].position.y - paper.project.layers[1].position.y;	
@@ -55,13 +55,13 @@ define( [ "jquery", 'mousewheel' ],
           if ( $( '#popdiv' ).length ) {
            thisC.compensateZoom( newZoom[ 0 ] );
           }
-		  paper.project.activeLayer.center = paper.project.activeLayer.position;
+		  paper.project.layers[0].center = paper.project.layers[0].position;
           paper.view.draw();
         } );
 
         $( zOut ).on( 'click', function( event ) {
           event.preventDefault();
-		  var oldZoom = paper.project.activeLayer.zoom;
+		  var oldZoom = paper.project.layers[0].zoom;
           var newZoom = thisC.changeZoom( oldZoom, -1, paper.view.center, paper.view.center );
           if ( newZoom[ 0 ] === 1 ) {
             $( zOut ).prop( 'disabled', true );
@@ -72,26 +72,25 @@ define( [ "jquery", 'mousewheel' ],
           if ( $( '#popdiv' ).length ) {
            thisC.compensateZoom( newZoom[ 0 ] );
           }
-	      paper.project.activeLayer.center = paper.project.activeLayer.position;
+	      paper.project.layers[0].center = paper.project.layers[0].position;
           paper.view.draw();
         } );
 
         $( zReset ).on( 'click', function( event ) {
           event.preventDefault();
-		  var oldZoom = paper.project.activeLayer.zoom;
-		  if(paper.project.activeLayer.zoom !== 1){
+		  var oldZoom = paper.project.layers[0].zoom;
+		  if(paper.project.layers[0].zoom !== 1){
 		    thisC.zoomRulers(1,oldZoom);
 		  }
           paper.project.layers[0].position = originalCenter;
 		  paper.project.layers[1].position = rulerCenter;
 		  paper.project.layers[0].center = originalCenter;
-		  console.log("boom");
 		  paper.view.draw();
           thisC.compensateZoom( 1 );
           $( zOut ).prop( 'disabled', true );
           $( zIn ).prop( 'disabled', false );
-		  paper.project.activeLayer.center = originalCenter;
-		  thisC.zoomRulers();
+		  paper.project.layers[0].center = originalCenter;
+		  thisC.zoomRulers(1,oldZoom);
           paper.view.draw();
         } );
 
@@ -113,35 +112,25 @@ define( [ "jquery", 'mousewheel' ],
       enableZoom: function( startView ) {
         thisC = this;
         this.originalCenter = paper.project.layers[0].position;
-		console.log(paper.project.layers[0].position);
         // Attach listener to mousewheel using jquery plugin to watch for scrollwheel zoom
         // delta means that zoom will center around the mouse pointer	
         $( "#cvit-canvas" ).mousewheel( function( event ) {
           var mousePos = new paper.Point( event.offsetX, event.offsetY );
-          var viewPos = paper.project.activeLayer.globalToLocal( mousePos );
-		  var originalZoom = paper.project.activeLayer.zoom;
-          var newZoom = thisC.changeZoom( paper.project.activeLayer.zoom, event.deltaY, paper.project.layers[0].position, viewPos );
-          paper.project.activeLayer.zoom = newZoom[ 0 ];
-		  //paper.project.activeLayer.position.y += (paper.project.activeLayer.center - mousePos.y);
-		  //paper.project.activeLayer.center = paper.project.activeLayer.position;
-          //if ( paper.view.bounds.x < 0 ) {
-          //  paper.view.translate( new paper.Point( -paper.view.bounds.x, 0 ) );
-          //}
+          var viewPos = paper.project.layers[0].globalToLocal( mousePos );
+		  var originalZoom = paper.project.layers[0].zoom;
+          var newZoom = thisC.changeZoom( paper.project.layers[0].zoom, event.deltaY, paper.project.layers[0].position, viewPos );
+          paper.project.layers[0].zoom = newZoom[ 0 ];
           // popdiv is the div that contains the popover that contains feature information
           // need to reposition it as the view changes, as it is an overlay, not part of canvas.
-        //  if ( $( '#popdiv' ).length ) {
-        //    thisC.compensateZoom( newZoom[ 0 ] );
-        //  }
+          if ( $( '#popdiv' ).length ) {
+            thisC.compensateZoom( newZoom[ 0 ] );
+          }
           event.preventDefault();
 		  thisC.zoomRulers(newZoom[0],originalZoom);
-		  console.log(paper.project.activeLayer.center);
-		  console.log(paper.project.activeLayer.position);
-		  console.log(newZoom[1]);
-		  paper.project.activeLayer.center = paper.project.activeLayer.center.subtract(newZoom[1]);
-		  paper.project.activeLayer.position = paper.project.activeLayer.center;
-		  console.log(paper.project.activeLayer.center);
-		  console.log(paper.project.activeLayer.position);
-		  console.log(newZoom[1]);
+		  paper.project.layers[0].center = paper.project.layers[0].center.subtract(newZoom[1]);
+		  paper.project.layers[0].position = paper.project.layers[0].center;
+		  console.log(paper.project.layers[0].center);
+		  console.log(paper.project.layers[0].position);
           paper.view.draw();
         } );
 
@@ -149,16 +138,16 @@ define( [ "jquery", 'mousewheel' ],
         var tool = new paper.Tool();
         tool.onMouseDown = function( event ) {
           tool.path = new paper.Point();
-          tool.path.add( paper.project.activeLayer.position );
+          tool.path.add( paper.project.layers[0].position );
         };
 		tool.onMouseUp = function (event){
-			paper.project.activeLayer.center = paper.project.activeLayer.position;
+			paper.project.layers[0].center = paper.project.layers[0].position;
 		};
         tool.onMouseDrag = function( event ) {
           thisC.changePan( event.downPoint, event.point, startView );
           event.preventDefault();
           if ( $( '#popdiv' ).length ) {
-            thisC.compensateZoom( paper.project.activeLayer.zoom );
+            thisC.compensateZoom( paper.project.layers[0].zoom );
           }
           paper.view.draw();
 
@@ -196,7 +185,7 @@ define( [ "jquery", 'mousewheel' ],
         return [ zoomLevel, offset ];
       },
 
-      /**
+      /**nn
        * Move canvas to follow a click and drag event
        *
        * @param {object} downPoint - Where the mousedown event occured.
@@ -214,12 +203,12 @@ define( [ "jquery", 'mousewheel' ],
         var xBound = xEdge + deltaX;
         var yBound = yEdge + deltaY;
 
-		var layerC = paper.project.activeLayer.position;	
+		var layerC = paper.project.layers[0].position;	
         var xLimit = startView.width - paper.view.bounds.width;
         var yLimit = startView.height - paper.view.bounds.height;
         var delta = new paper.Point( -deltaX, -deltaY );
-		paper.project.activeLayer.position = paper.project.activeLayer.center.add(delta);
-		paper.project.layers[1].position.y -=(layerC.y - paper.project.activeLayer.position.y);
+		paper.project.layers[0].position = paper.project.layers[0].center.add(delta);
+		paper.project.layers[1].position.y -=(layerC.y - paper.project.layers[0].position.y);
       },
 
       /**
@@ -240,21 +229,22 @@ define( [ "jquery", 'mousewheel' ],
       },
       zoomRulers: function(newZoom, oldZoom) {
 		var backbone = paper.project.layers[0].children["backbone"].children["view"];
-		var minLoc = paper.project.layers[1].children["rulerRight"].minSeq;
+		var minLoc = paper.project.layers[1].children["rulers"].minSeq;
 		var rulerLayer = paper.project.layers[1];
-        paper.project.activeLayer.scale(newZoom/oldZoom);
-	    paper.project.layers[1].children["rulerRight"].scale(1,newZoom/oldZoom);
-		paper.project.layers[1].children["rightTicks"].scale(1,newZoom/oldZoom);
-		paper.project.layers[1].children["rightText"].scale(1,newZoom/oldZoom);
-		for(var text in  paper.project.layers[1].children["rightText"].children){
-		  paper.project.layers[1].children["rightText"].children[text].scale(1,oldZoom/newZoom);
+        paper.project.layers[0].scale(newZoom/oldZoom);
+	    paper.project.layers[1].children["rulers"].scale(1,newZoom/oldZoom);
+		paper.project.layers[1].children["tics"].scale(1,newZoom/oldZoom);
+		paper.project.layers[1].children["text"].scale(1,newZoom/oldZoom);
+		for(var text in  paper.project.layers[1].children["text"].children["rightText"].children){
+		  paper.project.layers[1].children["text"].children["rightText"].children[text].scale(1,oldZoom/newZoom);
+		  //paper.project.layers[1].children["text"].children["leftText"].children[text].scale(1,oldZoom/newZoom);
 		};
 		paper.view.draw();
 		paper.project.activeLayer.zoom = newZoom;
 		var ymove = backbone.children[minLoc].position.y;
-		rulerLayer.children["rulerRight"].position.y = ymove;
-		rulerLayer.children["rightTicks"].position.y = ymove;
-		rulerLayer.children["rightText"].position.y = ymove;
+		rulerLayer.children["rulers"].position.y = ymove;
+		rulerLayer.children["tics"].position.y = ymove;
+		rulerLayer.children["text"].position.y = ymove;
 		console.log(rulerLayer);
 
       }

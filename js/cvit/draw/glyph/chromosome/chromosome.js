@@ -47,6 +47,7 @@ define( [ 'jquery' ],
         var xPos = group.strokeBounds.x + group.strokeBounds.width;
         var yPos = view.yOffset + parseInt( view.config.chrom_font_size );
         xPos = parseInt( view.config.fixed_chrom_spacing ) === 0 ? xPos + view.xSep : xPos + parseInt( view.config.chrom_spacing );
+		if (xPos < view.xOffset) xPos = view.xOffset + 2*(parseInt(view.config.image_padding));
         if ( xPos < parseInt( view.config.image_padding ) ) xPos += parseInt( view.config.image_padding );
         //console.log("xPos = " + xPos);
         var startOffset = ( chromosome.start - view.xMin ) * view.yScale;
@@ -76,7 +77,6 @@ define( [ 'jquery' ],
         label.content = chr.name;
         label.fontSize = parseInt( view.config.chrom_font_size );
         label.fillColor = new paper.Color( view.config.chrom_label_color );
-
         return chr;
       }
     };
