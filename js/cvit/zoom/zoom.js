@@ -134,24 +134,56 @@ define( [ "jquery", 'mousewheel' ],
           paper.view.draw();
         } );
 
-        //initialize paper tool on canvas to watch for "click and drag" style events for panning
-        var tool = new paper.Tool();
-        tool.onMouseDown = function( event ) {
-          tool.path = new paper.Point();
-          tool.path.add( paper.project.layers[0].position );
-        };
-		tool.onMouseUp = function (event){
-			paper.project.layers[0].center = paper.project.layers[0].position;
-		};
-        tool.onMouseDrag = function( event ) {
-          thisC.changePan( event.downPoint, event.point, startView );
-          event.preventDefault();
-          if ( $( '#popdiv' ).length ) {
-            thisC.compensateZoom( paper.project.layers[0].zoom );
-          }
-          paper.view.draw();
+       // //initialize paper tool on canvas to watch for "click and drag" style events for panning
+       // var panTool = new paper.Tool();
+       // panTool.onMouseDown = function( event ) {
+	   //   document.body.style.cursor = 'move';
+       //   panTool.path = new paper.Point();
+       //   panTool.path.add( paper.project.layers[0].position );
+       // };
+	   // panTool.onMouseUp = function (event){
+	   //   document.body.style.cursor = 'default';
+	   // 	paper.project.layers[0].center = paper.project.layers[0].position;
+	   // };
+       // panTool.onMouseDrag = function( event ) {
+       //   thisC.changePan( event.downPoint, event.point, startView );
+       //   event.preventDefault();
+       //   if ( $( '#popdiv' ).length ) {
+       //     thisC.compensateZoom( paper.project.layers[0].zoom );
+       //   }
+       //   paper.view.draw();
 
-        };
+       // };
+	   
+	   //initialize paper tool on canvas for box select.
+	   var boxTool = new paper.Tool();
+	   boxTool.onMouseDown = function(event){
+		 	document.body.style.cursor = 'zoom-in';
+			boxTool.box = paper.Path.Rectangle(event.downPoint, event.point);
+	   };
+
+	   boxTool.onMouseDrag = function(event){
+			boxTool.box.remove();
+			boxTool.box = paper.Path.Rectangle(event.downPoint, event.point);
+		 	boxTool.box.strokeWidth = 1;
+			boxTool.box.strokeColor = "lightblue"
+			boxTool.box.dashArray = [2,2];
+			boxTool.box.fillColor = new paper.Color(0.8,0.3);
+	   };
+	   
+	   boxTool.onMouseUp = function(event){
+         document.body.style.cursor = 'default';
+		 var viewSize = paper.project.view.size;
+		 var boxSize = boxTool.box.handleBounds.size;
+		 var xScale = viewSize.width/boxSize.width;
+		 var yScale = viewSize.height/boxSize.height;
+		 var newScale = xScale <= yScale ? xScale : yScale;
+		 if (newScale > 8){newScale = 8;};
+		 thisC.zoomRulers(newScale, paper.project.layers[0].zoom);
+         thisC.changePan( boxTool.box.position, paper.project.layers[0].position, startView);
+	     paper.project.layers[0].center = paper.project.layers[0].position;
+		 boxTool.box.remove();
+	   }
 
       },
 
@@ -168,17 +200,22 @@ define( [ "jquery", 'mousewheel' ],
        *                track the mouse pointer if scrollwheel used
        *
        */
-      changeZoom: function( current, delta, center, mouse ) {
+      changeZoom: function( current, delta, center, mouse, newScale ) {
         var zoomLevel = current;
-        var factor = 1.05;
-        if ( delta < 0 ) {
-          zoomLevel = current / factor;
-        }
-        if ( delta > 0 ) {
-          zoomLevel = current * factor;
-        }
-        zoomLevel = zoomLevel < 1 ? 1 : zoomLevel < 8 ? zoomLevel : 8;
+		if(newScale !== undefined){
+			zoomLevel = newScale;
+		}
 
+        var factor = 1.05;
+		if(!newScale){
+          if ( delta < 0 ) {
+            zoomLevel = current / factor;
+          }
+          if ( delta > 0 ) {
+            zoomLevel = current * factor;
+          }
+          zoomLevel = zoomLevel < 1 ? 1 : zoomLevel < 8 ? zoomLevel : 8;
+		}
         var scale = current / zoomLevel;
         var pos = mouse.subtract( center );
         var offset = mouse.subtract( pos.multiply( scale ) ).subtract( center );
