@@ -28,6 +28,7 @@ require.config({
 		paper: 'paper/paper-core.min',
         hopscotch: 'hopscotch/js/hopscotch.min',
 		cvit: '../cvit',
+		tools:'../cvit/tools/',
 		draw: '../cvit/draw',
 		glyph: '../cvit/draw/glyph'
 //		teth:'https://github.com/HubSpot/tether/blob/master/dist/js/tether.min'

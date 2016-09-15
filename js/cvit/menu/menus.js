@@ -15,9 +15,9 @@
  *
  */
 
-define( [ 'jquery', 'cvit/zoom/zoom', 'cvit/menu/modals/exportmodal',
+define( [ 'jquery','tools/tools', 'tools/zoom/zoom', 'cvit/menu/modals/exportmodal',
 		  'cvit/menu/modals/uploadmodal','cvit/menu/modals/helpmodal','bootstrap' ],
-  function( $, zoom, exportMod, uploadMod, helpMod ) {
+  function( $,tools, zoom, exportMod, uploadMod, helpMod ) {
     return {
       //** builds menu stack */
       build: function( conf, view, group ) {
@@ -38,6 +38,7 @@ define( [ 'jquery', 'cvit/zoom/zoom', 'cvit/menu/modals/exportmodal',
        */
       addZoomControl: function() {
         zoom.addZoomControl();
+		tools.addToolsControl();
       },
 
       /**

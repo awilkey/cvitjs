@@ -24,7 +24,7 @@
 // note here that domReady! means that cvit.js won't be called until after the
 // dom is ready to be manipulated.
 
-define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general', 'draw/glyph/glyph', 'text!../../cvit.conf', 'cvit/zoom/zoom', 'mousewheel', 'domReady!' ],
+define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general', 'draw/glyph/glyph', 'text!../../cvit.conf', 'tools/zoom/zoom', 'mousewheel', 'domReady!' ],
   function( $, paper, file, menu, general, glyph, cvitConf, zoom ) {
 
     return {
