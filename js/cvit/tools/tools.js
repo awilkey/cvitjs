@@ -23,13 +23,40 @@ define( [ 'jquery', 'tools/zoom/zoom', 'cvit/menu/modals/exportmodal',
     return {
       //** builds menu stack */
       addToolsControl: function( ) {
-	   var menuButton = $( '<div class="btn-group">'+	
-		  '<button type="button" class="btn btn-default">Tool</button>'+
-		  '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
-		  '<span class="caret"></span>'+
-		  '<span class="sr-only">Toggle Dropdown</span>'+
+	   var menuButton = $( '<div id="tool-btn" class="btn-group">'+	
+		  '<button type="button" class="btn btn-xs btn-default">'+
+		  '<span class="glyphicon glyphicon-wrench"></span>'+
+	//	  '<button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
 		  '</button>');
-		$('#zoom-ctrl').after(menuButton);
+  var toolSelect = $('<div id="tool-bar" class="btn-group btn-group-xs"'+
+		 ' role="group" aria-label="tools"></div>');
+  toolSelect.hide();
+  var panTool =  $('<button type="button" class="btn  btn-default">'+
+		  '<span class="glyphicon glyphicon-move"></span>'+
+		  '</button>');
+  var boxTool =$('<button type="button" class="btn btn-default">'+
+		  '<span class="glyphicon glyphicon-zoom-in"></span>'+
+		  '</button>');
+
+   $(menuButton ).on( 'click', function( event ) {
+		$(toolSelect).toggle();
+   } ); 
+
+   console.log(paper.tools);
+   $(panTool).on( 'click', function( event ) {
+    	paper.tools[0].activate();
+   }); 
+
+   $(boxTool ).on( 'click', function( event ) {
+    	paper.tools[1].activate();
+   } ); 
+
+    
+   $(toolSelect).append(panTool);
+   $(toolSelect).append(boxTool);
+   $('#zoom-ctrl').after(menuButton);
+   $(menuButton).after(toolSelect);
+   console.log(paper.tools);
       }
     };
   } );

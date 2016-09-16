@@ -76,6 +76,7 @@ define( [ "jquery", 'mousewheel' ],
           paper.project.layers[0].position = originalCenter;
 		  paper.project.layers[1].position = rulerCenter;
 		  paper.project.layers[0].center = originalCenter;
+          paper.view.draw();
           thisC.compensateZoom( 1 );
           paper.view.draw();
         } );
@@ -121,25 +122,25 @@ define( [ "jquery", 'mousewheel' ],
         } );
 
        // //initialize paper tool on canvas to watch for "click and drag" style events for panning
-       // var panTool = new paper.Tool();
-       // panTool.onMouseDown = function( event ) {
-	   //   document.body.style.cursor = 'move';
-       //   panTool.path = new paper.Point();
-       //   panTool.path.add( paper.project.layers[0].position );
-       // };
-	   // panTool.onMouseUp = function (event){
-	   //   document.body.style.cursor = 'default';
-	   // 	paper.project.layers[0].center = paper.project.layers[0].position;
-	   // };
-       // panTool.onMouseDrag = function( event ) {
-       //   thisC.changePan( event.downPoint, event.point, startView );
-       //   event.preventDefault();
-       //   if ( $( '#popdiv' ).length ) {
-       //     thisC.compensateZoom( paper.project.layers[0].zoom );
-       //   }
-       //   paper.view.draw();
+        var panTool = new paper.Tool();
+        panTool.onMouseDown = function( event ) {
+	      document.body.style.cursor = 'move';
+          panTool.path = new paper.Point();
+          panTool.path.add( paper.project.layers[0].position );
+        };
+	    panTool.onMouseUp = function (event){
+	      document.body.style.cursor = 'default';
+	    	paper.project.layers[0].center = paper.project.layers[0].position;
+	    };
+        panTool.onMouseDrag = function( event ) {
+          thisC.changePan( event.downPoint, event.point, startView );
+          event.preventDefault();
+          if ( $( '#popdiv' ).length ) {
+            thisC.compensateZoom( paper.project.layers[0].zoom );
+          }
+          paper.view.draw();
 
-       // };
+        };
 	   
 	   //initialize paper tool on canvas for box select.
 	   var boxTool = new paper.Tool();
