@@ -26,11 +26,11 @@ define( [ "jquery", 'mousewheel' ],
 		var zoomGroup = $( '<div id="zoom-ctrl" class="btn-group-vertical btn-group-xs" role="group" aria-label="Zoom controls">' );
         $( zoomGroup ).css( "top", "10px" );
         $( zoomGroup ).css( "left", "10px" );
-        var zIn = $( '<button type="button" id="zoom-in-btn" class="btn btn-default z-ctrl" aria-label="Zoom in"></button>' );
+        var zIn = $( '<button title="Zoom In" type="button" id="zoom-in-btn" class="btn btn-default z-ctrl" aria-label="Zoom in"></button>' );
         $( zIn ).append( '<span " class="glyphicon glyphicon-plus " aria-hidden="true"></span>' );
-        var zOut = $( '<button id="zoom-out-btn" type="button" class="btn btn-default z-crtl" aria-label="Zoom out" disabled="true"></button>' );
+        var zOut = $( '<button title="Zoom Out" id="zoom-out-btn" type="button" class="btn btn-default z-crtl" aria-label="Zoom out" disabled="true"></button>' );
         $( zOut ).append( '<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>' );
-        var zReset = $( '<button type="button" class="btn btn-default aria-label="Reset zoom"></button>' );
+        var zReset = $( '<button title="Reset View" type="button" class="btn btn-default aria-label="Reset zoom"></button>' );
         $( zReset ).append( '<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>' );
 		thisC.zoomRulers(2,1);
 		thisC.zoomRulers(1,2);
@@ -120,7 +120,6 @@ define( [ "jquery", 'mousewheel' ],
 		  console.log(paper.project.layers[0].position);
           paper.view.draw();
         } );
-
        // //initialize paper tool on canvas to watch for "click and drag" style events for panning
         var panTool = new paper.Tool();
         panTool.onMouseDown = function( event ) {
@@ -141,7 +140,6 @@ define( [ "jquery", 'mousewheel' ],
           paper.view.draw();
 
         };
-	   
 	   //initialize paper tool on canvas for box select.
 	   var boxTool = new paper.Tool();
 	   boxTool.onMouseDown = function(event){
