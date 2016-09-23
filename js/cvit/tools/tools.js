@@ -18,8 +18,8 @@
 
 
 define( [ 'jquery', 'tools/zoom/zoom', 'tools/draw/rect', 'tools/draw/free', 'tools/draw/eraser',
-		  ,'bootstrap' ],
-  function( $, zoom,rect, free, eraser ) {
+		  'tools/draw/color','bootstrap' ],
+  function( $, zoom,rect, free, eraser, color ) {
     return {
       //** builds menu stack */
       addToolsControl: function( ) {
@@ -52,6 +52,16 @@ define( [ 'jquery', 'tools/zoom/zoom', 'tools/draw/rect', 'tools/draw/free', 'to
 		$(toolSelect).toggle();
    } ); 
 
+  var colorSel=$('<button title="Line Color" type="button" class="btn color-sel btn-default" '+
+				  'data-toggle="modal" data-target="#color1-select">'+
+		  '<span> </span>'+
+		  '</button>');
+  var colorSel2 = $(colorSel).clone(true);
+   $(colorSel).attr("id","color1");
+   $(colorSel2).attr("id","color2");
+   $(colorSel2).attr("data-target","#color2-select");
+   $(colorSel2).attr("title","Fill Color");
+   
    rect.addRectDraw();
    free.addFreeDraw();
    eraser.addEraser();
@@ -80,15 +90,28 @@ define( [ 'jquery', 'tools/zoom/zoom', 'tools/draw/rect', 'tools/draw/free', 'to
     	this.focus();
     	paper.tools[4].activate();
    } ); 
+   color.addColorSel("color1","Line");
+   color.addColorSel("color2","Fill");
+   console.log("COLOR HERE" + paper.project.color1.toCSS());
+   $(colorSel).on('click', function(event){
+	color.colorPicker('color1',colorSel);
+   });
+   $(colorSel2).on('click', function(event){
+	color.colorPicker('color2',colorSel2);
+   });
+
    console.log("booo");
    $(toolSelect).append(panTool);
    $(toolSelect).append(boxTool);
    $(toolSelect).append(rectTool);
    $(toolSelect).append(drawTool);
    $(toolSelect).append(eraserTool);
+   $(toolSelect).append(colorSel);
+   $(toolSelect).append(colorSel2);
    $('#zoom-ctrl').after(menuButton);
    $(menuButton).after(toolSelect);
-   console.log(paper.tools);
+   $('#color1').css("background",paper.project.color1.toCSS());
+   $('#color2').css("background",paper.project.color2.toCSS());
       }
     };
   } );

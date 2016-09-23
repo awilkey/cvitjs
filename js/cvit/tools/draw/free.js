@@ -23,11 +23,14 @@ define( [ 'jquery','bootstrap' ],
       //** builds menu stack */
       addFreeDraw: function( ) {
        var freeTool = new paper.Tool();
-       freeTool.onMouseDown = function(event){
+	   if(!paper.project.color1){
+           paper.project.color1 = new paper.Color(0,0,0,1);
+		}
+	   freeTool.onMouseDown = function(event){
 		    var path = new paper.Path()
 			path.segments = [event.point];
 			path.isErasable = true;
-			path.strokeColor = "black";
+			path.strokeColor = paper.project.color1;
             freeTool.path = path;
        };
 

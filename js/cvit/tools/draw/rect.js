@@ -23,7 +23,14 @@ define( [ 'jquery','bootstrap' ],
       //** builds menu stack */
       addRectDraw: function( ) {
        var rectTool = new paper.Tool();
-            rectTool.onMouseDown = function(event){
+	   if(!paper.project.color1){
+	   	  paper.project.color1 = new paper.Color(0,0,0,1);
+	   }
+	   if(!paper.project.color2){
+	      paper.project.color2 = new paper.Color(0.7,0.8,0.8,0.4);
+	   }
+
+       rectTool.onMouseDown = function(event){
             rectTool.box = paper.Path.Rectangle(event.downPoint, event.point);
 			rectTool.box.isErasable=true;
        };
@@ -33,10 +40,10 @@ define( [ 'jquery','bootstrap' ],
             rectTool.box.remove();
             rectTool.box = paper.Path.Rectangle(event.downPoint, event.point);
             rectTool.box.strokeWidth = 2;
-            rectTool.box.strokeColor = "black"
+            rectTool.box.strokeColor = paper.project.color1;
             rectTool.box.dashArray = [2,2];
 			rectTool.box.isErasable=true;
-            rectTool.box.fillColor = new paper.Color(0.8,0.3);
+            rectTool.box.fillColor = paper.project.color2;
        };
 	   rectTool.onMouseUp = function(event){
             document.body.style.cursor = 'default';
