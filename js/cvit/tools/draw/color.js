@@ -1,18 +1,12 @@
 /*
- * file: tools.js
+ * file: color.js
  *
  *
- * purpose: create dropdown menu to allow for tooltip selection.
+ * purpose: backbone for color selection tool.
  * 
  * main methods:
- *  build:  Builds the desired menus. TODO: make it so menu can be configured in conf file.
- *  addZoomControl: Add manual, non-mouse zoom control
- *  addOptonsMenu: Generate buttons for options
- *  addViewMenu: Generate div for view toggles
- *  makeModal: Generate a modal window for use with Option menu options
- *  populateExportModal: Decorate export modal contents and do image export
- *  populateUploadModal: Decorate upload modal contents and do (local) gff import
- *  populateHelpModal: Decorate help modal contents
+ *  addColorSel: Sets up modal for color selector dialog.
+ *  colorPicker: Draws color selector canvas to allow HBSA color selection
  *
  */
 
@@ -37,16 +31,18 @@ define( [ 'jquery','bootstrap' ],
       },
 
 	colorPicker: function(id,button){
+		// disable tool in new window and save base view for later;
 		var toolIndex = paper.tool._index;
 		console.log(toolIndex);
 		paper.tool = undefined;
 		var modId = id+'-select';
-		//console.log(paper.tool
 		$('#'+modId+' .modal-body').html("<div><canvas id='"+modId+"-canvas' width='500' height='200'></canvas></div>");
 		var baseScope = paper.project;
 		if(paper.projects[1]){paper.projects[1].remove()};
 		paper.setup(modId+'-canvas');
 		paper.project.canvas = modId;
+
+		// setup hue and brightness selection box
 		var topLeft = new paper.Point(10,10);
 		var bottomRight = new paper.Point(240,120);
 		var topRight = new paper.Point(240,10);
@@ -77,6 +73,8 @@ define( [ 'jquery','bootstrap' ],
         	    destination: bottomRight
     	    }
 		});
+
+		// Setup saturation preview box
 		topLeft = topRight.add(leftOffset);
 		bottomRight = bottomRight.add(rightOffset);
 		topRight = topRight.add(rightOffset);
@@ -87,19 +85,12 @@ define( [ 'jquery','bootstrap' ],
 			strokeColor: "black",
 			strokeWidth: 1
 		});
-		var sGra = new paper.Path.Rectangle({
-    		topLeft: topLeft,
-    		bottomRight: bottomRight,
-    		fillColor: {
-        		gradient: {
-        			stops: [new paper.Color(1,1,1,0), new paper.Color(1,1,1,1)]
-        		},
-        	    origin: topRight,
-        	    destination: bottomRight
-    	    }
-		});
+		var sGra = sRad.clone();
+		var fGra1 = new paper.Color(1,1,1,0);
+		sGra.fillColor= {gradient:{stops: [new paper.Color(1,1,1,0), new paper.Color(1,1,1,1)]}, 
+				origin: topRight, destination:bottomRight};
 
-		
+		// Setup alpha preview box
 		topLeft = topRight.add(leftOffset);
 		bottomRight = bottomRight.add(rightOffset);
 		topRight = topRight.add(rightOffset);
@@ -116,6 +107,9 @@ define( [ 'jquery','bootstrap' ],
 			strokeColor: "black",
 			strokeWidth: 1
 		});
+
+		// setup preview window of selected color as fill with target to see
+		// alpha level
 		var colBox = new paper.Path.Rectangle({
 			topLeft: [10,140],
 			bottomRight: bottomRight.add([0,60]),
@@ -147,6 +141,7 @@ define( [ 'jquery','bootstrap' ],
 
 		});
 
+		// setup colorbox pointer for hue and brightness selection
 		var pointer = new paper.CompoundPath({
 		    children: [
 		        new paper.Path.Line({
@@ -162,6 +157,8 @@ define( [ 'jquery','bootstrap' ],
 		});
 		pointer.strokeColor = new paper.Color(.6);
 		pointer.position = pGra.bounds.bottomRight;
+
+		// Setup sliders for saturation and alpha sliders
 		var q = new paper.Point(10,10);
 		var w = new paper.Size(25,10);
 		var sSlide = new paper.Path.Rectangle(q,w);
@@ -175,7 +172,8 @@ define( [ 'jquery','bootstrap' ],
 		aSlide.position.y = aGra.bounds.topLeft.y;
     	paper.view.draw();
 
-
+		// utility function to calculat HSB value based on pointer and slider
+		// positions and change previews
 		function changeColor(){
 			var h = ((pointer.position.x - pGra.topLeft.x)/pGra.bounds.width) * 360;
 			var b = 1-((pointer.position.y - pGra.topLeft.y)/pGra.bounds.height);
@@ -203,6 +201,8 @@ define( [ 'jquery','bootstrap' ],
 			$(button).css("background", colPrev.fillColor.toCSS());
 			
 		};
+
+		// Setup what happens when you hide the modal
        $('#'+modId).on('hidden.bs.modal', function(){
 			paper.tools[toolIndex].activate();
 			baseScope.activate();
@@ -210,6 +210,8 @@ define( [ 'jquery','bootstrap' ],
 			baseScope[modId] = [pointer.position,sSlide.position,aSlide.position]; 
 			baseScope[id] = colPrev.fillColor;	
 		});
+
+	   // recover pointer position from previous selection
 		if( baseScope[modId]){
 			pointer.position = baseScope[modId][0];
 			sSlide.position = baseScope[modId][1];
@@ -217,6 +219,8 @@ define( [ 'jquery','bootstrap' ],
 			changeColor();
 		}
 		changeColor();
+
+		// Mouse controls for all the sliders and pointers
 		pGra.onMouseDown = function(event){
 			 pointer.position = event.point;
 			changeColor();

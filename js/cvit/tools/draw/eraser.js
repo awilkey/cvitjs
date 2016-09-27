@@ -1,18 +1,11 @@
 /*
- * file: tools.js
+ * file: eraser.js
  *
  *
- * purpose: create dropdown menu to allow for tooltip selection.
+ * purpose: paper mouse tool to erase clicked on user added drawing.
  * 
  * main methods:
- *  build:  Builds the desired menus. TODO: make it so menu can be configured in conf file.
- *  addZoomControl: Add manual, non-mouse zoom control
- *  addOptonsMenu: Generate buttons for options
- *  addViewMenu: Generate div for view toggles
- *  makeModal: Generate a modal window for use with Option menu options
- *  populateExportModal: Decorate export modal contents and do image export
- *  populateUploadModal: Decorate upload modal contents and do (local) gff import
- *  populateHelpModal: Decorate help modal contents
+ *  addEraser:  initializes eraser and adds to paper.tools array
  *
  */
 
