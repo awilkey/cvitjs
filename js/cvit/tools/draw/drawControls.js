@@ -38,22 +38,27 @@ define( [ 'jquery', 'tools/draw/rect', 'tools/draw/free', 'tools/draw/eraser', '
          $(colorSel2).attr("data-target","#color2-select");
          $(colorSel2).attr("title","Fill Color");
 		 // Add paper mouse tools
+		 var toolNumber = parseInt(paper.tools.length);
          rect.addRectDraw();
          free.addFreeDraw();
          eraser.addEraser();
 		 // Attach button click functionality, tools setup in order of adding to
+		 console.log(toolNumber);
          $(rectTool ).on( 'click', function( event ) {
               this.focus();
-              paper.tools[2].activate();
+			  toolSelect.activeTool = rectTool;
+              paper.tools[(toolNumber)].activate();
          } );
-
          $(drawTool ).on( 'click', function( event ) {
               this.focus();
-              paper.tools[3].activate();
+			  toolSelect.activeTool = drawTool;
+              paper.tools[(toolNumber+1)].activate();
+			 
          } );
          $(eraserTool ).on( 'click', function( event ) {
               this.focus();
-              paper.tools[4].activate();
+			  toolSelect.activeTool = eraserTool;
+              paper.tools[(toolNumber+2)].activate();
          } );
          color.addColorSel("color1","Line");
          color.addColorSel("color2","Fill");

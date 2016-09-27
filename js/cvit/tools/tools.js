@@ -33,20 +33,27 @@ define( [ 'jquery', 'tools/zoom/zoom', 'tools/draw/drawControls','bootstrap' ],
          	  '</button>');
         $(menuButton ).on( 'click', function( event ) {
          	$(toolSelect).toggle();
+			if(toolSelect.activeTool){
+				toolSelect.activeTool.focus();
+			}
+			
         } ); 
 
         $(panTool).on( 'click', function( event ) {
          	this.focus();
+			toolSelect.activeTool = panTool;
          	paper.tools[0].activate();
         }); 
 
         $(boxTool ).on( 'click', function( event ) {
          	this.focus();
+			toolSelect.activeTool = boxTool;
          	paper.tools[1].activate();
         } ); 
 
         //Add zoom and draw tools to menu
         $(toolSelect).append(panTool);
+		toolSelect.activeTool = panTool;
         $(toolSelect).append(boxTool);
         draw.addDrawButtons(toolSelect);
         //Add the menu to the zoom controls
