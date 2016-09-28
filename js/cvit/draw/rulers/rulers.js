@@ -1,7 +1,7 @@
 /*
  * file: rulers.js
  *
- * purpose: Gatekeeper for glyph subclasses.
+ * purpose: Draws rulers.
  *
  * main methods:
  *	drawGlyph :		Require then the requested glyph.
@@ -17,17 +17,9 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
 
     return {
 		draw: function(backbone, config, view){
-		 console.log("BOOM");
+		  // Establish layers and core groups
 		  var baseLayer = paper.project.activeLayer;
 		  var rulerLayer = new paper.Layer();
-		  var min = backbone.min;
-		  var max = backbone.max;
-		  var rulerFontSize = parseInt(config.general.ruler_font_size);
-     	  var yPos = view.yOffset+ parseInt(config.general.chrom_font_size );
-          var xPos = parseInt(config.general.image_padding);
-          var startOffset = view.yScale;
-          var point = new paper.Point( xPos, yPos);
-		  var size = new paper.Point(0, (max + (0-min))*view.yScale);
    		  var rulerGroup = new paper.Group();
    		  rulerGroup.name = "rulers";
 		  rulerGroup.minSeq = backbone.minSeq;
@@ -36,123 +28,99 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
 		  ticGroup.name = "tics";
           var textGroup = new paper.Group();
           textGroup.name = "text";		  
-		  
-		  var r = new paper.Path.Line( point, point.add(size) );
-          //r.fillColor = 'black';		  
-		  r.name = "rulerRight";
-		  r.strokeColor = config.general.ruler_color
-	      r.strokeWidth = 2;
-          console.log(config);
-		  //setup tics and draw first tic at minimum
-		  var rTicGroup = new paper.Group();
-		  rTicGroup.name = "rightTicks"
-		  var rTextGroup = new paper.Group();
-		  rTextGroup.name = "rightText"
-		  
-		  var ticW = parseInt(config.general.tick_line_width);
-		  var ticO = new paper.Point(ticW,0);
-		  var ticP = new paper.Point(xPos,yPos);
-		  var tic = new paper.Path.Line(ticP, ticP.add(ticO));
-		  tic.strokeColor = config.general.ruler_color; 
-		  tic.strokeWidth= 2;
-		  rTicGroup.addChild(tic);
-		  var label = new paper.PointText(ticP.x+ticO.x+1, ticP.y);
-		  label.content = min;
-		  label.fontSize = rulerFontSize+'px';
-		  rTextGroup.addChild(label);
 
-		  var ticInt = parseInt(config.general.tick_interval);
-		  console.log(ticInt);
-		  var intDivision = Math.round(ticInt/parseInt(config.general.minor_tick_divisions));
-		  console.log("TicLoop");
-		  for(var i = intDivision; i < max; i= i+ intDivision){
-				console.log(i + " : " + max);
-		     	var mTicP = new paper.Point(xPos, yPos+(i*view.yScale));
-		    	var mTic = new paper.Path.Line(mTicP, mTicP.add(ticO));
-		  		mTic.strokeColor = config.general.ruler_color; 
-		  		mTic.strokeWidth= 2;
-				if(i%ticInt ==0){
-		  		var label = new paper.PointText(mTicP.x+ticO.x+1, mTicP.y);
-		  		label.content =i;
-		  		label.fontSize = rulerFontSize+'px';
-				rTextGroup.addChild(label);
-				}
-				rTicGroup.addChild(mTic);
+		  var rulerConfig = {};
+		  rulerConfig.min = backbone.min;
+		  rulerConfig.max = backbone.max;
+		  rulerConfig.fontSize = parseInt(config.general.ruler_font_size);
+		  rulerConfig.chromFont = parseInt(config.general.chrom_font_size);
+		  rulerConfig.yOffset = view.yOffset;
+		  rulerConfig.xOffset = parseInt(config.general.image_padding);
+		  rulerConfig.scale = view.yScale;
+		  rulerConfig.color = config.general.ruler_color;
+		  rulerConfig.width = parseInt(config.general.tick_line_width);
+		  rulerConfig.interval = parseInt(config.general.tick_interval);
+		  rulerConfig.division = parseInt(config.general.minor_tick_divisions);
+
+		  console.log("CViTjs: Drawing rulers");
+		  try {
+		    //Draw right Ruler
+		  	this.drawRuler(rulerConfig, rulerGroup, ticGroup,textGroup,"right",1);
+			rulerConfig.xOffset = paper.view.size.width - rulerConfig.xOffset;
+			this.drawRuler(rulerConfig, rulerGroup, ticGroup, textGroup, "left",0);
+		  	//Draw left Ruler
+
+		  } catch(e){
+				console.log(e);
 		  }
-			//ticGroup.addChild(textGroup);
-		  textGroup.addChild(rTextGroup);
-		  ticGroup.addChild(rTicGroup);
-		  rulerGroup.addChild(r);
+
 		  baseLayer.activate();
 		},
 		
-		drawRuler: function(backbone, config, view){
-		 console.log("BOOM");
-		  var baseLayer = paper.project.activeLayer;
-		  var rulerLayer = new paper.Layer();
-		  var min = backbone.min;
-		  var max = backbone.max;
-		  var rulerFontSize = parseInt(config.general.ruler_font_size);
-     	  var yPos = view.yOffset+ parseInt(config.general.chrom_font_size );
-          var xPos = parseInt(config.general.image_padding);
-          var startOffset = view.yScale;
+		drawRuler: function(rc, rulerGroup,ticGroup,textGroup,side,dir){
+		  var label = new paper.PointText(0,0);
+		  label.content = rc.max;
+		  label.fontSize = rc.fontSize+'px';
+		  rc.labelWidth = label.bounds.width+rc.fontSize;
+		  label.remove();
+		  var min = rc.min;
+		  var max = rc.max;
+		  var rulerFontSize = rc.fontSize;
+     	  var yPos = rc.yOffset+ rc.chromFont;
+          var xPos = dir === 1 ? rc.xOffset : rc.xOffset + rc.width + rc.labelWidth;
+          var startOffset = rc.scale;
           var point = new paper.Point( xPos, yPos);
-		  var size = new paper.Point(0, (max + (0-min))*view.yScale);
-   		  var rulerGroup = new paper.Group();
-   		  rulerGroup.name = "rulers";
-		  rulerGroup.minSeq = backbone.minSeq;
-		  rulerGroup.maxSeq = backbone.maxSeq;
-		  var ticGroup = new paper.Group();
-		  ticGroup.name = "tics";
-          var textGroup = new paper.Group();
-          textGroup.name = "text";		  
-		  
+		  var size = new paper.Point(0, (max + (0-min))* rc.scale);
 		  var r = new paper.Path.Line( point, point.add(size) );
-          //r.fillColor = 'black';		  
-		  r.name = "rulerRight";
-		  r.strokeColor = config.general.ruler_color
+		  r.name = "ruler"+side[0].toUpperCase() + side.slice(1);
+		  r.strokeColor = rc.color;
 	      r.strokeWidth = 2;
-          console.log(config);
-		  //setup tics and draw first tic at minimum
 		  var rTicGroup = new paper.Group();
-		  rTicGroup.name = "rightTicks"
+		  rTicGroup.name = side+"Ticks"
 		  var rTextGroup = new paper.Group();
-		  rTextGroup.name = "rightText"
+		  rTextGroup.name = side+"Text"
 		  
-		  var ticW = parseInt(config.general.tick_line_width);
+		  var ticW = rc.width;
+		  var ticD = dir ===1 ? xPos : rc.xOffset + rc.labelWidth;
 		  var ticO = new paper.Point(ticW,0);
-		  var ticP = new paper.Point(xPos,yPos);
+		  var ticP = new paper.Point(ticD,yPos);
 		  var tic = new paper.Path.Line(ticP, ticP.add(ticO));
-		  tic.strokeColor = config.general.ruler_color; 
+		  tic.strokeColor = rc.color; 
 		  tic.strokeWidth= 2;
 		  rTicGroup.addChild(tic);
-		  var label = new paper.PointText(ticP.x+ticO.x+1, ticP.y);
+	      var labelX = dir === 1 ? ticP.x+ticO.x+rc.fontSize : ticD - rc.fontSize;
+		  var label = new paper.PointText(labelX, ticP.y);
 		  label.content = min;
 		  label.fontSize = rulerFontSize+'px';
+		  if(dir != 1){
+			label.position.x -= label.bounds.width;
+		  }
 		  rTextGroup.addChild(label);
 
-		  var ticInt = parseInt(config.general.tick_interval);
-		  console.log(ticInt);
-		  var intDivision = Math.round(ticInt/parseInt(config.general.minor_tick_divisions));
-		  console.log("TicLoop");
+		  var ticInt = rc.interval;
+		  var intDivision = Math.round(ticInt/rc.division);
 		  for(var i = intDivision; i < max; i= i+ intDivision){
-				console.log(i + " : " + max);
-		     	var mTicP = new paper.Point(xPos, yPos+(i*view.yScale));
+		     	var mTicP = new paper.Point(ticD, yPos+(i* rc.scale));
 		    	var mTic = new paper.Path.Line(mTicP, mTicP.add(ticO));
-		  		mTic.strokeColor = config.general.ruler_color; 
+		  		mTic.strokeColor = rc.color; 
 		  		mTic.strokeWidth= 2;
 				if(i%ticInt ==0){
-		  		var label = new paper.PointText(mTicP.x+ticO.x+1, mTicP.y);
-		  		label.content =i;
-		  		label.fontSize = rulerFontSize+'px';
-				rTextGroup.addChild(label);
+		  		  var label = new paper.PointText(labelX, mTicP.y);
+		  		  label.content =i;
+		  		  label.fontSize = rulerFontSize+'px';
+		          if(dir != 1){
+		            label.position.x -= label.bounds.width;
+		          }
+				  rTextGroup.addChild(label);
 				}
 				rTicGroup.addChild(mTic);
-		  }
-			//ticGroup.addChild(textGroup);
+		 }
+		 textGroup.addChild(rTextGroup);
+		 ticGroup.addChild(rTicGroup);
+		 rulerGroup.addChild(r);
+		 rc.xOffset = dir ==1? rc.xOffset + rc.width + rc.labelWidth: r.x;
 		  
-		  return {ruler:r, tic:rTicGroup, text:rTextGroup};
-		},
+		}
 
     };
 });
