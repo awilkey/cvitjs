@@ -80,8 +80,9 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
 		  var rTextGroup = new paper.Group();
 		  rTextGroup.name = side+"Text"
 		  
-		  var ticW = rc.width;
-		  var ticD = dir ===1 ? xPos : rc.xOffset + rc.labelWidth;
+		  // +1/-1 to offset width of ruler backbone to prevent gaps
+		  var ticW = rc.width+1;
+		  var ticD = dir ===1 ? xPos-1 : rc.xOffset + rc.labelWidth;
 		  var ticO = new paper.Point(ticW,0);
 		  var ticP = new paper.Point(ticD,yPos);
 		  var tic = new paper.Path.Line(ticP, ticP.add(ticO));

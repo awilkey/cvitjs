@@ -287,8 +287,10 @@ define( [ "jquery", 'mousewheel' ],
 		paper.project.activeLayer.zoom = newZoom;
 		var ymove = backbone.children[minLoc].position.y;
 		rulerLayer.children["rulers"].position.y = ymove;
-		rulerLayer.children["tics"].position.y = ymove-(textHeight/4);
-		rulerLayer.children["text"].position.y = ymove-(textHeight/4);
+		/*ymove = quarter of height of label text +1 to offset width of 
+		  backbone border*/
+		rulerLayer.children["tics"].position.y = ymove-(textHeight/4)+1;
+		rulerLayer.children["text"].position.y = ymove-(textHeight/4)+1;
 		console.log(rulerLayer);
 
       }
