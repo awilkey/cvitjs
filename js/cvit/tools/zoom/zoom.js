@@ -273,20 +273,22 @@ define( [ "jquery", 'mousewheel' ],
 		var backbone = paper.project.layers[0].children["backbone"].children["view"];
 		var minLoc = paper.project.layers[1].children["rulers"].minSeq;
 		var rulerLayer = paper.project.layers[1];
+		var textHeight = rulerLayer.children["text"].children[0].children[0].bounds.height;
+		console.log(textHeight);
         paper.project.layers[0].scale(newZoom/oldZoom);
 	    paper.project.layers[1].children["rulers"].scale(1,newZoom/oldZoom);
 		paper.project.layers[1].children["tics"].scale(1,newZoom/oldZoom);
 		paper.project.layers[1].children["text"].scale(1,newZoom/oldZoom);
 		for(var text in  paper.project.layers[1].children["text"].children["rightText"].children){
 		  paper.project.layers[1].children["text"].children["rightText"].children[text].scale(1,oldZoom/newZoom);
-		  //paper.project.layers[1].children["text"].children["leftText"].children[text].scale(1,oldZoom/newZoom);
+		  paper.project.layers[1].children["text"].children["leftText"].children[text].scale(1,oldZoom/newZoom);
 		};
 		paper.view.draw();
 		paper.project.activeLayer.zoom = newZoom;
 		var ymove = backbone.children[minLoc].position.y;
 		rulerLayer.children["rulers"].position.y = ymove;
-		rulerLayer.children["tics"].position.y = ymove;
-		rulerLayer.children["text"].position.y = ymove;
+		rulerLayer.children["tics"].position.y = ymove-(textHeight/4);
+		rulerLayer.children["text"].position.y = ymove-(textHeight/4);
 		console.log(rulerLayer);
 
       }
