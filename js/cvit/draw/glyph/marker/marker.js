@@ -45,7 +45,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           marker.name = marker.attribute.name ? marker.attribute.name : '';
           r.info = marker.attribute;
           r.thisColor = 'black';
-          r.fillColor = new paper.Color( view.config.color );
+          r.fillColor = utility.formatColor( view.config.color );
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, marker );
           };
