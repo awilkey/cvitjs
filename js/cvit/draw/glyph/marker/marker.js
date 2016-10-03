@@ -36,9 +36,9 @@ define( [ 'jquery', 'glyph/utilities' ],
           var yLoc = ( ( marker.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
           var xLoc = ( view.xloc[ target ] + parseInt( view.config.offset ) );
           var point = new paper.Point( xLoc, yLoc );
-          var size = parseInt( view.config.width);
-          var r = new paper.Path.Line( point, new paper.Point(point.x+size, point.y ));
-		  r.strokeWidth = 2;
+          var size = new paper.Size( parseInt( view.config.width ), 3 );
+          var rectangle = new paper.Rectangle( point, size );
+          var r = new paper.Path.Rectangle( rectangle );
           if ( parseInt( view.config.enable_pileup ) === 1 ) {
             this.testCollision( r, glyphGroup, view.pileup );
           }
@@ -50,7 +50,6 @@ define( [ 'jquery', 'glyph/utilities' ],
             utility.attachPopover( r, marker );
           };
           if ( parseInt( view.config.draw_label ) === 1 ) {
-			point.y = r.position.y;
             var label = utility.generateLabel( marker, view, point, xLoc );
             targetGroup.addChild( label );
             glyphGroup.addChild( label );
@@ -62,4 +61,4 @@ define( [ 'jquery', 'glyph/utilities' ],
         }
       }
     };
-  } );
+} );
