@@ -5,6 +5,7 @@
  *
  * main methods:
  *  test:   simple "yes this is here" test
+ *  formatColor:   take color string and format it for display
  *  attachPopover: Create the popover when the feature is selected
  *  testCollision: moves features to avoid collisions when "enable pileup" is on
  *  generateLabel: Create text labels on canvas
@@ -21,13 +22,12 @@ define( [ 'jquery', 'bootstrap' ],
       test: function() {
         window.alert( "Utility Test" );
       },
+	  /* Format color string to color */
 	  formatColor: function(color,transparency){
 		var grey = color.match(/gr[ea]y(.*)/);
 		if(grey){
-			console.log(grey);
 			color = "grey";
 			if(grey[1].length !== 0){
-				console.log(grey[1]);
 				color = parseFloat('.'+grey[1]);
 			}
 		}
