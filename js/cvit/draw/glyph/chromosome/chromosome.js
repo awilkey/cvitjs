@@ -15,8 +15,8 @@
  */
 
 
-define( [ 'jquery' ],
-  function( $ ) {
+define( [ 'jquery','glyph/utilities' ],
+  function( $, utility ) {
 
     return {
       draw: function( data, config, view ) {
@@ -35,6 +35,8 @@ define( [ 'jquery' ],
 		console.log(data);
         view.xSep = Math.floor( ( $( '#cvit-canvas' ).width() - ( 2*view.xOffset ) - ( view.chromWidth * chromosomes.length ) ) / ( chromosomes.length + 1 ) );
 		console.log("xSep: "+ view.xSep);
+
+
         //console.log(view);
         chromosomes.forEach( function( chromosome ) {
           cGroup.addChild( thisC.placeChromosome( chromosome, cGroup, view ) );
@@ -60,10 +62,10 @@ define( [ 'jquery' ],
         chr.name = chromosome.seqName;
         r.info = chromosome.attribute;
         r.thisColor = 'black';
-        r.fillColor = new paper.Color( view.config.chrom_color );
+        r.fillColor = utility.formatColor( view.config.chrom_color );
         if ( parseInt( view.config.chrom_border ) === 1 ) {
           r.strokeWidth = 2;
-          r.strokeColor = new paper.Color( view.config.chrom_border_color );
+          r.strokeColor = utility.formatColor( view.config.chrom_border_color );
         }
 
         r.name = chr.name;
@@ -76,7 +78,7 @@ define( [ 'jquery' ],
         label.justification = 'center';
         label.content = chr.name;
         label.fontSize = parseInt( view.config.chrom_font_size );
-        label.fillColor = new paper.Color( view.config.chrom_label_color );
+        label.fillColor = utility.formatColor( view.config.chrom_label_color );
         return chr;
       }
     };

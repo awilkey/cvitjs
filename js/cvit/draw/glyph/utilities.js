@@ -21,6 +21,19 @@ define( [ 'jquery', 'bootstrap' ],
       test: function() {
         window.alert( "Utility Test" );
       },
+	  formatColor: function(color,transparency){
+		var grey = color.match(/gr[ea]y(.*)/);
+		if(grey){
+			console.log(grey);
+			color = "grey";
+			if(grey[1].length !== 0){
+				console.log(grey[1]);
+				color = parseFloat('.'+grey[1]);
+			}
+		}
+		
+		return  new paper.Color(color);
+	  },
       /** Attach popover to feature */
       attachPopover: function( r, feature ) {
         $( '.popover' ).remove();
@@ -90,7 +103,7 @@ define( [ 'jquery', 'bootstrap' ],
         var label = new paper.PointText( point );
         label.content = feature.attribute.name !== undefined ? feature.attribute.name : '';
         var fill = typeof( view.config.label_color ) != 'undefined' ? view.config.label_color : 'black';
-        label.fillColor = new paper.Color( fill );
+        label.fillColor = this.formatColor( fill );
         label.fontSize = parseInt( view.config.font_size );
 
         if ( labelOffset < 0 ) {
