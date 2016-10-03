@@ -45,7 +45,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           position.name = position.attribute.name ? position.attribute.name : '';
           r.info = position.attribute;
           r.thisColor = 'black';
-          r.fillColor = new paper.Color( view.config.color );
+          r.fillColor = utility.formatColor( view.config.color );
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, position );
           };

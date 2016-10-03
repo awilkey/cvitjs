@@ -43,7 +43,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           centromere.name = centromere.attribute.name ? centromere.attribute.name : '';
           r.info = centromere.attribute;
           r.thisColor = 'black';
-          r.fillColor = new paper.Color( view.config.color );
+          r.fillColor = utility.formatColor( view.config.color );
 
           if ( parseInt( view.config.draw_label ) === 1 ) {
 		    point.y = r.position.y;
