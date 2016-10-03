@@ -47,16 +47,21 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
           console.log( "CViTjs: Setting title" );
           var cvitTitle = config.general.title.split(/\<[\/i]+\>/);
           var titleLoc;
-          var titleSize = parseInt( config.general.title_font_size );
-		  console.log(config.general.title_location);
-          var titleX = parseInt( config.general.image_padding ) + parseInt( config.general.border_width );
-          var titleY = titleX + titleSize;
+          var titleSize =  parseInt( config.general.title_font_size );
+          var titleX;
+		  var titleY;
           if ( config.general.title_location ) {
             var titlePos = config.general.title_location.match( /\((.*)\,(.*)\)/ );
             titleX = parseInt( titlePos[ 1 ] )  ;
             titleY = parseInt( titlePos[ 2 ] ) + titleSize;
-          }
-
+          } else {
+		  	titleX = parseInt( config.general.image_padding ) + parseInt( config.general.border_width );
+          	titleY = titleX + titleSize;
+		  	var heightAllow = parseInt(config.general.title_height);
+		  	if(heightAllow > titleY){
+		  	  titleY = heightAllow;
+		  	}
+		 }
           titleLoc = new paper.Point( titleX, titleY );
 		  console.log("Title lengtht: "+ cvitTitle.length);
 		  for(var i = 0; i< cvitTitle.length; i++){
