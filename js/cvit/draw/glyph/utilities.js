@@ -96,6 +96,8 @@ define( [ 'jquery', 'bootstrap' ],
         if ( labelOffset < 0 ) {
           label.position = new paper.Point( point.x - label.strokeBounds.width, point.y );
         }
+
+		label.position.y = point.y;
         return label;
       },
       //** Generate a toggle button to hide/show a given group in the view.

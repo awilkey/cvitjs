@@ -45,6 +45,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           r.fillColor = new paper.Color( view.config.color );
 
           if ( parseInt( view.config.draw_label ) === 1 ) {
+		    point.y = r.position.y;
             var label = utility.generateLabel( centromere, view, point, xLoc );
             targetGroup.addChild( label );
             glyphGroup.addChild( label );
