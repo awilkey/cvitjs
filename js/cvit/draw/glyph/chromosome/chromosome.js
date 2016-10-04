@@ -33,11 +33,9 @@ define( [ 'jquery','glyph/utilities' ],
 		console.log("CHR");
 		console.log(config);
 		console.log(data);
-        view.xSep = Math.floor( ( $( '#cvit-canvas' ).width() - ( 2*view.xOffset ) - ( view.chromWidth * chromosomes.length ) ) / ( chromosomes.length + 1 ) );
-		console.log("xSep: "+ view.xSep);
+		view.rulerWidth = paper.project.layers[1].children["text"].maxOff; 
+        view.xSep = ( $( '#cvit-canvas' ).width() - ( 2* view.rulerWidth )-(chromosomes.length * view.chromWidth))/ ( chromosomes.length +1 );
 
-
-        //console.log(view);
         chromosomes.forEach( function( chromosome ) {
           cGroup.addChild( thisC.placeChromosome( chromosome, cGroup, view ) );
         } );
@@ -48,9 +46,14 @@ define( [ 'jquery','glyph/utilities' ],
         var chr = new paper.Group();
         var xPos = group.strokeBounds.x + group.strokeBounds.width;
         var yPos = view.yOffset + parseInt( view.config.chrom_font_size );
+		console.log(xPos);
+		if(xPos === 0){
+			xPos = view.rulerWidth + view.xSep;
+		} else {
         xPos = parseInt( view.config.fixed_chrom_spacing ) === 0 ? xPos + view.xSep : xPos + parseInt( view.config.chrom_spacing );
-		if (xPos < view.xOffset) xPos = view.xOffset + 2*(parseInt(view.config.image_padding));
-        if ( xPos < parseInt( view.config.image_padding ) ) xPos += parseInt( view.config.image_padding );
+		}
+		//if (xPos < view.xOffset) xPos = view.xSep+ view.rulerWidth + (parseInt(view.config.image_padding));
+        //if ( xPos < parseInt( view.config.image_padding ) ) xPos += view.rulerWidth +parseInt( view.config.image_padding );
         //console.log("xPos = " + xPos);
         var startOffset = ( chromosome.start - view.xMin ) * view.yScale;
 

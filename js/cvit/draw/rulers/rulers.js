@@ -47,6 +47,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
 		    //Draw right Ruler
 		  	this.drawRuler(rulerConfig, rulerGroup, ticGroup,textGroup,"right",1);
 			rulerConfig.xOffset = paper.view.size.width - rulerConfig.xOffset;
+			textGroup.maxOff = textGroup.w;
 			this.drawRuler(rulerConfig, rulerGroup, ticGroup, textGroup, "left",0);
 		  	//Draw left Ruler
 
@@ -109,6 +110,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
 		  		  var label = new paper.PointText(labelX, mTicP.y);
 		  		  label.content =i;
 		  		  label.fontSize = rulerFontSize+'px';
+				  textGroup.w = label.bounds.bottomRight.x;
 		          if(dir != 1){
 		            label.position.x -= label.bounds.width;
 		          }
