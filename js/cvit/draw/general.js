@@ -20,13 +20,13 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
        * by only requesting/loading the files for the glyphs actually used.
        *
        * @param data [Object] Feature to draw
-       * @param track [String] a string of the format {glyph}:{subglyph}.
+       * @param track [Array] a array of strings [{glyph},{subglyph}].
        * @param config [Object] Configuration object meeting the cvitconfig.json schema
        * @param backbone [paperGroup] A paper group that contains the chromosome backbone of the cvit drawing (optional)
        *
        * @return [promise] A jQuery promise, so that the glyphs can be drawn in an ansync form. 
        */
-      drawGlyph: function( data, track, config, view, backbone ) {
+      drawGlyph: function( data, config, view, backbone ) {
 
         // Set and draw border
         var background = new paper.Path.Rectangle( {
@@ -81,8 +81,7 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
 		var rFSize = parseInt(config.general.ruler_font_size);
 		view.xOffset += parseInt(config.general.tick_line_width) + (data.chromosome.max.toString().length * rFSize);
         var deferred = new $.Deferred();
-        var glyph = track.match( /(.*)\:(.*)/ );
-        var myGlyph = 'glyph/' + glyph[ 1 ] + '/' + glyph[ 2 ];
+        var myGlyph = 'glyph/' + config.general.glyph + '/' + config.general.shape;
         var moo = require( [ myGlyph ], function( myGlyph ) {
           deferred.resolve( myGlyph.draw( data, config, view ) );
           background.sendToBack();

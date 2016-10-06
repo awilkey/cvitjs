@@ -24,24 +24,24 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
        *
        * @param data [Object] Features to draw
        * @param config [Object] Configuration object meeting the cvitconfig.json schema
-       * @param track [String] a string of the format {glyph}:{subglyph}.
+       * @param track [String] a string array f the format [{glyph},{subglyph}].
        * @param view [Object] Configuration information specific to current feature
        * @param backbone [paperGroup] A paper group that contains the chromosome backbone of the cvit drawing (optional)
        *
        * @return [promise] A jQuery promise, so that the glyphs can be drawn in an ansync form. 
        */
-      drawGlyph: function( data, track, config, view, backbone ) {
+      drawGlyph: function( data,  config, view, backbone ) {
         var thisC = this;
         var groupName = view.viewName;
         var deferred = new $.Deferred();
-        var glyph = track.match( /(.*)\:(.*)/ );
-        var myGlyph = 'glyph/' + glyph[ 1 ] + '/' + glyph[ 2 ];
+        var myGlyph = 'glyph/' + config[groupName].glyph + '/' + config[groupName].shape;
+		var req = myGlyph;
         var requireGlyph = require( [ myGlyph ], function( myGlyph ) {
-          view.key = glyph[ 1 ];
+          view.key = config[groupName].glyph;
           view.groupName = groupName;
           deferred.resolve( thisC.prepareGlyph( data, config, view, backbone, myGlyph ) );
         } );
-
+		paper.view.draw();
         return deferred.promise();
       },
       /**
@@ -59,7 +59,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         var locations = data.features;
         var glyphGroup = new paper.Group();
         glyphGroup.name = view.groupName;
-        view.config = config[ view.key ];
+        view.config = view.key === view.groupName ? config[ view.key ] : thisC.mergeConfig(config[view.key], config[view.groupName]);
         view.zoom = view.yScale;
         view.xoffset = typeof( view.config.offset ) != "undefined" ? parseInt( view.config.offset ) : 0;
         view.yOffset = typeof( config.general.chrom_font_size ) ? view.yOffset + parseInt( config.general.chrom_font_size ) : view.yOffset;
@@ -68,7 +68,9 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         view.centWidth = view.chromWidth + ( 2 * parseInt( config.centromere.centromere_overhang ) );
         view.xloc = thisC.setXLoc( config, backbone );
         locations.forEach( function( loc ) {
-          thisC.placeGlyph( loc, view, backbone, glyph, glyphGroup );
+		  if((view.config.dataFilter && loc.source === view.config.dataFilter) || !view.config.dataFilter){
+            thisC.placeGlyph( loc, view, backbone, glyph, glyphGroup );
+		  }
         } );
         utility.generateViewControl( view.groupName, glyphGroup );
       },
@@ -84,6 +86,15 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
        */
       placeGlyph: function( data, view, backbone, glyph, glyphGroup ) {
         glyph.draw( data, backbone, view, glyphGroup );
+      },
+      
+      mergeConfig: function(baseConfig, editedConfig){
+		$.each(baseConfig, function(key,value){
+			if(!editedConfig[key]){
+				editedConfig[key] = value;
+			}
+		});
+		return editedConfig;
       },
       /**
        * Generate left/right zero based on backbone and configuration

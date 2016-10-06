@@ -101,7 +101,7 @@ define( [ 'jquery', 'bootstrap' ],
 
         var test = xOffset + view.centWidth / 2 + labelOffset;
         var label = new paper.PointText( point );
-        label.content = feature.attribute.name !== undefined ? feature.attribute.name : '';
+        label.content = feature.attribute.name !== undefined ? feature.attribute.name.trim() : '';
         var fill = typeof( view.config.label_color ) != 'undefined' ? view.config.label_color : 'black';
         label.fillColor = this.formatColor( fill );
         label.fontSize = parseInt( view.config.font_size );

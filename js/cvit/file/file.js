@@ -29,7 +29,7 @@
  */
 
 define( [ 'jquery', 'json!cvitjs/ConfDefault.json' ],
-  function( $, confDefault ) {
+  function( $, defaultConf ) {
 
     return {
 
@@ -41,7 +41,7 @@ define( [ 'jquery', 'json!cvitjs/ConfDefault.json' ],
        * @param {string} filePath	path to the  file to GET.
        * @return {string} File parsed to object
        */
-      getFile: function( filePath ) {
+      getFile: function( filePath, useDefault ) {
         var thisC = this;
         return $.ajax( {
           method: "GET",
@@ -53,7 +53,7 @@ define( [ 'jquery', 'json!cvitjs/ConfDefault.json' ],
         } ).then( function( result ) {
           var extention = thisC.getFormat( filePath );
           if ( extention ) {
-            return thisC.parse[ extention ]( result );
+            return thisC.parse[ extention ]( result, useDefault );
           } else {
             throw new Error( "CViTjs: " + filePath + " is not of a supported file type." );
           }
@@ -145,7 +145,6 @@ define( [ 'jquery', 'json!cvitjs/ConfDefault.json' ],
                 parsedFile[ gffLine.feature ].features.push( gffLine );
               }
             } );
-
           return parsedFile;
         },
         /**
@@ -213,10 +212,9 @@ define( [ 'jquery', 'json!cvitjs/ConfDefault.json' ],
          * @param {string}	 conf 	The raw text config file
          * @return {Object[]}	Lines of the gff as objects
          */
-        conf: function( conf ) {
-          var parsedFile = confDefault;
-          console.log( "PreParsed" );
-          console.log( confDefault );
+        conf: function( conf, useDefault ) {
+          var parsedFile = useDefault ? defaultConf : {};
+		  console.log(parsedFile);
           var currentConfigKey = '';
           var confItem = {};
           conf = conf.split( "\n" );
@@ -234,7 +232,6 @@ define( [ 'jquery', 'json!cvitjs/ConfDefault.json' ],
               }
             }
           } );
-
           return parsedFile;
         }
       }

@@ -40,7 +40,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         this.viewInfo = {};
 
         // try to load main configuration information.
-        var locations = thisC.getSettings( file.parse.conf( cvitConf ) );
+        var locations = thisC.getSettings( file.parse.conf( cvitConf ), false );
         viewConf = locations.conf;
         defaultData = locations.defaultData;
 
@@ -65,7 +65,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         // read view configuration and baseGff (ASYNC)
         // .then(success,failure)
 
-        var readConfig = file.getFile( viewConf ).then(
+        var readConfig = file.getFile( viewConf, true ).then(
           function( result ) {
             console.log( "CViTjs: Successfully loaded configuration." );
             thisC.conf = result;
@@ -89,7 +89,6 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
             if ( thisC.data.chromosome === undefined || thisC.data.chromosome === null ) {
               throw new Error( 'CViTjs: Error: No chromosome data loaded.' );
             }
-
             // set glyphs for the data sections in the form glyph:display.
             var featureGlyph;
             var display;
@@ -102,20 +101,26 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
             thisC.viewInfo.chromWidth = parseInt( thisC.conf.general.chrom_width );
             thisC.viewInfo.xMin = thisC.data.chromosome.min;
             thisC.data.zoom = thisC.view.setZoom( thisC.data.chromosome.min, thisC.data.chromosome.max );
-
+			console.log(thisC.data);
             //actually draw the darn glyohs
             var cvitView = new paper.Group();
 			cvitView.name = 'backbone';
-            var group = general.drawGlyph( thisC.data, thisC.data.chromosome.glyph, thisC.conf, thisC.viewInfo ).then( function( group ) {
+            var group = general.drawGlyph( thisC.data, thisC.conf, thisC.viewInfo ).then( function( group ) {
               paper.view.draw();
               group.name = 'view';
               cvitView.addChild( group );
               menu.build( thisC.conf, thisC.viewInfo, group );
-              for ( var dataGroup in thisC.data ) {
-                if ( thisC.data.hasOwnProperty( dataGroup ) ) {
-                  thisC.viewInfo.viewName = dataGroup;
-                  if ( dataGroup !== "general" && thisC.data[ dataGroup ].glyph ) {
-                    var rangeGet = glyph.drawGlyph( thisC.data[ dataGroup ], thisC.data[ dataGroup ].glyph, thisC.conf, thisC.viewInfo, group ).then(
+			  console.log("data Here!");
+			  console.log(thisC.data);
+              for ( var confGroup in thisC.conf ) {
+                if ( thisC.conf.hasOwnProperty( confGroup ) ) {
+                  thisC.viewInfo.viewName = confGroup;
+				  console.log("oogityboogity");
+				  console.log(thisC.viewInfo.viewName);
+				  var dataLoc = thisC.conf[confGroup].dataLoc;
+				  console.log("dataLoc: "+ dataLoc);
+                  if (thisC.data[dataLoc] !== undefined) {
+                    var rangeGet = glyph.drawGlyph( thisC.data[ dataLoc ], thisC.conf, thisC.viewInfo, group ).then(
                       function() {
                         paper.view.draw();
                       },
@@ -124,6 +129,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
                       }
                     );
                   }
+				  paper.view.draw();
                 }
               }
               paper.view.draw();
@@ -182,21 +188,31 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
          */
         setGlyphs: function() {
           var thisC = this;
-          $.each( thisC.data, function( key, value ) {
-            if ( thisC.data[ key ].glyph === undefined ) {
-              // chromosome is set in the conf field of general, so need to work around
-              if ( key === 'chromosome' ) {
-                featureGlyph = key;
-                display = featureGlyph;
-                // if specific subshape isn't defined, default to using key as shape
-              } else {
-                featureGlyph = thisC.conf[ key ].glyph ? thisC.conf[ key ].glyph : key;
-                display = thisC.conf[ key ].shape ? thisC.conf[ key ].shape : featureGlyph;
-              }
+		  $.each(thisC.conf, function(key,value){
+			console.log(key);
+			var featureGlyph;
+			var display;
+			if(key === 'general'){
+				thisC.conf[key].glyph ="chromosome";
+				thisC.conf[key].shape = "chromosome";
+		    } if (thisC.conf[key].glyph === undefined){
+					thisC.conf[key].glyph = key ;
+			} 
+			
+			if (thisC.conf[key].shape === undefined){ 
+					thisC.conf[key].shape =  thisC.conf[key].glyph ;
+			}
 
-              thisC.data[ key ].glyph = featureGlyph + ':' + display;
-            }
-          } );
+			if(thisC.conf[key].feature){
+				var dataLoc = thisC.conf[key].feature.match( /(.*)\:(.*)/ );
+				console.log(dataLoc);
+				thisC.conf[key].dataFilter = dataLoc[1];
+				thisC.conf[key].dataLoc = dataLoc[2];
+			}	else {
+				thisC.conf[key].dataLoc = key;
+			}
+
+		  });
         },
 
         /**
