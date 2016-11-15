@@ -238,7 +238,12 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
       getSettings: function( mainConf ) {
         var query = window.location.search;
         var data = query.match( /data=(\w+)/ );
-        var settings = mainConf[ 'data.' + data[ 1 ] ];
+        if (!!data) {
+          var settings = mainConf[ 'data.' + data[ 1 ] ];
+        } else if ('general' in mainConf && 'data_default' in mainConf['general']) {
+          var default_data = mainConf['general']['data_default'];
+          var settings = mainConf[ 'data.' + default_data ];
+        }
         if ( settings ) {
           return settings;
         } else {
