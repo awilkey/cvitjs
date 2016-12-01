@@ -34,8 +34,13 @@ define( [ 'jquery','glyph/utilities' ],
 		console.log(config);
 		console.log(data);
 		view.rulerWidth = paper.project.layers[1].children["text"].maxOff; 
-        view.xSep = ( $( '#cvit-canvas' ).width() - ( 2* view.rulerWidth )-(chromosomes.length * view.chromWidth))/ ( chromosomes.length +1 );
-
+        var minSep = parseInt(config.chrom_spacing);
+	if(config.fixed_chrom_spacing == 1){
+	  view.xSep = minSep;
+	} else {
+          view.xSep = ( $( '#cvit-canvas' ).width() - ( 2* view.rulerWidth )-(chromosomes.length * view.chromWidth))/ ( chromosomes.length +1 );
+	  view.sSep = view.xSep > minSep ? view.xSep : minSep;
+	}
         chromosomes.forEach( function( chromosome ) {
           cGroup.addChild( thisC.placeChromosome( chromosome, cGroup, view ) );
         } );

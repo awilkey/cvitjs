@@ -67,15 +67,15 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
 		  var min = rc.min;
 		  var max = rc.max;
 		  var rulerFontSize = rc.fontSize;
-     	  var yPos = rc.yOffset+ rc.chromFont;
-          var xPos = dir === 1 ? rc.xOffset : rc.xOffset + rc.width + rc.labelWidth;
-          var startOffset = rc.scale;
-          var point = new paper.Point( xPos, yPos);
+     	          var yPos = rc.yOffset+ rc.chromFont;
+                  var xPos = dir === 1 ? rc.xOffset : rc.xOffset + rc.width + rc.labelWidth;
+                  var startOffset = rc.scale;
+                  var point = new paper.Point( xPos, yPos);
 		  var size = new paper.Point(0, (max + (0-min))* rc.scale);
 		  var r = new paper.Path.Line( point, point.add(size) );
 		  r.name = "ruler"+side[0].toUpperCase() + side.slice(1);
 		  r.strokeColor = rc.color;
-	      r.strokeWidth = 2;
+	          r.strokeWidth = 2;
 		  var rTicGroup = new paper.Group();
 		  rTicGroup.name = side+"Ticks"
 		  var rTextGroup = new paper.Group();
@@ -90,7 +90,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
 		  tic.strokeColor = rc.color; 
 		  tic.strokeWidth= 2;
 		  rTicGroup.addChild(tic);
-	      var labelX = dir === 1 ? ticP.x+ticO.x+rc.fontSize : ticD - rc.fontSize;
+	          var labelX = dir === 1 ? ticP.x+ticO.x+rc.fontSize : ticD - rc.fontSize;
 		  var label = new paper.PointText(labelX, ticP.y);
 		  label.content = min;
 		  label.fontSize = rulerFontSize+'px';
@@ -98,7 +98,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
 			label.position.x -= label.bounds.width;
 		  }
 		  rTextGroup.addChild(label);
-
+		  r.position.y = label.position.y+100;
 		  var ticInt = rc.interval;
 		  var intDivision = Math.round(ticInt/rc.division);
 		  for(var i = intDivision; i < max; i= i+ intDivision){

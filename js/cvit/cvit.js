@@ -28,19 +28,18 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
   function( $, paper, file, menu, general, glyph, cvitConf, zoom ) {
 
     return {
-      init: function() {
+      init: function(dataset) {
         // Good Practice to store this context in a variable, to use later.
         var thisC = this;
-
         // Change this if you want to set your main configuration file somewhere else.
         var viewConf = '';
         var defaultData = '';
         this.conf = {};
         this.data = {};
         this.viewInfo = {};
-
+	this.dataset =  dataset ? dataset : false;
         // try to load main configuration information.
-        var locations = thisC.getSettings( file.parse.conf( cvitConf ), false );
+        var locations = thisC.getSettings( file.parse.conf( cvitConf ), thisC.dataset );
         viewConf = locations.conf;
         defaultData = locations.defaultData;
 
@@ -62,9 +61,11 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           return;
         }
 
+	viewConf = '../../sites/all/modules/blast_ui/js/cvitjs/'+viewConf;
+	defaultData = '../../sites/all/modules/blast_ui/js/cvitjs/'+defaultData;
         // read view configuration and baseGff (ASYNC)
         // .then(success,failure)
-
+	
         var readConfig = file.getFile( viewConf, true ).then(
           function( result ) {
             console.log( "CViTjs: Successfully loaded configuration." );
@@ -84,7 +85,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           } );
 
 
-        $.when( readChromosome, readConfig ).then(
+        var backbone = $.when( readChromosome, readConfig ).then(
           function( result ) {
             if ( thisC.data.chromosome === undefined || thisC.data.chromosome === null ) {
               throw new Error( 'CViTjs: Error: No chromosome data loaded.' );
@@ -112,14 +113,18 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
               menu.build( thisC.conf, thisC.viewInfo, group );
 			  console.log("data Here!");
 			  console.log(thisC.data);
+		    paper.view.draw();
               for ( var confGroup in thisC.conf ) {
                 if ( thisC.conf.hasOwnProperty( confGroup ) ) {
                   thisC.viewInfo.viewName = confGroup;
-				  console.log("oogityboogity");
-				  console.log(thisC.viewInfo.viewName);
-				  var dataLoc = thisC.conf[confGroup].dataLoc;
-				  console.log("dataLoc: "+ dataLoc);
-                  if (thisC.data[dataLoc] !== undefined) {
+		  var dataLoc = thisC.conf[confGroup].dataLoc;
+                  if (thisC.data[dataLoc]) {
+		    console.log("drawing ");
+	            console.log(thisC.data[dataLoc]);
+	            console.log(thisC.conf);
+		    console.log(thisC.viewInfo);
+	            console.log(group);
+	            console.log(dataLoc);
                     var rangeGet = glyph.drawGlyph( thisC.data[ dataLoc ], thisC.conf, thisC.viewInfo, group ).then(
                       function() {
                         paper.view.draw();
@@ -133,16 +138,19 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
                 }
               }
               paper.view.draw();
+	      return group;
             } );
+
+		 
             //Enable zoom and pan controls
             zoom.enableZoom( paper.view.bounds );
-
+	    return group;
           },
 
           function( errorMessage ) {
             console.log( errorMessage );
           } );
-
+	  return backbone;
       },
 
       /**
@@ -235,10 +243,13 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
        *
        * @return {{conf:String, defaultData:String}} 
        */
-      getSettings: function( mainConf ) {
+      getSettings: function( mainConf, dataset ) {
         var query = window.location.search;
         var data = query.match( /data=(\w+)/ );
-        if (!!data) {
+	console.log( String(dataset));
+	if(dataset){
+          var settings = mainConf[ 'data.' + dataset ];
+        } else if (!!data) {
           var settings = mainConf[ 'data.' + data[ 1 ] ];
         } else if ('general' in mainConf && 'data_default' in mainConf['general']) {
           var default_data = mainConf['general']['data_default'];

@@ -272,11 +272,11 @@ define( [ "jquery", 'mousewheel' ],
 		// Zoom ruler and drawing layer, layer[0] is drawing, [1] is ruler
 		var backbone = paper.project.layers[0].children["backbone"].children["view"];
 		var minLoc = paper.project.layers[1].children["rulers"].minSeq;
+	        var maxLoc = paper.project.layers[1].children["rulers"].maxSeq;
 		var rulerLayer = paper.project.layers[1];
 		var textHeight = rulerLayer.children["text"].children[0].children[0].bounds.height;
-		console.log(textHeight);
-        paper.project.layers[0].scale(newZoom/oldZoom);
-	    paper.project.layers[1].children["rulers"].scale(1,newZoom/oldZoom);
+                paper.project.layers[0].scale(newZoom/oldZoom);
+	        paper.project.layers[1].children["rulers"].scale(1,newZoom/oldZoom);
 		paper.project.layers[1].children["tics"].scale(1,newZoom/oldZoom);
 		paper.project.layers[1].children["text"].scale(1,newZoom/oldZoom);
 		for(var text in  paper.project.layers[1].children["text"].children["rightText"].children){
@@ -285,12 +285,16 @@ define( [ "jquery", 'mousewheel' ],
 		};
 		paper.view.draw();
 		paper.project.activeLayer.zoom = newZoom;
-		var ymove = backbone.children[minLoc].position.y;
-		rulerLayer.children["rulers"].position.y = ymove;
+		var ymin = backbone.children[minLoc].bounds.topLeft.y;
+	        var ymax = backbone.children[maxLoc].bounds.bottomLeft.y;
+	        rulerLayer.children["rulers"].bounds.topLeft.y = ymin;
+	        rulerLayer.children["rulers"].bounds.bottomLeft.y = ymax;
 		/*ymove = quarter of height of label text +1 to offset width of 
 		  backbone border*/
-		rulerLayer.children["tics"].position.y = ymove-(textHeight/4)+1;
-		rulerLayer.children["text"].position.y = ymove-(textHeight/4)+1;
+		rulerLayer.children["tics"].position.y = ymin;
+		rulerLayer.children["tics"].position.y -= (rulerLayer.children["tics"].strokeBounds.topLeft.y - rulerLayer.children["rulers"].strokeBounds.topLeft.y)+1;
+		rulerLayer.children["text"].position.y = ymin;
+		rulerLayer.children["text"].position.y -= (rulerLayer.children["text"].strokeBounds.topLeft.y - rulerLayer.children["tics"].strokeBounds.topLeft.y)+(textHeight/4)+1;
 		console.log(rulerLayer);
 
       }

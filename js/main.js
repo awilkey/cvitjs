@@ -4,5 +4,8 @@
 
 require(["cvit/cvit"],function(cvit){
 		console.log("CViTjs: Starting CViTJS");
+		// cvit.init(dataset) to have the provided dataset
+		//override defaults or URI string
+	 
 		cvit.init();
 	});

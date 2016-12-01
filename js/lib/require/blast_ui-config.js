@@ -5,7 +5,7 @@ require.config({
 	
 	// Enter main.js as single point of entry for the program.
 	
-	deps: ["../main"],
+	deps: ["../main.blast_ui"],
 	
 	// Set baseURL to library path, as recomended by requirejs
 	

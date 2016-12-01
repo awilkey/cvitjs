@@ -85,6 +85,7 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
         var moo = require( [ myGlyph ], function( myGlyph ) {
           deferred.resolve( myGlyph.draw( data, config, view ) );
           background.sendToBack();
+          paper.view.draw();
         } );
 
         return deferred.promise();
