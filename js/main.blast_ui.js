@@ -16,12 +16,12 @@ require(["cvit/cvit","cvit/file/file","draw/glyph/glyph"],function(cvit,file,gly
 	           function( result ) {
 			data = result;
 			console.log(result);
-			data.match.features.forEach(function(element){
+			var blastData = data[cvit.conf.blast.dataLoc];
+			blastData.features.forEach(function(element){
 			    var rework = element.seqName.split('.');
 			    element.seqName= rework[1]+'.'+rework[2];
-		            console.log(element);
 			});
-			var draw = glyph.drawGlyph(data.match, cvit.conf, cvit.viewInfo, group).then(
+			var draw = glyph.drawGlyph(blastData, cvit.conf, cvit.viewInfo, group).then(
 		            function(){
 				 console.log("Drawn");
 				 paper.view.draw();
