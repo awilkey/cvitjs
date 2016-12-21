@@ -24,6 +24,7 @@ define( [ 'jquery', 'bootstrap' ],
       },
 	  /* Format color string to color */
 	  formatColor: function(color,transparency){
+		console.log(color);
 		var grey = color.match(/gr[ea]y(.*)/);
 		if(grey){
 			color = "grey";
@@ -31,8 +32,11 @@ define( [ 'jquery', 'bootstrap' ],
 				color = parseFloat('.'+grey[1]);
 			}
 		}
-		
-		return  new paper.Color(color);
+		if(color[0]=== '#'){
+		  return color;
+		} else {	
+		  return  new paper.Color(color);
+		}
 	  },
       /** Attach popover to feature */
       attachPopover: function( r, feature ) {

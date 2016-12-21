@@ -60,6 +60,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           targetGroup.addChild( r );
           r.sendToBack();
           glyphGroup.addChild( r );
+	  paper.view.draw();
         }
       }
     };
