@@ -53,6 +53,7 @@ define( [ 'jquery', 'bootstrap' ],
         $( '#overlay' ).append( clickDiv );
         // This is so large because anything *not* included in inital creation of popover tends to get left
         // behind when moving the view around otherwise. A well documented quirk of bootstrap
+	
         $( clickDiv ).popover( {
           'html': 'true',
           'container': '#cvit-div',
@@ -60,10 +61,13 @@ define( [ 'jquery', 'bootstrap' ],
           'id': 'pop',
           'placement': 'auto right',
           'content': '<div class="container"><h4>Feature Information</h4><table class="table table-bordered" style="width:auto;">' +
-            '<thead><tr><th>Name</th><th>' + feature.attribute.name + '</th></tr></thead>' +
+            '<thead><tr><th>Name</th><th>' + feature.attribute.id + '</th></tr></thead>' +
             '<tbody><tr><td>Start</td><td>' + feature.start + '</td></tr>' +
             '<tr><td>End</td><td>' + feature.end + '</td></tr>' +
-            '<tr><td>&c</td><td>&c</td></tr></tbody></table></div>',
+            '<tr><td>Strand</td><td>' + feature.strand + '</td></tr>' +
+            '<tr><td>Score</td><td>' + feature.score + '</td></tr>' +
+            '<tr><td>Type</td><td>' + feature.type + '</td></tr>' +
+            '</tbody></table></div>',
           'toggle': 'manual'
         } ).popover( 'show' ).on( 'show.bs.popover', function() {
           var close = $( '<button type="button" class="close"><span class="close-span">&times;</span></button>' );
