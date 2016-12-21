@@ -102,7 +102,6 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
             thisC.viewInfo.chromWidth = parseInt( thisC.conf.general.chrom_width );
             thisC.viewInfo.xMin = thisC.data.chromosome.min;
             thisC.data.zoom = thisC.view.setZoom( thisC.data.chromosome.min, thisC.data.chromosome.max );
-			console.log(thisC.data);
             //actually draw the darn glyohs
             var cvitView = new paper.Group();
 			cvitView.name = 'backbone';
@@ -111,20 +110,12 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
               group.name = 'view';
               cvitView.addChild( group );
               menu.build( thisC.conf, thisC.viewInfo, group );
-			  console.log("data Here!");
-			  console.log(thisC.data);
 		    paper.view.draw();
               for ( var confGroup in thisC.conf ) {
                 if ( thisC.conf.hasOwnProperty( confGroup ) ) {
                   thisC.viewInfo.viewName = confGroup;
 		  var dataLoc = thisC.conf[confGroup].dataLoc;
                   if (thisC.data[dataLoc]) {
-		    console.log("drawing ");
-	            console.log(thisC.data[dataLoc]);
-	            console.log(thisC.conf);
-		    console.log(thisC.viewInfo);
-	            console.log(group);
-	            console.log(dataLoc);
                     var rangeGet = glyph.drawGlyph( thisC.data[ dataLoc ], thisC.conf, thisC.viewInfo, group ).then(
                       function() {
                         paper.view.draw();
@@ -173,10 +164,9 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
 		  var chrMin = chromosomeData.features[0].seqName;
 		  var chrMax = chromosomeData.features[0].seqName;
           chromosomeData.features.forEach( function( data ) {
-				  console.log(data);
             if ( data.start < min ) {
               min = data.start;
-			  chrMin = data.seqName;
+	      chrMin = data.seqName;
             }
             if (data.end > max ) {
               max = data.end;
@@ -197,7 +187,6 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         setGlyphs: function() {
           var thisC = this;
 		  $.each(thisC.conf, function(key,value){
-			console.log(key);
 			var featureGlyph;
 			var display;
 			if(key === 'general'){
@@ -213,7 +202,6 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
 
 			if(thisC.conf[key].feature){
 				var dataLoc = thisC.conf[key].feature.match( /(.*)\:(.*)/ );
-				console.log(dataLoc);
 				thisC.conf[key].dataFilter = dataLoc[1];
 				thisC.conf[key].dataLoc = dataLoc[2];
 			}	else {
@@ -246,7 +234,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
       getSettings: function( mainConf, dataset ) {
         var query = window.location.search;
         var data = query.match( /data=(\w+)/ );
-	console.log( String(dataset));
+	console.log("CViTjs: Requested Dataset: " + String(dataset));
 	if(dataset){
           var settings = mainConf[ 'data.' + dataset ];
         } else if (!!data) {

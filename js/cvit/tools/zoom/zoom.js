@@ -46,7 +46,6 @@ define( [ "jquery", 'mousewheel' ],
           event.preventDefault();
           var oldZoom = paper.project.activeLayer.zoom;
           var newZoom = thisC.changeZoom( oldZoom, 1, paper.view.center, paper.view.center );
-		  console.log(newZoom[0]);
 		  thisC.zoomRulers(newZoom[0], oldZoom);
           if ( $( '#popdiv' ).length ) {
            thisC.compensateZoom( newZoom[ 0 ] );
@@ -116,8 +115,6 @@ define( [ "jquery", 'mousewheel' ],
 		  thisC.zoomRulers(newZoom[0],originalZoom);
 		  paper.project.layers[0].center = paper.project.layers[0].center.subtract(newZoom[1]);
 		  paper.project.layers[0].position = paper.project.layers[0].center;
-		  console.log(paper.project.layers[0].center);
-		  console.log(paper.project.layers[0].position);
           paper.view.draw();
         } );
        // //initialize paper tool on canvas to watch for "click and drag" style events for panning
@@ -166,7 +163,6 @@ define( [ "jquery", 'mousewheel' ],
 		   var xScale = viewSize.width/boxSize.width;
 		   var yScale = viewSize.height/boxSize.height;
 		   var newScale = xScale <= yScale ? xScale : yScale;
-		   console.log(newScale);
 		   if(newScale < 70){
 		     if (newScale > 8){newScale = 8;};
 		     thisC.zoomRulers(newScale, paper.project.layers[0].zoom);
@@ -295,7 +291,6 @@ define( [ "jquery", 'mousewheel' ],
 		rulerLayer.children["tics"].position.y -= (rulerLayer.children["tics"].strokeBounds.topLeft.y - rulerLayer.children["rulers"].strokeBounds.topLeft.y)+1;
 		rulerLayer.children["text"].position.y = ymin;
 		rulerLayer.children["text"].position.y -= (rulerLayer.children["text"].strokeBounds.topLeft.y - rulerLayer.children["tics"].strokeBounds.topLeft.y)+(textHeight/4)+1;
-		console.log(rulerLayer);
 
       }
     };

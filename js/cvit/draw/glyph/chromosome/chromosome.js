@@ -30,9 +30,6 @@ define( [ 'jquery','glyph/utilities' ],
         //view.zoom = data.zoom;
         //view.xoffset = Math.floor( ( $( '#cvit-canvas' ).width() - 200 ) / chromosomes.length );
         //view.yoffset = 50;
-		console.log("CHR");
-		console.log(config);
-		console.log(data);
 		view.rulerWidth = paper.project.layers[1].children["text"].maxOff; 
         var minSep = parseInt(config.chrom_spacing);
 	if(config.fixed_chrom_spacing == 1){
@@ -51,7 +48,6 @@ define( [ 'jquery','glyph/utilities' ],
         var chr = new paper.Group();
         var xPos = group.strokeBounds.x + group.strokeBounds.width;
         var yPos = view.yOffset + parseInt( view.config.chrom_font_size );
-		console.log(xPos);
 		if(xPos === 0){
 			xPos = view.rulerWidth + view.xSep;
 		} else {
@@ -59,7 +55,6 @@ define( [ 'jquery','glyph/utilities' ],
 		}
 		//if (xPos < view.xOffset) xPos = view.xSep+ view.rulerWidth + (parseInt(view.config.image_padding));
         //if ( xPos < parseInt( view.config.image_padding ) ) xPos += view.rulerWidth +parseInt( view.config.image_padding );
-        //console.log("xPos = " + xPos);
         var startOffset = ( chromosome.start - view.xMin ) * view.yScale;
 
         var point = new paper.Point( xPos, yPos + startOffset );

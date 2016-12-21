@@ -24,7 +24,6 @@ define( [ 'jquery', 'bootstrap' ],
       },
 	  /* Format color string to color */
 	  formatColor: function(color,transparency){
-		console.log(color);
 		var grey = color.match(/gr[ea]y(.*)/);
 		if(grey){
 			color = "grey";

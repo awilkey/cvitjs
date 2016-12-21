@@ -33,7 +33,6 @@ define( [ 'jquery', 'glyph/utilities' ],
         var target = position.seqName;
         var targetGroup = group.children[ target ];
         if ( targetGroup ) {
-          console.log( position.seqName );
           var yLoc = ( ( position.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
           var xLoc = ( view.xloc[ target ] + parseInt( view.config.offset ) );
           var point = new paper.Point( xLoc, yLoc );

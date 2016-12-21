@@ -43,7 +43,6 @@ define( [ 'jquery', 'tools/draw/rect', 'tools/draw/free', 'tools/draw/eraser', '
          free.addFreeDraw();
          eraser.addEraser();
 		 // Attach button click functionality, tools setup in order of adding to
-		 console.log(toolNumber);
          $(rectTool ).on( 'click', function( event ) {
               this.focus();
 			  toolSelect.activeTool = rectTool;

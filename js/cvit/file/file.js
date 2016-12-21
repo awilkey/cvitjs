@@ -214,7 +214,6 @@ define( [ 'jquery', 'json!cvitjs/ConfDefault.json' ],
          */
         conf: function( conf, useDefault ) {
           var parsedFile = useDefault ? defaultConf : {};
-		  console.log(parsedFile);
           var currentConfigKey = '';
           var confItem = {};
           conf = conf.split( "\n" );
