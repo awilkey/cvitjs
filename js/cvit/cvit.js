@@ -61,8 +61,8 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           return;
         }
 
-	viewConf = '../../sites/all/modules/blast_ui/js/cvitjs/'+viewConf;
-	defaultData = '../../sites/all/modules/blast_ui/js/cvitjs/'+defaultData;
+	viewConf = viewConf;
+	defaultData = defaultData;
         // read view configuration and baseGff (ASYNC)
         // .then(success,failure)
 	
