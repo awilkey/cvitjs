@@ -35,14 +35,15 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         var groupName = view.viewName;
         var deferred = new $.Deferred();
         var myGlyph = 'glyph/' + config[groupName].glyph + '/' + config[groupName].shape;
-		var req = myGlyph;
+	var req = myGlyph;
         var requireGlyph = require( [ myGlyph ], function( myGlyph ) {
           view.key = config[groupName].glyph;
           view.groupName = groupName;
-          deferred.resolve( thisC.prepareGlyph( data, config, view, backbone, myGlyph ) );
+          thisC.prepareGlyph( data, config, view, backbone, myGlyph );
+          deferred.resolve();
         } );
-		paper.view.draw();
-        return deferred.promise();
+	paper.view.draw();
+	return deferred.promise();
       },
       /**
        * Set up common view elements across the glyphs

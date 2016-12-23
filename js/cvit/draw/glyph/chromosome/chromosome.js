@@ -82,6 +82,7 @@ define( [ 'jquery','glyph/utilities' ],
         label.content = chr.name;
         label.fontSize = parseInt( view.config.chrom_font_size );
         label.fillColor = utility.formatColor( view.config.chrom_label_color );
+	label.name = chr.name + "Label";
         return chr;
       }
     };

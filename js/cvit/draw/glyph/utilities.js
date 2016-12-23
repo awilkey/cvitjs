@@ -88,11 +88,41 @@ define( [ 'jquery', 'bootstrap' ],
       testCollision: function( feature, featureGroup, pGap ) {
         // Set the expected number of hits for the given feature to avoid infinte loop
         var minGroup = typeof( feature.children ) != "undefined" ? feature.children.length : 1;
-        while ( paper.project.getItems( {
+	var getItem = function(){
+          return paper.project.getItems({
             overlapping: feature.strokeBounds,
             class: paper.Path
-          } ).length > minGroup ) {
-          feature.translate( new paper.Point( feature.strokeBounds.width + pGap, 0 ) );
+          });
+	};
+	var testItem = getItem();
+        var fPName = featureGroup.parent.name;
+	var baseGroup = featureGroup.parent.parent;
+	var layer = paper.project.layers[0];
+	var length = baseGroup.children.length;
+        var offset = feature.strokeBounds.width + pGap;
+        while ( testItem.length > minGroup ) {
+          var testPName = testItem[0].parent.parent.name;
+	  if(fPName != testPName){
+
+            var index = baseGroup.children.indexOf(featureGroup.parent);
+	    if(pGap > -1){
+	      for(var i = index+1; i<length; i++){
+		var group = baseGroup.children[i];
+		group.position.x += 2*offset;
+		layer.children[group.name+"Label"].position.x += 2*offset;
+	      }
+	    } else {
+	      for(var i = index-1; i>-1; i--){
+		var group = baseGroup.children[i];
+		group.position.x += 2*offset;
+		layer.children[group.name+"Label"].position.x += 2*offset;
+	      }
+
+	    }
+          }else{
+	    feature.translate( new paper.Point( feature.strokeBounds.width + pGap, 0 ) );
+	  }
+	  var testItem = getItem();
         }
 
       },

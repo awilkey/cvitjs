@@ -27,10 +27,11 @@ require(["cvit/cvit","cvit/file/file","draw/glyph/glyph"],function(cvit,file,gly
 			    var len = rework.length;
 			    element.seqName= rework.slice(len-labLen).join('.');
 			});
-			   console.log(blastData);
+			paper.view.draw();
+			paper.project.layers[0].children[0].remove();
+			console.log("fark");
 			var draw = glyph.drawGlyph(blastData, cvit.conf, cvit.viewInfo, group).then(
 		            function(){
-				 console.log("Drawn");
 				 paper.view.draw();
 			     },
 			    function(errorMessage){

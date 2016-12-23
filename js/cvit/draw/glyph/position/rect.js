@@ -33,6 +33,13 @@ define( [ 'jquery', 'glyph/utilities' ],
         var target = position.seqName;
         var targetGroup = group.children[ target ];
         if ( targetGroup ) {
+	  if(targetGroup.children[glyphGroup.name] == undefined){
+	    var g = new paper.Group();
+            g.name = glyphGroup.name;
+	    targetGroup.addChild(g);
+          }
+	  var featureGroup = targetGroup.children[glyphGroup.name];
+
           var yLoc = ( ( position.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
           var xLoc = ( view.xloc[ target ] + parseInt( view.config.offset ) );
           var point = new paper.Point( xLoc, yLoc );
@@ -40,7 +47,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           var rectangle = new paper.Rectangle( point, size );
           var r = new paper.Path.Rectangle( rectangle );
           if ( parseInt( view.config.enable_pileup ) === 1 ) {
-            utility.testCollision( r, glyphGroup, view.pileup );
+            utility.testCollision( r, featureGroup, view.pileup );
           }
           position.name = position.attribute.name ? position.attribute.name : '';
           r.info = position.attribute;
@@ -56,10 +63,8 @@ define( [ 'jquery', 'glyph/utilities' ],
             glyphGroup.addChild( label );
             label.bringToFront();
           }
-          targetGroup.addChild( r );
+          featureGroup.addChild( r );
           r.sendToBack();
-          glyphGroup.addChild( r );
-	  paper.view.draw();
         }
       }
     };

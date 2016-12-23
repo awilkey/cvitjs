@@ -28,19 +28,19 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
        */
       drawGlyph: function( data, config, view, backbone ) {
 
+	
         // Set and draw border
         var background = new paper.Path.Rectangle( {
           point: [ 0, 0 ],
           size: [ paper.view.size.width, paper.view.size.height ],
-          strokeColor: 'white',
           selected: true
         } );
         background.fillColor = 'white';
 
-        if ( config.general.border_width > 0 ) {
-          background.strokeColor = new paper.Color( config.general.border_color );
-          background.strokeWidth = config.general.border_width;
-        }
+       if ( config.general.border_width > 0 ) {
+         background.strokeColor = 'white';//new paper.Color( config.general.border_color );
+         background.strokeWidth = config.general.border_width;
+       }
 
         // Set and place title
         if ( config.general.title ) {
@@ -55,7 +55,7 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
             titleX = parseInt( titlePos[ 1 ] )  ;
             titleY = parseInt( titlePos[ 2 ] ) + titleSize;
           } else {
-		  	titleX = parseInt( config.general.image_padding ) + parseInt( config.general.border_width );
+		titleX = parseInt( config.general.image_padding ) + parseInt( config.general.border_width );
           	titleY = titleX + titleSize;
 		  	var heightAllow = parseInt(config.general.title_height);
 		  	if(heightAllow > titleY){
@@ -83,11 +83,10 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
         var deferred = new $.Deferred();
         var myGlyph = 'glyph/' + config.general.glyph + '/' + config.general.shape;
         var moo = require( [ myGlyph ], function( myGlyph ) {
-          deferred.resolve( myGlyph.draw( data, config, view ) );
+          deferred.resolve(myGlyph.draw( data, config, view ));
           background.sendToBack();
           paper.view.draw();
         } );
-
         return deferred.promise();
       }
     };
