@@ -62,10 +62,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           return;
         }
 		var cvitBase = require.toUrl('').split('/');
-	        console.log(cvitBase);
-	      	cvitBase.pop();
-	        cvitBase.pop();
-	      	cvitBase.pop();
+		cvitBase.splice(cvitBase.length-3,3);
 		cvitBase = cvitBase.length > 0 ? cvitBase.join('\/')+'/' : '';
 	      	console.log(cvitBase);
 		viewConf = cvitBase+viewConf;
