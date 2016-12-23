@@ -40,6 +40,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
 	this.dataset =  dataset ? dataset : false;
         // try to load main configuration information.
         var locations = thisC.getSettings( file.parse.conf( cvitConf ), thisC.dataset );
+		console.log(location.href);	
         viewConf = locations.conf;
         defaultData = locations.defaultData;
 
@@ -60,9 +61,11 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           console.log( 'CViTjs: Error: Was not able to find canvas.' );
           return;
         }
-
-	viewConf = viewConf;
-	defaultData = defaultData;
+		var cvitBase = location.href.split('/');
+		cvitBase.pop();
+		cvitBase = cvitBase.join('\/')+'/';
+		viewConf = cvitBase+viewConf;
+		defaultData = cvitBase+defaultData;
         // read view configuration and baseGff (ASYNC)
         // .then(success,failure)
 	
