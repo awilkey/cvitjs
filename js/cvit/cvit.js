@@ -66,7 +66,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
 	      	cvitBase.pop();
 	        cvitBase.pop();
 	      	cvitBase.pop();
-		cvitBase = cvitBase.join('\/')+'/';
+		cvitBase = cvitBase.length > 0 ? cvitBase.join('\/')+'/' : '';
 	      	console.log(cvitBase);
 		viewConf = cvitBase+viewConf;
 	      	defaultData = cvitBase+defaultData;
