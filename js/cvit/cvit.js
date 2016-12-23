@@ -61,13 +61,13 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           console.log( 'CViTjs: Error: Was not able to find canvas.' );
           return;
         }
+	        // cleans up pathing based on the require baseURL found in require-config.js
+	        // used for when your url root isn't the same as your jbrowse root (embedded in page) 
 		var cvitBase = require.toUrl('').split('/');
-		cvitBase.splice(cvitBase.length-3,3);
+	      	cvitBase.splice(cvitBase.length-3,3);
 		cvitBase = cvitBase.length > 0 ? cvitBase.join('\/')+'/' : '';
-	      	console.log(cvitBase);
 		viewConf = cvitBase+viewConf;
 	      	defaultData = cvitBase+defaultData;
-	      	console.log(viewConf);
         // read view configuration and baseGff (ASYNC)
         // .then(success,failure)
 	
