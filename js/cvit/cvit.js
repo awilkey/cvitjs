@@ -61,11 +61,16 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           console.log( 'CViTjs: Error: Was not able to find canvas.' );
           return;
         }
-		var cvitBase = location.href.split('/');
-		cvitBase.pop();
+		var cvitBase = require.toUrl('').split('/');
+	        console.log(cvitBase);
+	      	cvitBase.pop();
+	        cvitBase.pop();
+	      	cvitBase.pop();
 		cvitBase = cvitBase.join('\/')+'/';
+	      	console.log(cvitBase);
 		viewConf = cvitBase+viewConf;
-		defaultData = cvitBase+defaultData;
+	      	defaultData = cvitBase+defaultData;
+	      	console.log(viewConf);
         // read view configuration and baseGff (ASYNC)
         // .then(success,failure)
 	
