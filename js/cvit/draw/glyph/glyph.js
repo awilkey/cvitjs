@@ -36,13 +36,12 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         var deferred = new $.Deferred();
         var myGlyph = 'glyph/' + config[groupName].glyph + '/' + config[groupName].shape;
 	var req = myGlyph;
-        var requireGlyph = require( [ myGlyph ], function( myGlyph ) {
+        require( [ myGlyph ], function( myGlyph ) {
           view.key = config[groupName].glyph;
           view.groupName = groupName;
           thisC.prepareGlyph( data, config, view, backbone, myGlyph );
-          deferred.resolve();
-        } );
-	paper.view.draw();
+          deferred.resolve().done(paper.view.draw());
+        });
 	return deferred.promise();
       },
       /**

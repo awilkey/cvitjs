@@ -123,14 +123,13 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
                   if (thisC.data[dataLoc]) {
                     var rangeGet = glyph.drawGlyph( thisC.data[ dataLoc ], thisC.conf, thisC.viewInfo, group ).then(
                       function() {
-                        paper.view.draw();
+                  //      paper.view.draw();
                       },
                       function( errorMessage ) {
                         console.log( errorMessage );
                       }
                     );
                   }
-				  paper.view.draw();
                 }
               }
               paper.view.draw();

@@ -29,7 +29,6 @@ require(["cvit/cvit","cvit/file/file","draw/glyph/glyph"],function(cvit,file,gly
 			});
 			paper.view.draw();
 			paper.project.layers[0].children[0].remove();
-			console.log("fark");
 			var draw = glyph.drawGlyph(blastData, cvit.conf, cvit.viewInfo, group).then(
 		            function(){
 				 paper.view.draw();
