@@ -46,13 +46,20 @@ define( [ 'jquery', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities',
 			      console.log(event);
                   var fileContents = event.target;
                   var newFeatures = file.parse.gff( event.target.result );
+				  console.log(newFeatures);
                   for ( var fkey in newFeatures ) {
+					console.log(fkey);
 			        console.log(newFeatures);
                     thisc.view.viewName = this.name.slice(0,this.name.lastIndexOf('.'))+" "+fkey;
 				    //upmod.checkBack(thisc.group,newFeatures[ fkey ].features,this.name);
-                    var rangeGet = glyph.drawGlyph( newFeatures[ fkey ], 'range:range', thisc.conf, thisc.view, thisc.group ).then( function() {
+					console.log("Drawing");
+					thisc.conf[thisc.view.viewName] = thisc.conf[fkey];
+					console.log(newFeatures[ fkey]);
+					console.log(thisc.view.viewName);
+                    var rangeGet = glyph.drawGlyph( newFeatures[ fkey ], thisc.conf, thisc.view, thisc.group ).then( function() {
                       paper.view.draw();
                     } );
+					console.log("Drawn");
                   }
                 } );
 			  thisc.view.viewName = f.name.toLowerCase();
