@@ -37,9 +37,14 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         this.conf = {};
         this.data = {};
         this.viewInfo = {};
-	this.dataset =  dataset ? dataset : false;
+	    if(dataset){
+		  this.dataset = dataset;
+		} else {
+		  var query = window.location.search;
+          this.dataset = query.match( /data=(\w+)/ )[1];
+		}
         // try to load main configuration information.
-	var gConf = file.parse.conf(cvitConf);
+     	var gConf = file.parse.conf(cvitConf);
         var locations = thisC.getSettings( gConf, thisC.dataset );
         viewConf = locations.conf;
         defaultData = locations.defaultData;
@@ -51,6 +56,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           var overlay = $( '<div id="overlay" class="hover_div" style="position:absolute; display:block;">' );
 	  var cHeight = 500;
 	  var cWidth = 1000;
+	  console.log('data.'+thisC.dataset);
 	  if(gConf['data.'+thisC.dataset].width != undefined){
             cWidth = parseInt(gConf['data.'+thisC.dataset].width);
 	  } else if( gConf.general.width != undefined){
@@ -70,6 +76,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           $( '#cvit-canvas' ).css( "background-color", "white" );
           paper.setup( 'cvit-canvas' );
         } catch ( err ) {
+		  console.log(err);
           console.log( 'CViTjs: Error: Was not able to find canvas.' );
           return;
         }
