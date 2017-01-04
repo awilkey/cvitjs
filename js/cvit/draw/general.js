@@ -83,9 +83,9 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
         var deferred = new $.Deferred();
         var myGlyph = 'glyph/' + config.general.glyph + '/' + config.general.shape;
         var moo = require( [ myGlyph ], function( myGlyph ) {
-          deferred.resolve(myGlyph.draw( data, config, view ));
-          background.sendToBack();
-          paper.view.draw();
+          deferred.resolve(myGlyph.draw( data, config, view )).done(function(){
+	  	background.sendToBack();
+          	paper.view.draw();});
         } );
         return deferred.promise();
       }

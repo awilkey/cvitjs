@@ -40,7 +40,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
           view.key = config[groupName].glyph;
           view.groupName = groupName;
           thisC.prepareGlyph( data, config, view, backbone, myGlyph );
-          deferred.resolve(function(){}).done(function(){console.log("CViTjs: Drew " + view.key)});
+          deferred.resolve(function(){}).done(function(){console.log("CViTjs: Drew " + groupName)});
         });
 	return deferred.promise();
       },
