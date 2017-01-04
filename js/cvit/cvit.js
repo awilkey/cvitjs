@@ -39,8 +39,8 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         this.viewInfo = {};
 	this.dataset =  dataset ? dataset : false;
         // try to load main configuration information.
-        var locations = thisC.getSettings( file.parse.conf( cvitConf ), thisC.dataset );
-		console.log(location.href);	
+	var gConf = file.parse.conf(cvitConf);
+        var locations = thisC.getSettings( gConf, thisC.dataset );
         viewConf = locations.conf;
         defaultData = locations.defaultData;
 
@@ -49,12 +49,24 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         try {
           var canvas = '<canvas id="cvit-canvas" style="background-color:#6f6f6f;"  resize>';
           var overlay = $( '<div id="overlay" class="hover_div" style="position:absolute; display:block;">' );
+	  var cHeight = 500;
+	  var cWidth = 1000;
+	  if(gConf['data.'+thisC.dataset].width != undefined){
+            cWidth = parseInt(gConf['data.'+thisC.dataset].width);
+	  } else if( gConf.general.width != undefined){
+	    cWidth = parseInt(gConf.general.width);
+	  }
+	  if(gConf['data.'+thisC.dataset].height != undefined){
+            cHeight = parseInt(gConf['data.'+thisC.dataset].height);
+	  } else if( gConf.general.height != undefined){
+	    cHeight = parseInt(gConf.general.height);
+	  }
           $( canvas ).css( 'position', 'absolute' );
           $( '#cvit-div' ).css( 'position', 'relative' );
           $( '#cvit-div' ).append( overlay );
           $( '#cvit-div' ).append( canvas );
-          $( '#cvit-canvas' ).width( 1000 );
-          $( '#cvit-canvas' ).height( 500 );
+          $( '#cvit-canvas' ).width( cWidth );
+          $( '#cvit-canvas' ).height( cHeight );
           $( '#cvit-canvas' ).css( "background-color", "white" );
           paper.setup( 'cvit-canvas' );
         } catch ( err ) {
@@ -123,14 +135,13 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
                   if (thisC.data[dataLoc]) {
                     var rangeGet = glyph.drawGlyph( thisC.data[ dataLoc ], thisC.conf, thisC.viewInfo, group ).then(
                       function() {
-                        paper.view.draw();
+                  //      paper.view.draw();
                       },
                       function( errorMessage ) {
                         console.log( errorMessage );
                       }
                     );
                   }
-				  paper.view.draw();
                 }
               }
               paper.view.draw();
