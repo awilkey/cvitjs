@@ -52,7 +52,11 @@ define( [ 'jquery', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities',
 			        console.log(newFeatures);
                     thisc.view.viewName = this.name.slice(0,this.name.lastIndexOf('.'))+" "+fkey;
 				    //upmod.checkBack(thisc.group,newFeatures[ fkey ].features,this.name);
-					thisc.conf[thisc.view.viewName] = thisc.conf[fkey];
+					if( thisc.conf[fkey] != undefined){
+					  thisc.conf[thisc.view.viewName] = thisc.conf[fkey];
+					} else {
+					  thisc.conf[thisc.view.viewName] = thisc.conf[range];
+					}
 					console.log(newFeatures[ fkey]);
 					console.log(thisc.view.viewName);
                     var rangeGet = glyph.drawGlyph( newFeatures[ fkey ], thisc.conf, thisc.view, thisc.group ).then( function() {
