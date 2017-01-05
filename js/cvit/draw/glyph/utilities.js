@@ -85,7 +85,9 @@ define( [ 'jquery', 'bootstrap' ],
         } );
       },
       /** Collision detection. pGap can be negative to move left, positive to move right */
-      testCollision: function( feature, featureGroup, pGap ) {
+      testCollision: function( feature, featureGroup, view ) {
+	var pGap = view.pileup;
+	console.log(view.pileup);
         // Set the expected number of hits for the given feature to avoid infinte loop
         var minGroup = typeof( feature.children ) != "undefined" ? feature.children.length : 1;
 	var getItem = function(){
@@ -108,14 +110,18 @@ define( [ 'jquery', 'bootstrap' ],
 	    if(pGap > -1){
 	      for(var i = index+1; i<length; i++){
 		var group = baseGroup.children[i];
+		console.log(group);
 		group.position.x += 2*offset;
 		layer.children[group.name+"Label"].position.x += 2*offset;
+		view.xloc[group.name] += 2*offset;
 	      }
 	    } else {
 	      for(var i = index-1; i>-1; i--){
 		var group = baseGroup.children[i];
+		console.log(group);
 		group.position.x += 2*offset;
 		layer.children[group.name+"Label"].position.x += 2*offset;
+		view.xloc[group.name] += 2*offset ;
 	      }
 
 	    }

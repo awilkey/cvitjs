@@ -47,7 +47,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           var rectangle = new paper.Rectangle( point, size );
           var r = new paper.Path.Rectangle( rectangle );
           if ( parseInt( view.config.enable_pileup ) === 1 ) {
-            utility.testCollision( r, featureGroup, view.pileup );
+            utility.testCollision( r, featureGroup, view );
           }
           position.name = position.attribute.name ? position.attribute.name : '';
           r.info = position.attribute;
