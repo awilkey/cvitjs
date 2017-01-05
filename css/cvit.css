@@ -1,3 +1,9 @@
+/*
+ *
+ * Geneeral CViTjs config
+ *
+ */
+
 html{
 	font-size: 16px;
 }
@@ -15,15 +21,16 @@ body{
   padding: 2em 0 0 0;
 }
 
-#viewButton{
- /*
-  * display:none;
-  */
-}
-
 .cvit{
   clear:both;
 }
+
+
+/*
+ *
+ * Button configuration
+ *
+ */
 
 #tool-btn {
   position: absolute;
@@ -41,3 +48,23 @@ body{
   height:22px;
   width: 22px;
   }
+
+#viewButton{
+ /*
+  * display:none;
+  */
+}
+
+
+/*
+ *
+ * Menu modal configuration
+ *
+ */
+.menu-modal{
+width:50em;
+}
+
+.modal-container {
+width:inherit;
+}
