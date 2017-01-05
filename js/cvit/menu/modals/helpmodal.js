@@ -21,14 +21,14 @@ define( [ 'jquery','hopscotch'],
 		var btnMod = this;
         $( '#help-modal .modal-title' ).text( "About CViTjs" );
         $( '#help-modal .modal-body' ).html( '<p class="lead">Information and tour.</p>' +
-          '<h4>About</h4><div class="container"><div style="width:58%">' +
+          '<h4>About</h4><div class="container modal-container"><div>' +
           '<strong>CViTjs</strong> - Chromosome Viewing Tool.'+
 		  '</br>Enabling quick visualizations of features on '+
 		  'linkage groups, pseudochromosomes or cytogenic maps. Intended for whole-genome views of data.'+
 		  '</br> Development supported by the USDA-ARS, Corn Insects and Crop Genomics Research Unit.</div></div>'+
-          '<h4>Tour</h4><div class="container"><div style="width:58%">' +
+          '<h4>Tour</h4><div class="container modal-container"><div>' +
 		  '<button type="button" id="tour-btn" class="btn btn-info btn-block" data-dismiss="modal"> Start Tour of CViTjs Features!</button></div></div>'+
-          '<h4>Additional Help</h4><div class="container"><div style="width:58%">' +
+          '<h4>Additional Help</h4><div class="container modal-container"><div>' +
 		  'Additional help and source may be found <a href="https://github.com/awilkey/cvitjs">here</a></div> </div>'
         );
 		$('#tour-btn').on('click',function(event){
