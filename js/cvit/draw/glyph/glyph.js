@@ -36,11 +36,17 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         var deferred = new $.Deferred();
         var myGlyph = 'glyph/' + config[groupName].glyph + '/' + config[groupName].shape;
 		var req = myGlyph;
-        var requireGlyph = require( [ myGlyph ], function( myGlyph ) {
-          view.key = config[groupName].glyph;
-          view.groupName = groupName;
-          deferred.resolve( thisC.prepareGlyph( data, config, view, backbone, myGlyph ) );
-        } );
+		var key = config[groupName].glyph;
+		$.when({key : config[groupName].glyph, groupName : groupName, view:view}).then(function(viewSettings){
+		   var myView = viewSettings.view; 
+		   myView.key = viewSettings.key;
+		   myView.groupName = viewSettings.groupName;
+		   console.log(view.key);
+		   console.log(view.groupName);
+           require( [ myGlyph ], function( myGlyph ) {
+			deferred.resolve(thisC.prepareGlyph( data, config, viewSettings, backbone, myGlyph)).done(paper.view.draw());
+           });
+		});
 		paper.view.draw();
         return deferred.promise();
       },
@@ -54,10 +60,13 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
        * @param glyph [object] An object consisting of a location to find the desired glyph/subglyph pair 
        *
        */
-      prepareGlyph: function( data, config, view, backbone, glyph ) {
+      prepareGlyph: function( data, config, viewSettings, backbone, glyph ) {
         var thisC = this;
         var locations = data.features;
         var glyphGroup = new paper.Group();
+		var view = viewSettings.view;
+		view.key = viewSettings.key;
+		view.groupName = viewSettings.groupName;
         glyphGroup.name = view.groupName;
         view.config = view.key === view.groupName ? config[ view.key ] : thisC.mergeConfig(config[view.key], config[view.groupName]);
         view.zoom = view.yScale;
