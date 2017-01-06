@@ -15,9 +15,10 @@
  *
  */
 
-define( [ 'jquery','tools/tools', 'tools/zoom/zoom', 'cvit/menu/modals/exportmodal',
-		  'cvit/menu/modals/uploadmodal','cvit/menu/modals/helpmodal','bootstrap' ],
-  function( $,tools, zoom, exportMod, uploadMod, helpMod ) {
+define( [ 'jquery', 'tools/tools', 'tools/zoom/zoom', 'cvit/menu/modals/exportmodal',
+    'cvit/menu/modals/uploadmodal', 'cvit/menu/modals/helpmodal', 'bootstrap'
+  ],
+  function( $, tools, zoom, exportMod, uploadMod, helpMod ) {
     return {
       //** builds menu stack */
       build: function( conf, view, group ) {
@@ -33,20 +34,20 @@ define( [ 'jquery','tools/tools', 'tools/zoom/zoom', 'cvit/menu/modals/exportmod
       /**
        *
        * Add a button ovelay to cvit camvas for the zoom controls (in out reset)
-	   * call the function from zoom here in case of later additions to menu.
+       * call the function from zoom here in case of later additions to menu.
        *
        */
       addZoomControl: function() {
         zoom.addZoomControl();
-		tools.addToolsControl();
+        tools.addToolsControl();
       },
 
       /**
        *
        * Add a menu for Cvitjs. This menu appears as a "hamburger" icon and
-	   * hosts the "Export to image", "View your data" and "Help" menus.
-	   * Each menu pops up as its own modal dialog from accessing the 
-	   * corresponding menu option.
+       * hosts the "Export to image", "View your data" and "Help" menus.
+       * Each menu pops up as its own modal dialog from accessing the 
+       * corresponding menu option.
        *
        */
       addOptionsMenu: function() {
@@ -115,8 +116,8 @@ define( [ 'jquery','tools/tools', 'tools/zoom/zoom', 'cvit/menu/modals/exportmod
       /**
        *
        * Adds a menu to allow user to toggle off and on the display of feature
-	   * groups. By default, every group starts as displayed.
-	   *
+       * groups. By default, every group starts as displayed.
+       *
        */
       addViewMenu: function() {
         var thisc = this;
