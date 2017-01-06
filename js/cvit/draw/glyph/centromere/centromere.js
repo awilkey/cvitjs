@@ -39,14 +39,14 @@ define( [ 'jquery', 'glyph/utilities' ],
           var size = new paper.Size( view.centWidth, ( centromere.end - centromere.start ) * view.yScale );
           var rectangle = new paper.Rectangle( point, size );
           var r = new paper.Path.Rectangle( rectangle );
-          r.position.x = targetGroup.children[ target ].position.x;
+		  r.position.x = targetGroup.children[target].position.x;
           centromere.name = centromere.attribute.name ? centromere.attribute.name : '';
           r.info = centromere.attribute;
           r.thisColor = 'black';
           r.fillColor = utility.formatColor( view.config.color );
 
           if ( parseInt( view.config.draw_label ) === 1 ) {
-            point.y = r.position.y;
+		    point.y = r.position.y;
             var label = utility.generateLabel( centromere, view, point, xLoc );
             targetGroup.addChild( label );
             glyphGroup.addChild( label );

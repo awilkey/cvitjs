@@ -22,28 +22,28 @@ define( [ 'jquery', 'bootstrap' ],
       test: function() {
         window.alert( "Utility Test" );
       },
-      /* Format color string to color */
-      formatColor: function( color, transparency ) {
-        var grey = color.match( /gr[ea]y(.*)/ );
-        if ( grey ) {
-          color = "grey";
-          if ( grey[ 1 ].length !== 0 ) {
-            color = parseFloat( '.' + grey[ 1 ] );
-          }
-        }
-        if ( color[ 0 ] === '#' ) {
-          return color;
-        } else {
-          return new paper.Color( color );
-        }
-      },
+	  /* Format color string to color */
+	  formatColor: function(color,transparency){
+		var grey = color.match(/gr[ea]y(.*)/);
+		if(grey){
+			color = "grey";
+			if(grey[1].length !== 0){
+				color = parseFloat('.'+grey[1]);
+			}
+		}
+		if(color[0]=== '#'){
+		  return color;
+		} else {	
+		  return  new paper.Color(color);
+		}
+	  },
       /** Attach popover to feature */
       attachPopover: function( r, feature ) {
         $( '.popover' ).remove();
         $( '#popdiv' ).remove();
         var clickDiv = $( '<div id="popdiv" style="position:absolute;">&nbsp;</div>' );
         $( clickDiv ).data( 'pos', r.bounds );
-        $( clickDiv ).data( 'item', r );
+		$(clickDiv).data('item',r);
         $( clickDiv ).css( "top", ( r.bounds.y - paper.view.center._owner.y ) * paper.view.zoom );
         $( clickDiv ).css( "left", ( r.bounds.x - paper.view.center._owner.x ) * paper.view.zoom );
         $( clickDiv ).css( "height", r.bounds.height * paper.view.zoom );
@@ -52,7 +52,7 @@ define( [ 'jquery', 'bootstrap' ],
         $( '#overlay' ).append( clickDiv );
         // This is so large because anything *not* included in inital creation of popover tends to get left
         // behind when moving the view around otherwise. A well documented quirk of bootstrap
-
+	
         $( clickDiv ).popover( {
           'html': 'true',
           'container': '#cvit-div',
@@ -86,49 +86,49 @@ define( [ 'jquery', 'bootstrap' ],
       },
       /** Collision detection. pGap can be negative to move left, positive to move right */
       testCollision: function( feature, featureGroup, view ) {
-        var pGap = view.pileup;
-        console.log( view.pileup );
+	var pGap = view.pileup;
+	console.log(view.pileup);
         // Set the expected number of hits for the given feature to avoid infinte loop
         var minGroup = typeof( feature.children ) != "undefined" ? feature.children.length : 1;
-        var getItem = function() {
-          return paper.project.getItems( {
+	var getItem = function(){
+          return paper.project.getItems({
             overlapping: feature.strokeBounds,
             class: paper.Path
-          } );
-        };
-        var testItem = getItem();
+          });
+	};
+	var testItem = getItem();
         var fPName = featureGroup.parent.name;
-        var baseGroup = featureGroup.parent.parent;
-        var layer = paper.project.layers[ 0 ];
-        var length = baseGroup.children.length;
+	var baseGroup = featureGroup.parent.parent;
+	var layer = paper.project.layers[0];
+	var length = baseGroup.children.length;
         var offset = feature.strokeBounds.width + pGap;
         while ( testItem.length > minGroup ) {
-          var testPName = testItem[ 0 ].parent.parent.name;
-          if ( fPName != testPName ) {
+          var testPName = testItem[0].parent.parent.name;
+	  if(fPName != testPName){
 
-            var index = baseGroup.children.indexOf( featureGroup.parent );
-            if ( pGap > -1 ) {
-              for ( var i = index + 1; i < length; i++ ) {
-                var group = baseGroup.children[ i ];
-                console.log( group );
-                group.position.x += 2 * offset;
-                layer.children[ group.name + "Label" ].position.x += 2 * offset;
-                view.xloc[ group.name ] += 2 * offset;
-              }
-            } else {
-              for ( var i = index - 1; i > -1; i-- ) {
-                var group = baseGroup.children[ i ];
-                console.log( group );
-                group.position.x += 2 * offset;
-                layer.children[ group.name + "Label" ].position.x += 2 * offset;
-                view.xloc[ group.name ] += 2 * offset;
-              }
+            var index = baseGroup.children.indexOf(featureGroup.parent);
+	    if(pGap > -1){
+	      for(var i = index+1; i<length; i++){
+		var group = baseGroup.children[i];
+		console.log(group);
+		group.position.x += 2*offset;
+		layer.children[group.name+"Label"].position.x += 2*offset;
+		view.xloc[group.name] += 2*offset;
+	      }
+	    } else {
+	      for(var i = index-1; i>-1; i--){
+		var group = baseGroup.children[i];
+		console.log(group);
+		group.position.x += 2*offset;
+		layer.children[group.name+"Label"].position.x += 2*offset;
+		view.xloc[group.name] += 2*offset ;
+	      }
 
-            }
-          } else {
-            feature.translate( new paper.Point( feature.strokeBounds.width + pGap, 0 ) );
-          }
-          var testItem = getItem();
+	    }
+          }else{
+	    feature.translate( new paper.Point( feature.strokeBounds.width + pGap, 0 ) );
+	  }
+	  var testItem = getItem();
         }
 
       },
@@ -153,12 +153,12 @@ define( [ 'jquery', 'bootstrap' ],
           label.position = new paper.Point( point.x - label.strokeBounds.width, point.y );
         }
 
-        label.position.y = point.y;
+		label.position.y = point.y;
         return label;
       },
       //** Generate a toggle button to hide/show a given group in the view.
       generateViewControl: function( groupName, group ) {
-        var gName = groupName.replace( /\s+/g, '-' ).toLowerCase();
+		var gName = groupName.replace(/\s+/g,'-').toLowerCase();
         var viewTitle = $( '<span>' + groupName + '</span>"' );
         var openButton = $( '<button type="button" class="btn btn-success view-toggle" style="float:right; margin-right:10px;">Show</button>' ).on( 'click', function( event ) {
           $( '#' + gName + '-options .btn-success' ).toggleClass( 'btn-danger' );

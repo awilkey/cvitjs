@@ -51,7 +51,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           };
 
           if ( parseInt( view.config.draw_label ) === 1 ) {
-            point.y = r.position.y;
+			point.y = r.position.y;
             var label = utility.generateLabel( range, view, point, xLoc );
             targetGroup.addChild( label );
             glyphGroup.addChild( label );

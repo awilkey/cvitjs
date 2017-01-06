@@ -8,16 +8,16 @@
  *
  */
 
-define( [ 'jquery' ],
-  function( $ ) {
+define( [ 'jquery'],
+  function( $) {
 
     return {
       /**
-       *
-       * Populate the Export Modal Window
-       *
+	   *
+	   * Populate the Export Modal Window
+	   *
        */
-      populate: function() {
+       populate: function() {
 
         $( '#export-modal .modal-title' ).text( "Export View to Image" );
         $( '#export-modal .modal-body' ).html( '<p class="lead">Save your current view as an image.</p>' +
