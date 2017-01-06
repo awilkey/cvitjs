@@ -35,14 +35,14 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         var groupName = view.viewName;
         var deferred = new $.Deferred();
         var myGlyph = 'glyph/' + config[groupName].glyph + '/' + config[groupName].shape;
-	var req = myGlyph;
-        require( [ myGlyph ], function( myGlyph ) {
+		var req = myGlyph;
+        var requireGlyph = require( [ myGlyph ], function( myGlyph ) {
           view.key = config[groupName].glyph;
           view.groupName = groupName;
-          thisC.prepareGlyph( data, config, view, backbone, myGlyph );
-          deferred.resolve(function(){}).done(function(){console.log("CViTjs: Drew " + groupName)});
-        });
-	return deferred.promise();
+          deferred.resolve( thisC.prepareGlyph( data, config, view, backbone, myGlyph ) );
+        } );
+	//paper.view.draw();
+        return deferred.promise();
       },
       /**
        * Set up common view elements across the glyphs
@@ -68,9 +68,9 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         view.centWidth = view.chromWidth + ( 2 * parseInt( config.centromere.centromere_overhang ) );
         view.xloc = thisC.setXLoc( config, backbone );
         locations.forEach( function( loc ) {
-		  if((view.config.dataFilter && loc.source === view.config.dataFilter) || !view.config.dataFilter){
+	  if((view.config.dataFilter && loc.source === view.config.dataFilter) || !view.config.dataFilter){
             thisC.placeGlyph( loc, view, backbone, glyph, glyphGroup );
-		  }
+	  }
         } );
         utility.generateViewControl( view.groupName, glyphGroup );
       },
@@ -86,6 +86,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
        */
       placeGlyph: function( data, view, backbone, glyph, glyphGroup ) {
         glyph.draw( data, backbone, view, glyphGroup );
+	paper.view.draw();
       },
       
       mergeConfig: function(baseConfig, editedConfig){
