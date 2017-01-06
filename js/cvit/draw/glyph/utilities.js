@@ -22,28 +22,28 @@ define( [ 'jquery', 'bootstrap' ],
       test: function() {
         window.alert( "Utility Test" );
       },
-	  /* Format color string to color */
-	  formatColor: function(color,transparency){
-		var grey = color.match(/gr[ea]y(.*)/);
-		if(grey){
-			color = "grey";
-			if(grey[1].length !== 0){
-				color = parseFloat('.'+grey[1]);
-			}
-		}
-		if(color[0]=== '#'){
-		  return color;
-		} else {	
-		  return  new paper.Color(color);
-		}
-	  },
+      /* Format color string to color */
+      formatColor: function( color, transparency ) {
+        var grey = color.match( /gr[ea]y(.*)/ );
+        if ( grey ) {
+          color = "grey";
+          if ( grey[ 1 ].length !== 0 ) {
+            color = parseFloat( '.' + grey[ 1 ] );
+          }
+        }
+        if ( color[ 0 ] === '#' ) {
+          return color;
+        } else {
+          return new paper.Color( color );
+        }
+      },
       /** Attach popover to feature */
       attachPopover: function( r, feature ) {
         $( '.popover' ).remove();
         $( '#popdiv' ).remove();
         var clickDiv = $( '<div id="popdiv" style="position:absolute;">&nbsp;</div>' );
         $( clickDiv ).data( 'pos', r.bounds );
-		$(clickDiv).data('item',r);
+        $( clickDiv ).data( 'item', r );
         $( clickDiv ).css( "top", ( r.bounds.y - paper.view.center._owner.y ) * paper.view.zoom );
         $( clickDiv ).css( "left", ( r.bounds.x - paper.view.center._owner.x ) * paper.view.zoom );
         $( clickDiv ).css( "height", r.bounds.height * paper.view.zoom );
@@ -52,7 +52,7 @@ define( [ 'jquery', 'bootstrap' ],
         $( '#overlay' ).append( clickDiv );
         // This is so large because anything *not* included in inital creation of popover tends to get left
         // behind when moving the view around otherwise. A well documented quirk of bootstrap
-	
+
         $( clickDiv ).popover( {
           'html': 'true',
           'container': '#cvit-div',
@@ -117,12 +117,12 @@ define( [ 'jquery', 'bootstrap' ],
           label.position = new paper.Point( point.x - label.strokeBounds.width, point.y );
         }
 
-		label.position.y = point.y;
+        label.position.y = point.y;
         return label;
       },
       //** Generate a toggle button to hide/show a given group in the view.
       generateViewControl: function( groupName, group ) {
-		var gName = groupName.replace(/\s+/g,'-').toLowerCase();
+        var gName = groupName.replace( /\s+/g, '-' ).toLowerCase();
         var viewTitle = $( '<span>' + groupName + '</span>"' );
         var openButton = $( '<button type="button" class="btn btn-success view-toggle" style="float:right; margin-right:10px;">Show</button>' ).on( 'click', function( event ) {
           $( '#' + gName + '-options .btn-success' ).toggleClass( 'btn-danger' );
