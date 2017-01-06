@@ -30,18 +30,28 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
        *
        * @return [promise] A jQuery promise, so that the glyphs can be drawn in an ansync form. 
        */
-      drawGlyph: function( data,  config, view, backbone ) {
+      drawGlyph: function( data, config, view, backbone ) {
         var thisC = this;
         var groupName = view.viewName;
         var deferred = new $.Deferred();
-        var myGlyph = 'glyph/' + config[groupName].glyph + '/' + config[groupName].shape;
-		var req = myGlyph;
-        var requireGlyph = require( [ myGlyph ], function( myGlyph ) {
-          view.key = config[groupName].glyph;
-          view.groupName = groupName;
-          deferred.resolve( thisC.prepareGlyph( data, config, view, backbone, myGlyph ) );
+        var myGlyph = 'glyph/' + config[ groupName ].glyph + '/' + config[ groupName ].shape;
+        var req = myGlyph;
+        var key = config[ groupName ].glyph;
+        $.when( {
+          key: config[ groupName ].glyph,
+          groupName: groupName,
+          view: view
+        } ).then( function( viewSettings ) {
+          var myView = viewSettings.view;
+          myView.key = viewSettings.key;
+          myView.groupName = viewSettings.groupName;
+          console.log( view.key );
+          console.log( view.groupName );
+          require( [ myGlyph ], function( myGlyph ) {
+            deferred.resolve( thisC.prepareGlyph( data, config, viewSettings, backbone, myGlyph ) ).done( paper.view.draw() );
+          } );
         } );
-	//paper.view.draw();
+        paper.view.draw();
         return deferred.promise();
       },
       /**
@@ -54,12 +64,15 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
        * @param glyph [object] An object consisting of a location to find the desired glyph/subglyph pair 
        *
        */
-      prepareGlyph: function( data, config, view, backbone, glyph ) {
+      prepareGlyph: function( data, config, viewSettings, backbone, glyph ) {
         var thisC = this;
         var locations = data.features;
         var glyphGroup = new paper.Group();
+        var view = viewSettings.view;
+        view.key = viewSettings.key;
+        view.groupName = viewSettings.groupName;
         glyphGroup.name = view.groupName;
-        view.config = view.key === view.groupName ? config[ view.key ] : thisC.mergeConfig(config[view.key], config[view.groupName]);
+        view.config = view.key === view.groupName ? config[ view.key ] : thisC.mergeConfig( config[ view.key ], config[ view.groupName ] );
         view.zoom = view.yScale;
         view.xoffset = typeof( view.config.offset ) != "undefined" ? parseInt( view.config.offset ) : 0;
         view.yOffset = typeof( config.general.chrom_font_size ) ? view.yOffset + parseInt( config.general.chrom_font_size ) : view.yOffset;
@@ -68,9 +81,9 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         view.centWidth = view.chromWidth + ( 2 * parseInt( config.centromere.centromere_overhang ) );
         view.xloc = thisC.setXLoc( config, backbone );
         locations.forEach( function( loc ) {
-	  if((view.config.dataFilter && loc.source === view.config.dataFilter) || !view.config.dataFilter){
+          if ( ( view.config.dataFilter && loc.source === view.config.dataFilter ) || !view.config.dataFilter ) {
             thisC.placeGlyph( loc, view, backbone, glyph, glyphGroup );
-	  }
+          }
         } );
         utility.generateViewControl( view.groupName, glyphGroup );
       },
@@ -86,16 +99,15 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
        */
       placeGlyph: function( data, view, backbone, glyph, glyphGroup ) {
         glyph.draw( data, backbone, view, glyphGroup );
-	paper.view.draw();
       },
-      
-      mergeConfig: function(baseConfig, editedConfig){
-		$.each(baseConfig, function(key,value){
-			if(!editedConfig[key]){
-				editedConfig[key] = value;
-			}
-		});
-		return editedConfig;
+
+      mergeConfig: function( baseConfig, editedConfig ) {
+        $.each( baseConfig, function( key, value ) {
+          if ( !editedConfig[ key ] ) {
+            editedConfig[ key ] = value;
+          }
+        } );
+        return editedConfig;
       },
       /**
        * Generate left/right zero based on backbone and configuration

@@ -8,7 +8,8 @@
  *
  */
 define( [ 'jquery', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities',
-                'bootstrap' ],
+    'bootstrap'
+  ],
   function( $, file, glyph, utility ) {
 
     return {
@@ -17,8 +18,8 @@ define( [ 'jquery', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities',
        *
        * @param {object} context - context from parent menu.
        */
-       populate: function(thisc) {
-		var upmod = this;
+      populate: function( thisc ) {
+        var upmod = this;
         $( '#upload-modal .modal-title' ).text( "Upload Your Data" );
         // Need to test if local file upload is supported by browser.
         // Will essentially only return false if using IE<8
@@ -39,23 +40,23 @@ define( [ 'jquery', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities',
                 f.size, ' bytes, last modified: ',
                 f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
                 '</li>' );
-                var fileReader = new FileReader();
-				fileReader.name = files[key].name;
-                // TODO: Support customizing glyph options.
-                $( fileReader ).on( 'load', function( event ) {
-			      console.log(event);
-                  var fileContents = event.target;
-                  var newFeatures = file.parse.gff( event.target.result );
-                  for ( var fkey in newFeatures ) {
-			        console.log(newFeatures);
-                    thisc.view.viewName = this.name.slice(0,this.name.lastIndexOf('.'))+" "+fkey;
-				    //upmod.checkBack(thisc.group,newFeatures[ fkey ].features,this.name);
-                    var rangeGet = glyph.drawGlyph( newFeatures[ fkey ], 'range:range', thisc.conf, thisc.view, thisc.group ).then( function() {
-                      paper.view.draw();
-                    } );
-                  }
-                } );
-			  thisc.view.viewName = f.name.toLowerCase();
+              var fileReader = new FileReader();
+              fileReader.name = files[ key ].name;
+              // TODO: Support customizing glyph options.
+              $( fileReader ).on( 'load', function( event ) {
+                console.log( event );
+                var fileContents = event.target;
+                var newFeatures = file.parse.gff( event.target.result );
+                for ( var fkey in newFeatures ) {
+                  console.log( newFeatures );
+                  thisc.view.viewName = this.name.slice( 0, this.name.lastIndexOf( '.' ) ) + " " + fkey;
+                  //upmod.checkBack(thisc.group,newFeatures[ fkey ].features,this.name);
+                  var rangeGet = glyph.drawGlyph( newFeatures[ fkey ], 'range:range', thisc.conf, thisc.view, thisc.group ).then( function() {
+                    paper.view.draw();
+                  } );
+                }
+              } );
+              thisc.view.viewName = f.name.toLowerCase();
               fileReader.readAsText( f );
             }
 
@@ -69,28 +70,28 @@ define( [ 'jquery', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities',
       },
       /**
        * Compares targets of uploaded gff with the backbone, alerting user to
-	   * name mismatch.
+       * name mismatch.
        *
        * @param {object} backbone - backbone of the cvit view.
-	   * @param {object} feature - feature to check provided seqNames against backbone
-	   *
+       * @param {object} feature - feature to check provided seqNames against backbone
+       *
        */
-	   checkBack: function(backbone,features,filename){
-		 console.log("boom!");
-		 console.log(backbone);
-		 console.log(features);
-		 for(var i=0; i< features.length;i++){
-		   var feature = features[i];
-		   console.log(feature.seqName); 
-			console.log(backbone._namedChildren[feature.seqName]);
-		   // TODO(?): Add alert window allowing manual renaming
-		   if(backbone._namedChildren[feature.seqName]==undefined){
-		     $( '#upload-modal .modal-body' ).append('<div id="upload-warning" class="alert alert-warning">' 
-				+ '<strong>Warning!</strong> One or more sequence names in '+ filename + ' do not match backbone and may not be displayed.</br> Please check your names.</div>');
-			 break;
-		   };
-		 };
-	   }
+      checkBack: function( backbone, features, filename ) {
+        console.log( "boom!" );
+        console.log( backbone );
+        console.log( features );
+        for ( var i = 0; i < features.length; i++ ) {
+          var feature = features[ i ];
+          console.log( feature.seqName );
+          console.log( backbone._namedChildren[ feature.seqName ] );
+          // TODO(?): Add alert window allowing manual renaming
+          if ( backbone._namedChildren[ feature.seqName ] == undefined ) {
+            $( '#upload-modal .modal-body' ).append( '<div id="upload-warning" class="alert alert-warning">' +
+              '<strong>Warning!</strong> One or more sequence names in ' + filename + ' do not match backbone and may not be displayed.</br> Please check your names.</div>' );
+            break;
+          };
+        };
+      }
 
     };
   }

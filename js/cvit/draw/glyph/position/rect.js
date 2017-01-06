@@ -33,12 +33,12 @@ define( [ 'jquery', 'glyph/utilities' ],
         var target = position.seqName;
         var targetGroup = group.children[ target ];
         if ( targetGroup ) {
-	  if(targetGroup.children[glyphGroup.name] == undefined){
-	    var g = new paper.Group();
+          if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
+            var g = new paper.Group();
             g.name = glyphGroup.name;
-	    targetGroup.addChild(g);
+            targetGroup.addChild( g );
           }
-	  var featureGroup = targetGroup.children[glyphGroup.name];
+          var featureGroup = targetGroup.children[ glyphGroup.name ];
 
           var yLoc = ( ( position.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
           var xLoc = ( view.xloc[ target ] + parseInt( view.config.offset ) );
@@ -57,7 +57,7 @@ define( [ 'jquery', 'glyph/utilities' ],
             utility.attachPopover( r, position );
           };
           if ( parseInt( view.config.draw_label ) === 1 ) {
-			point.y = r.position.y;
+            point.y = r.position.y;
             var label = utility.generateLabel( position, view, point, xLoc );
             targetGroup.addChild( label );
             glyphGroup.addChild( label );

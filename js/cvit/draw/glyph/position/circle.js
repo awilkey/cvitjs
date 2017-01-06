@@ -49,8 +49,8 @@ define( [ 'jquery', 'glyph/utilities' ],
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, position );
           };
-          if ( parseInt( view.config.draw_label ) === 1 ) {  
-		    point.y = r.position.y;
+          if ( parseInt( view.config.draw_label ) === 1 ) {
+            point.y = r.position.y;
             var label = utility.generateLabel( position, view, point, xLoc );
             targetGroup.addChild( label );
             glyphGroup.addChild( label );
