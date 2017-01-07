@@ -149,7 +149,7 @@ define( [ "jquery", 'mousewheel' ],
           boxTool.box.remove();
           boxTool.box = paper.Path.Rectangle( event.downPoint, event.point );
           boxTool.box.strokeWidth = 1;
-          boxTool.box.strokeColor = "lightblue"
+          boxTool.box.strokeColor = "lightblue";
           boxTool.box.dashArray = [ 2, 2 ];
           boxTool.box.fillColor = new paper.Color( 0.8, 0.3 );
           boxTool.drag = true;
@@ -166,14 +166,14 @@ define( [ "jquery", 'mousewheel' ],
             if ( newScale < 70 ) {
               if ( newScale > 8 ) {
                 newScale = 8;
-              };
+              }
               thisC.zoomRulers( newScale, paper.project.layers[ 0 ].zoom );
               thisC.changePan( boxTool.box.position, paper.project.layers[ 0 ].position, startView );
               paper.project.layers[ 0 ].center = paper.project.layers[ 0 ].position;
             }
           }
           boxTool.box.remove();
-        }
+        };
 
       },
 
@@ -268,31 +268,31 @@ define( [ "jquery", 'mousewheel' ],
         }
 
         // Zoom ruler and drawing layer, layer[0] is drawing, [1] is ruler
-        var backbone = paper.project.layers[ 0 ].children[ "backbone" ].children[ "view" ];
-        var minLoc = paper.project.layers[ 1 ].children[ "rulers" ].minSeq;
-        var maxLoc = paper.project.layers[ 1 ].children[ "rulers" ].maxSeq;
+        var backbone = paper.project.layers[ 0 ].children.backbone.children.view;
+        var minLoc = paper.project.layers[ 1 ].children.rulers.minSeq;
+        var maxLoc = paper.project.layers[ 1 ].children.rulers.maxSeq;
         var rulerLayer = paper.project.layers[ 1 ];
-        var textHeight = rulerLayer.children[ "text" ].children[ 0 ].children[ 0 ].bounds.height;
+        var textHeight = rulerLayer.children.text.children[ 0 ].children[ 0 ].bounds.height;
         paper.project.layers[ 0 ].scale( newZoom / oldZoom );
-        paper.project.layers[ 1 ].children[ "rulers" ].scale( 1, newZoom / oldZoom );
-        paper.project.layers[ 1 ].children[ "tics" ].scale( 1, newZoom / oldZoom );
-        paper.project.layers[ 1 ].children[ "text" ].scale( 1, newZoom / oldZoom );
-        for ( var text in paper.project.layers[ 1 ].children[ "text" ].children[ "rightText" ].children ) {
-          paper.project.layers[ 1 ].children[ "text" ].children[ "rightText" ].children[ text ].scale( 1, oldZoom / newZoom );
-          paper.project.layers[ 1 ].children[ "text" ].children[ "leftText" ].children[ text ].scale( 1, oldZoom / newZoom );
-        };
+        paper.project.layers[ 1 ].children.rulers.scale( 1, newZoom / oldZoom );
+        paper.project.layers[ 1 ].children.tics.scale( 1, newZoom / oldZoom );
+        paper.project.layers[ 1 ].children.text.scale( 1, newZoom / oldZoom );
+        for ( var text in paper.project.layers[ 1 ].children.text.children.rightText.children ) {
+          paper.project.layers[ 1 ].children.text.children.rightText.children[ text ].scale( 1, oldZoom / newZoom );
+          paper.project.layers[ 1 ].children.text.children.leftText.children[ text ].scale( 1, oldZoom / newZoom );
+        }
         paper.view.draw();
         paper.project.activeLayer.zoom = newZoom;
         var ymin = backbone.children[ minLoc ].bounds.topLeft.y;
         var ymax = backbone.children[ maxLoc ].bounds.bottomLeft.y;
-        rulerLayer.children[ "rulers" ].bounds.topLeft.y = ymin;
-        rulerLayer.children[ "rulers" ].bounds.bottomLeft.y = ymax;
+        rulerLayer.children.rulers.bounds.topLeft.y = ymin;
+        rulerLayer.children.rulers.bounds.bottomLeft.y = ymax;
         /*ymove = quarter of height of label text +1 to offset width of 
           backbone border*/
-        rulerLayer.children[ "tics" ].position.y = ymin;
-        rulerLayer.children[ "tics" ].position.y -= ( rulerLayer.children[ "tics" ].strokeBounds.topLeft.y - rulerLayer.children[ "rulers" ].strokeBounds.topLeft.y ) + 1;
-        rulerLayer.children[ "text" ].position.y = ymin;
-        rulerLayer.children[ "text" ].position.y -= ( rulerLayer.children[ "text" ].strokeBounds.topLeft.y - rulerLayer.children[ "tics" ].strokeBounds.topLeft.y ) + ( textHeight / 4 ) + 1;
+        rulerLayer.children.tics.position.y = ymin;
+        rulerLayer.children.tics.position.y -= ( rulerLayer.children.tics.strokeBounds.topLeft.y - rulerLayer.children.rulers.strokeBounds.topLeft.y ) + 1;
+        rulerLayer.children.text.position.y = ymin;
+        rulerLayer.children.text.position.y -= ( rulerLayer.children.text.strokeBounds.topLeft.y - rulerLayer.children.tics.strokeBounds.topLeft.y ) + ( textHeight / 4 ) + 1;
 
       }
     };

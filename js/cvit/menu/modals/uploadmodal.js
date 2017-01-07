@@ -53,7 +53,7 @@ define( [ 'jquery', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities',
                   console.log( newFeatures );
                   thisc.view.viewName = this.name.slice( 0, this.name.lastIndexOf( '.' ) ) + " " + fkey;
                   //upmod.checkBack(thisc.group,newFeatures[ fkey ].features,this.name);
-                  if ( thisc.conf[ fkey ] != undefined ) {
+                  if ( thisc.conf[ fkey ] !== undefined ) {
                     thisc.conf[ thisc.view.viewName ] = thisc.conf[ fkey ];
                   } else {
                     thisc.conf[ thisc.view.viewName ] = thisc.conf[ range ];
@@ -94,12 +94,12 @@ define( [ 'jquery', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities',
           console.log( feature.seqName );
           console.log( backbone._namedChildren[ feature.seqName ] );
           // TODO(?): Add alert window allowing manual renaming
-          if ( backbone._namedChildren[ feature.seqName ] == undefined ) {
+          if ( backbone._namedChildren[ feature.seqName ] === undefined ) {
             $( '#upload-modal .modal-body' ).append( '<div id="upload-warning" class="alert alert-warning">' +
               '<strong>Warning!</strong> One or more sequence names in ' + filename + ' do not match backbone and may not be displayed.</br> Please check your names.</div>' );
             break;
-          };
-        };
+          }
+        }
       }
 
     };

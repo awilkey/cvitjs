@@ -117,7 +117,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
        *
        * @return [array] Starting left or right X positions for features based on backbone. 
        */
-      setXLoc( config, backbone ) {
+      setXLoc: function( config, backbone ) {
         var xlocs = {};
         backbone.children.forEach( function( chromosome ) {
           var localBB = chromosome.children[ chromosome.name ];

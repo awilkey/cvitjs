@@ -39,8 +39,8 @@ define( [ 'jquery', 'bootstrap' ],
         $( '#' + modId + ' .modal-body' ).html( "<div><canvas id='" + modId + "-canvas' width='500' height='200'></canvas></div>" );
         var baseScope = paper.project;
         if ( paper.projects[ 1 ] ) {
-          paper.projects[ 1 ].remove()
-        };
+          paper.projects[ 1 ].remove();
+        }
         paper.setup( modId + '-canvas' );
         paper.project.canvas = modId;
 
@@ -162,14 +162,14 @@ define( [ 'jquery', 'bootstrap' ],
           ],
           strokeColor: 'black'
         } );
-        pointer.strokeColor = new paper.Color( .6 );
+        pointer.strokeColor = new paper.Color( 0.6 );
         pointer.position = pGra.bounds.bottomRight;
 
         // Setup sliders for saturation and alpha sliders
         var q = new paper.Point( 10, 10 );
         var w = new paper.Size( 25, 10 );
         var sSlide = new paper.Path.Rectangle( q, w );
-        sSlide.fillColor = new paper.Color( .6 );
+        sSlide.fillColor = new paper.Color( 0.6 );
         sSlide.strokeColor = "black";
         sSlide.strokeWidth = 1;
         sSlide.position = sGra.position;
@@ -190,24 +190,24 @@ define( [ 'jquery', 'bootstrap' ],
           sRad.fillColor.brightness = b;
           sRad.fillColor.saturation = 1;
 
-          var sG1 = new paper.Color( sRad.fillColor )
+          var sG1 = new paper.Color( sRad.fillColor );
           sG1.saturation = 1;
           var sG2 = new paper.Color( sG1 );
           sG2.saturation = 0;
           sGra.fillColor.gradient.stops = [ sG1, sG2 ];
-          var aG1 = new paper.Color( sG1 )
+          var aG1 = new paper.Color( sG1 );
           aG1.saturation = s;
           var aG2 = new paper.Color( aG1 );
           aG2.alpha = 0;
           aGra.fillColor.gradient.stops = [ aG1, aG2 ];
           var prev = new paper.Color( aG1 );
-          prev.alpha = a
+          prev.alpha = a;
           colPrev.fillColor = prev;
           paper.view.draw();
           console.log( button );
           $( button ).css( "background", colPrev.fillColor.toCSS() );
 
-        };
+        }
 
         // Setup what happens when you hide the modal
         $( '#' + modId ).on( 'hidden.bs.modal', function() {

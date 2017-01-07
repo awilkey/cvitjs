@@ -30,7 +30,7 @@ define( [ 'jquery', 'glyph/utilities' ],
         //view.zoom = data.zoom;
         //view.xoffset = Math.floor( ( $( '#cvit-canvas' ).width() - 200 ) / chromosomes.length );
         //view.yoffset = 50;
-        view.rulerWidth = paper.project.layers[ 1 ].children[ "text" ].maxOff;
+        view.rulerWidth = paper.project.layers[ 1 ].children.text.maxOff;
         var minSep = parseInt( config.chrom_spacing );
         if ( config.fixed_chrom_spacing == 1 ) {
           view.xSep = minSep;

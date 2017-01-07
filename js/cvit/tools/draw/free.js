@@ -20,7 +20,7 @@ define( [ 'jquery', 'bootstrap' ],
           paper.project.color1 = new paper.Color( 0, 0, 0, 1 );
         }
         freeTool.onMouseDown = function( event ) {
-          var path = new paper.Path()
+          var path = new paper.Path();
           path.segments = [ event.point ];
           path.isErasable = true;
           path.strokeColor = paper.project.color1;
@@ -33,7 +33,7 @@ define( [ 'jquery', 'bootstrap' ],
 
         freeTool.onMouseUp = function( event ) {
           freeTool.path.simplify( 10 );
-        }
+        };
 
       }
     };

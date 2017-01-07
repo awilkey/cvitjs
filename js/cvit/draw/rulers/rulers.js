@@ -77,9 +77,9 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         r.strokeColor = rc.color;
         r.strokeWidth = 2;
         var rTicGroup = new paper.Group();
-        rTicGroup.name = side + "Ticks"
+        rTicGroup.name = side + "Ticks";
         var rTextGroup = new paper.Group();
-        rTextGroup.name = side + "Text"
+        rTextGroup.name = side + "Text";
 
         // +1/-1 to offset width of ruler backbone to prevent gaps
         var ticW = rc.width + 1;
@@ -91,7 +91,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         tic.strokeWidth = 2;
         rTicGroup.addChild( tic );
         var labelX = dir === 1 ? ticP.x + ticO.x + rc.fontSize : ticD - rc.fontSize;
-        var label = new paper.PointText( labelX, ticP.y );
+        label = new paper.PointText( labelX, ticP.y );
         label.content = min;
         label.fontSize = rulerFontSize + 'px';
         if ( dir != 1 ) {
@@ -106,8 +106,8 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
           var mTic = new paper.Path.Line( mTicP, mTicP.add( ticO ) );
           mTic.strokeColor = rc.color;
           mTic.strokeWidth = 2;
-          if ( i % ticInt == 0 ) {
-            var label = new paper.PointText( labelX, mTicP.y );
+          if ( i % ticInt === 0 ) {
+            label = new paper.PointText( labelX, mTicP.y );
             label.content = i;
             label.fontSize = rulerFontSize + 'px';
             textGroup.w = label.bounds.bottomRight.x;

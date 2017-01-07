@@ -45,7 +45,7 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
         // Set and place title
         if ( config.general.title ) {
           console.log( "CViTjs: Setting title" );
-          var cvitTitle = config.general.title.split( /\<[\/i]+\>/ );
+          var cvitTitle = config.general.title.split( /<[\/i]+>/ );
           var titleLoc;
           var titleSize = parseInt( config.general.title_font_size );
           var titleX;
