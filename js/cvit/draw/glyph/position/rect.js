@@ -39,11 +39,14 @@ define( [ 'jquery', 'glyph/utilities' ],
             targetGroup.addChild( g );
           }
           var featureGroup = targetGroup.children[ glyphGroup.name ];
-
+          var featureWidth = parseInt(view.config.width);
           var yLoc = ( ( position.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
-          var xLoc = ( view.xloc[ target ] + parseInt( view.config.offset ) );
+          var xOffset = parseInt(view.config.offset);
+          console.log(targetGroup.children[target].bounds);
+          var chrEdge = 1/xOffset > 0 ? targetGroup.children[target].strokeBounds.right : targetGroup.children[target].strokeBounds.left - featureWidth; 
+          var xLoc = ( chrEdge + xOffset );
           var point = new paper.Point( xLoc, yLoc );
-          var size = new paper.Size( parseInt( view.config.width ), parseInt( view.config.width ) );
+          var size = new paper.Size( featureWidth, featureWidth );
           var rectangle = new paper.Rectangle( point, size );
           var r = new paper.Path.Rectangle( rectangle );
           if ( parseInt( view.config.enable_pileup ) === 1 ) {
@@ -52,7 +55,8 @@ define( [ 'jquery', 'glyph/utilities' ],
           position.name = position.attribute.name ? position.attribute.name : '';
           r.info = position.attribute;
           r.thisColor = 'black';
-          r.fillColor = utility.formatColor( view.config.color );
+          var fillColor = position.attribute.color ? position.attribute.color : view.config.color;
+          r.fillColor = utility.formatColor( fillColor );
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, position );
           };

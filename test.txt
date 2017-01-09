@@ -1,0 +1,53 @@
+[11:23:31] Using gulpfile ~/git/cvitjs/gulpfile.js
+[11:23:31] Starting 'lint'...
+[11:23:31] Starting 'beautify'...
+[11:23:31] Starting 'watch'...
+[11:23:31] Finished 'watch' after 139 ms
+js/cvit/cvit.js: line 144, col 23, Don't make functions within a loop.
+
+1 error
+js/cvit/draw/general.js: line 48, col 55, Unexpected escaped character '<' in regular expression.
+
+1 error
+js/cvit/draw/glyph/utilities.js: line 119, col 25, 'i' is already defined.
+js/cvit/draw/glyph/utilities.js: line 120, col 21, 'group' is already defined.
+js/cvit/draw/glyph/utilities.js: line 131, col 15, 'testItem' is already defined.
+
+3 errors
+js/cvit/menu/modals/uploadmodal.js: line 63, col 116, Don't make functions within a loop.
+js/cvit/menu/modals/uploadmodal.js: line 46, col 43, Don't make functions within a loop.
+
+2 errors
+js/cvit/draw/glyph/chromosome/chromosome.js: line 33, col 61, ['text'] is better written in dot notation.
+
+1 error
+js/cvit/draw/glyph/position/rect.js: line 36, col 56, Use '===' to compare with 'undefined'.
+
+1 error
+[11:23:32] Finished 'lint' after 939 ms
+[11:23:32] Finished 'beautify' after 941 ms
+[11:23:32] Starting 'default'...
+[11:23:32] Finished 'default' after 5.7 μs
+[11:23:32] Starting 'lint'...
+js/cvit/cvit.js: line 144, col 23, Don't make functions within a loop.
+
+1 error
+js/cvit/draw/general.js: line 48, col 55, Unexpected escaped character '<' in regular expression.
+
+1 error
+js/cvit/draw/glyph/utilities.js: line 119, col 25, 'i' is already defined.
+js/cvit/draw/glyph/utilities.js: line 120, col 21, 'group' is already defined.
+js/cvit/draw/glyph/utilities.js: line 131, col 15, 'testItem' is already defined.
+
+3 errors
+js/cvit/menu/modals/uploadmodal.js: line 63, col 116, Don't make functions within a loop.
+js/cvit/menu/modals/uploadmodal.js: line 46, col 43, Don't make functions within a loop.
+
+2 errors
+js/cvit/draw/glyph/chromosome/chromosome.js: line 33, col 61, ['text'] is better written in dot notation.
+
+1 error
+js/cvit/draw/glyph/position/rect.js: line 36, col 56, Use '===' to compare with 'undefined'.
+
+1 error
+[11:23:33] Finished 'lint' after 413 ms

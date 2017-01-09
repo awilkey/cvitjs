@@ -79,7 +79,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         view.pileup = typeof( view.config.pileup_gap ) != "undefined" ? parseInt( view.config.pileup_gap ) : 0;
         view.context = thisC;
         view.centWidth = view.chromWidth + ( 2 * parseInt( config.centromere.centromere_overhang ) );
-        view.xloc = thisC.setXLoc( config, backbone );
+        //view.xloc = thisC.setXLoc( config, backbone );
         locations.forEach( function( loc ) {
           if ( ( view.config.dataFilter && loc.source === view.config.dataFilter ) || !view.config.dataFilter ) {
             thisC.placeGlyph( loc, view, backbone, glyph, glyphGroup );
@@ -121,7 +121,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         var xlocs = {};
         backbone.children.forEach( function( chromosome ) {
           var localBB = chromosome.children[ chromosome.name ];
-          xlocs[ chromosome.name ] = backbone.children[ chromosome.name ].bounds.right; //localBB.strokeBounds.x + localBB.strokeBounds.width;
+          xlocs[ chromosome.name ] = backbone.children[ chromosome.name ].position.x; //localBB.strokeBounds.x + localBB.strokeBounds.width;
         } );
         return xlocs;
       }

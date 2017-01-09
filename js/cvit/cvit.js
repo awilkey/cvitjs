@@ -37,10 +37,12 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         this.conf = {};
         this.data = {};
         this.viewInfo = {};
-        this.dataset = dataset ? dataset : false;
         // try to load main configuration information.
         var gConf = file.parse.conf( cvitConf );
-        var locations = thisC.getSettings( gConf, thisC.dataset );
+        var locations = thisC.getSettings( gConf, dataset );
+        console.log( locations );
+        thisC.dataset = locations[ 1 ];
+        locations = locations[ 0 ];
         viewConf = locations.conf;
         defaultData = locations.defaultData;
 
@@ -51,17 +53,17 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           var overlay = $( '<div id="overlay" class="hover_div" style="position:absolute; display:block;">' );
           var cHeight = 500;
           var cWidth = 1000;
-          if ( gConf[ 'data.' + thisC.dataset ].width != undefined ) {
+          console.log( 'data.' + thisC.dataset );
+          if ( gConf[ 'data.' + thisC.dataset ].width !== undefined ) {
             cWidth = parseInt( gConf[ 'data.' + thisC.dataset ].width );
-          } else if ( gConf.general.width != undefined ) {
+          } else if ( gConf.general.width !== undefined ) {
             cWidth = parseInt( gConf.general.width );
           }
-          if ( gConf[ 'data.' + thisC.dataset ].height != undefined ) {
+          if ( gConf[ 'data.' + thisC.dataset ].height !== undefined ) {
             cHeight = parseInt( gConf[ 'data.' + thisC.dataset ].height );
-          } else if ( gConf.general.height != undefined ) {
+          } else if ( gConf.general.height !== undefined ) {
             cHeight = parseInt( gConf.general.height );
           }
-          thisC.dataset
           $( canvas ).css( 'position', 'absolute' );
           $( '#cvit-div' ).css( 'position', 'relative' );
           $( '#cvit-div' ).append( overlay );
@@ -71,6 +73,7 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           $( '#cvit-canvas' ).css( "background-color", "white" );
           paper.setup( 'cvit-canvas' );
         } catch ( err ) {
+          console.log( err );
           console.log( 'CViTjs: Error: Was not able to find canvas.' );
           return;
         }
@@ -252,17 +255,21 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
       getSettings: function( mainConf, dataset ) {
         var query = window.location.search;
         var data = query.match( /data=(\w+)/ );
-        console.log( "CViTjs: Requested Dataset: " + String( dataset ) );
+        var confSettings;
+        var confKey;
         if ( dataset ) {
-          var settings = mainConf[ 'data.' + dataset ];
+          confSettings = mainConf[ 'data.' + dataset ];
+          confKey = dataset;
         } else if ( !!data ) {
-          var settings = mainConf[ 'data.' + data[ 1 ] ];
-        } else if ( 'general' in mainConf && 'data_default' in mainConf[ 'general' ] ) {
-          var default_data = mainConf[ 'general' ][ 'data_default' ];
-          var settings = mainConf[ 'data.' + default_data ];
+          confSettings = mainConf[ 'data.' + data[ 1 ] ];
+          confKey = data[ 1 ];
+        } else if ( 'general' in mainConf && 'data_default' in mainConf.general ) {
+          var default_data = mainConf.general.data_default;
+          confSettings = mainConf[ 'data.' + default_data ];
+          confKey = default_data;
         }
-        if ( settings ) {
-          return settings;
+        if ( confSettings !== undefined ) {
+          return [ confSettings, confKey ];
         } else {
           throw 'Data not found';
         }

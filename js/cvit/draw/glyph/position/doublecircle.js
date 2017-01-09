@@ -33,9 +33,18 @@ define( [ 'jquery', 'glyph/utilities' ],
         var target = position.seqName;
         var targetGroup = group.children[ target ];
         if ( targetGroup ) {
-          var radius = parseInt( view.config.width ) / 2;
+          if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
+            var g = new paper.Group();
+            g.name = glyphGroup.name;
+            targetGroup.addChild( g );
+          }
+          var featureGroup = targetGroup.children[ glyphGroup.name ];
+          var featureWidth = parseInt(view.config.width);
+		  var radius = featureWidth/2; 
           var yLoc = ( ( position.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
-          var xLoc = ( view.xloc[ target ] + parseInt( view.config.offset ) );
+          var xOffset = parseInt(view.config.offset);
+          var chrEdge = 1/xOffset > 0 ? targetGroup.children[target].strokeBounds.right : targetGroup.children[target].strokeBounds.left - featureWidth; 
+          var xLoc = ( chrEdge + xOffset ); 
           var point = new paper.Point( xLoc, yLoc );
           var r = new paper.CompoundPath( {
             children: [
@@ -51,12 +60,14 @@ define( [ 'jquery', 'glyph/utilities' ],
           } );
 
           if ( parseInt( view.config.enable_pileup ) === 1 ) {
-            utility.testCollision( r, glyphGroup, view.pileup );
+            utility.testCollision( r, featureGroup, view );
           }
           position.name = position.attribute.name ? position.attribute.name : '';
           r.info = position.attribute;
-          r.thisColor = 'black';
-          r.fillColor = utility.formatColor( view.config.color );
+		  console.log("Twerkit");
+          var fillColor = position.attribute.color ? position.attribute.color : view.config.color;
+          r.fillColor = utility.formatColor( fillColor );
+		  console.log("Twerkit real good");
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, position );
           };
@@ -67,9 +78,8 @@ define( [ 'jquery', 'glyph/utilities' ],
             glyphGroup.addChild( label );
             label.bringToFront();
           }
-          targetGroup.addChild( r );
+          featureGroup.addChild( r );
           r.sendToBack();
-          glyphGroup.addChild( r );
         }
       }
     };

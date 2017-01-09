@@ -87,7 +87,6 @@ define( [ 'jquery', 'bootstrap' ],
       /** Collision detection. pGap can be negative to move left, positive to move right */
       testCollision: function( feature, featureGroup, view ) {
         var pGap = view.pileup;
-        console.log( view.pileup );
         // Set the expected number of hits for the given feature to avoid infinte loop
         var minGroup = typeof( feature.children ) != "undefined" ? feature.children.length : 1;
         var getItem = function() {
@@ -97,36 +96,38 @@ define( [ 'jquery', 'bootstrap' ],
           } );
         };
         var testItem = getItem();
-        var fPName = featureGroup.parent.name;
-        var baseGroup = featureGroup.parent.parent;
+		var chrGroup = featureGroup.parent;
+        var fPName = chrGroup.name;
+        var baseGroup = chrGroup.parent;
         var layer = paper.project.layers[ 0 ];
         var length = baseGroup.children.length;
         var offset = feature.strokeBounds.width + pGap;
+		var side = chrGroup.children[0].position.x < feature.position.x ? true:false;
         while ( testItem.length > minGroup ) {
           var testPName = testItem[ 0 ].parent.parent.name;
           if ( fPName != testPName ) {
-
-            var index = baseGroup.children.indexOf( featureGroup.parent );
-            if ( pGap > -1 ) {
+            var index = baseGroup.children.indexOf( chrGroup );
+            if ( side ) {
               for ( var i = index + 1; i < length; i++ ) {
                 var group = baseGroup.children[ i ];
-                console.log( group );
-                group.position.x += 2 * offset;
-                layer.children[ group.name + "Label" ].position.x += 2 * offset;
-                view.xloc[ group.name ] += 2 * offset;
+                group.position.x += offset;
+                layer.children[ group.name + "Label" ].position.x += offset;
               }
             } else {
               for ( var i = index - 1; i > -1; i-- ) {
                 var group = baseGroup.children[ i ];
-                console.log( group );
-                group.position.x += 2 * offset;
-                layer.children[ group.name + "Label" ].position.x += 2 * offset;
-                view.xloc[ group.name ] += 2 * offset;
+                group.position.x -= offset;
+                layer.children[ group.name + "Label" ].position.x -= offset;
               }
 
             }
           } else {
-            feature.translate( new paper.Point( feature.strokeBounds.width + pGap, 0 ) );
+			if (side){
+              feature.translate( new paper.Point( offset, 0 ) );
+			} else {
+              feature.translate( new paper.Point( -offset, 0 ) );
+			}
+
           }
           var testItem = getItem();
         }
