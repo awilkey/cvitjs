@@ -31,33 +31,41 @@ define( [ 'jquery', 'glyph/utilities' ],
       draw: function( marker, group, view, glyphGroup ) {
         var target = marker.seqName;
         var targetGroup = group.children[ target ];
-        if ( targetGroup ) {
-          var yLoc = ( ( marker.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
-          var xLoc = ( view.xloc[ target ] + parseInt( view.config.offset ) );
-          var point = new paper.Point( xLoc, yLoc );
-          var size = parseInt( view.config.width );
-          var r = new paper.Path.Line( point, new paper.Point( point.x + size, point.y ) );
-          r.strokeWidth = 2;
-          if ( parseInt( view.config.enable_pileup ) === 1 ) {
-            this.testCollision( r, glyphGroup, view.pileup );
+		if ( targetGroup ) {
+          if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
+            var g = new paper.Group();
+            g.name = glyphGroup.name;
+            var labelGroup = new paper.Group();
+            labelGroup.name = glyphGroup.name + '-label';
+            targetGroup.addChild( g );
+            g.addChild(labelGroup);
           }
+          var featureGroup = targetGroup.children[ glyphGroup.name ];
+          var featureWidth = parseInt(view.config.width);
+          var yLoc = ( ( marker.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
+          var xOffset = parseInt(view.config.offset);
+          var chrEdge = 1/xOffset > 0 ? targetGroup.children[target].strokeBounds.right : targetGroup.children[target].strokeBounds.left - featureWidth;
+          var xLoc = ( chrEdge + xOffset );
+          var point = new paper.Point( xLoc, yLoc );
+          var r = new paper.Path.Line( point, new paper.Point( point.x +featureWidth, point.y ) );
+          r.strokeWidth = 2;
           marker.name = marker.attribute.name ? marker.attribute.name : '';
           r.info = marker.attribute;
           r.thisColor = 'black';
-          r.strokeColor = new paper.Color( view.config.color );
+		  var strokeColor = r.info.color ? r.info.color : view.config.color;
+          r.strokeColor = utility.formatColor( strokeColor );
+		  // As per original CViT, marker does not have any pileup control
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, marker );
           };
           if ( parseInt( view.config.draw_label ) === 1 ) {
             point.y = r.position.y;
             var label = utility.generateLabel( marker, view, point, xLoc );
-            targetGroup.addChild( label );
-            glyphGroup.addChild( label );
+            featureGroup.children[glyphGroup.name + '-label'].addChild(label);
             label.bringToFront();
           }
-          targetGroup.addChild( r );
-          r.sendToBack();
-          glyphGroup.addChild( r );
+          featureGroup.addChild( r );
+          r.sendToBack();          
         }
       }
     };

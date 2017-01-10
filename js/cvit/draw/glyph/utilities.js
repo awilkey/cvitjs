@@ -116,10 +116,8 @@ define( [ 'jquery', 'bootstrap' ],
 	   */
       testCollision: function( feature, featureGroup, view ) {
         var pGap = view.pileup;
-		console.log(view);
         // Set the expected number of hits for the given feature to avoid infinte loop
         var minGroup = typeof( feature.children ) != "undefined" ? feature.children.length : 1;
-		console.log(minGroup);
         var getItem = function() {
           return paper.project.getItems( {
             overlapping: feature.strokeBounds,
@@ -243,17 +241,10 @@ define( [ 'jquery', 'bootstrap' ],
 	   */
       //** Generate a toggle button to hide/show a given group in the view.
       generateViewControl: function( groupName, group ) {
-		console.log(group);
-		console.log(groupName);
-		console.log(group.children);
-		console.log(group.children[0]);
         var gName = groupName.replace( /\s+/g, '-' ).toLowerCase();
         var viewTitle = $( '<span>' + groupName + '</span>"' );
         var openButton = $( '<button type="button" class="btn btn-success view-toggle" style="float:right; margin-right:10px;">Show</button>' ).on( 'click', function( event ) {
           $( '#' + gName + '-options .btn-success' ).toggleClass( 'btn-danger' );
-		console.log(group);
-		console.log("thats what my baby said");
-		console.log(group.children['chr2']);
 		  for(var i = 0; i < group.children.length; i++){
 		    var toggleGroup = group.children[i].children[groupName];
 			if(toggleGroup !== undefined){

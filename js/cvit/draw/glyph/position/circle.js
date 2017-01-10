@@ -31,8 +31,6 @@ define( [ 'jquery', 'glyph/utilities' ],
 
       draw: function( position, group, view, glyphGroup ) {
         var target = position.seqName;
-		console.log(target);
-		console.log(group.children[target]);
         var targetGroup = group.children[ target ];
         if ( targetGroup ) {
           if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
@@ -43,7 +41,6 @@ define( [ 'jquery', 'glyph/utilities' ],
             targetGroup.addChild( g );
 			g.addChild(labelGroup);
           }
-		  console.log('drawing position');
           var featureGroup = targetGroup.children[ glyphGroup.name ];
           var featureWidth = parseInt(view.config.width);
           var yLoc = ( ( position.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
@@ -61,7 +58,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           position.name = position.attribute.name ? position.attribute.name : '';
           r.info = position.attribute;
           r.thisColor = 'black';
-          var fillColor = position.attribute.color ? position.attribute.color : view.config.color;
+          var fillColor = r.info.color ? r.info.color : view.config.color;
           r.fillColor = utility.formatColor( fillColor );
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, position );
