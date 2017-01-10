@@ -89,6 +89,7 @@ define( [ 'jquery', 'bootstrap' ],
         var pGap = view.pileup;
         // Set the expected number of hits for the given feature to avoid infinte loop
         var minGroup = typeof( feature.children ) != "undefined" ? feature.children.length : 1;
+		console.log(minGroup);
         var getItem = function() {
           return paper.project.getItems( {
             overlapping: feature.strokeBounds,
@@ -104,7 +105,13 @@ define( [ 'jquery', 'bootstrap' ],
         var offset = feature.strokeBounds.width + pGap;
 		var side = chrGroup.children[0].position.x < feature.position.x ? true:false;
         while ( testItem.length > minGroup ) {
-          var testPName = testItem[ 0 ].parent.parent.name;
+		  if (testItem[0].parent.className === 'CompoundPath'){
+            testPName = testItem[ 0 ].parent.parent.parent.name;
+		  } else {
+            testPName = testItem[ 0 ].parent.parent.name;
+		  }
+	 
+		  
           if ( fPName != testPName ) {
             var index = baseGroup.children.indexOf( chrGroup );
             if ( side ) {

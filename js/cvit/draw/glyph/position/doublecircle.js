@@ -45,6 +45,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           var xOffset = parseInt(view.config.offset);
           var chrEdge = 1/xOffset > 0 ? targetGroup.children[target].strokeBounds.right : targetGroup.children[target].strokeBounds.left - featureWidth; 
           var xLoc = ( chrEdge + xOffset ); 
+		  console.log(xLoc);
           var point = new paper.Point( xLoc, yLoc );
           var r = new paper.CompoundPath( {
             children: [
@@ -64,10 +65,8 @@ define( [ 'jquery', 'glyph/utilities' ],
           }
           position.name = position.attribute.name ? position.attribute.name : '';
           r.info = position.attribute;
-		  console.log("Twerkit");
           var fillColor = position.attribute.color ? position.attribute.color : view.config.color;
           r.fillColor = utility.formatColor( fillColor );
-		  console.log("Twerkit real good");
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, position );
           };
