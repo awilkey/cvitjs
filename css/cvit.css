@@ -7,14 +7,18 @@ body{
 }
 */
 #title-div{
-  display:none;
+/*
+ * display:none; 
+ */
 }	
 #cvit-div{
   padding: 2em 0 0 0;
 }
 
 #viewButton{
-  display:none;
+ /*
+  * display:none;
+  */
 }
 
 .cvit{

@@ -30,32 +30,47 @@ define( [ 'jquery', 'glyph/utilities' ],
        */
 
       draw: function( centromere, group, view, glyphGroup ) {
+		try {
         var target = centromere.seqName;
         var targetGroup = group.children[ target ];
         if ( targetGroup ) {
-          var xLoc = Math.floor( view.xloc[ target ] - ( view.centWidth / 2 ) );
+          if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
+            var g = new paper.Group();
+            g.name = glyphGroup.name;
+			var labelGroup = new paper.Group();
+            labelGroup.name = glyphGroup.name+'-label';
+            targetGroup.addChild( g );
+			g.addChild(labelGroup);
+          }
+		  console.log( glyphGroup.name);
+          var featureGroup = targetGroup.children[ glyphGroup.name ];
+          var featureWidth = view.centWidth;
           var yLoc = ( ( centromere.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
+          var chrCenter = targetGroup.children[target].position.x;
+          var xLoc = ( chrCenter );
           var point = new paper.Point( xLoc, yLoc );
-          var size = new paper.Size( view.centWidth, ( centromere.end - centromere.start ) * view.yScale );
+          var size = new paper.Size( featureWidth, (centromere.end - centromere.start) * view.yScale );
           var rectangle = new paper.Rectangle( point, size );
           var r = new paper.Path.Rectangle( rectangle );
-          r.position.x = targetGroup.children[ target ].position.x;
-          centromere.name = centromere.attribute.name ? centromere.attribute.name : '';
+		  r.position.x = chrCenter;
           r.info = centromere.attribute;
+          centromere.name = r.info.name ? r.info.name : '';
           r.thisColor = 'black';
-          r.fillColor = utility.formatColor( view.config.color );
-
+          var fillColor = r.info.color ? r.info.color : view.config.color;
+          r.fillColor = utility.formatColor( fillColor );
+          r.onMouseDown = function( event ) {
+            utility.attachPopover( r, position );
+          };
           if ( parseInt( view.config.draw_label ) === 1 ) {
             point.y = r.position.y;
-            var label = utility.generateLabel( centromere, view, point, xLoc );
-            targetGroup.addChild( label );
-            glyphGroup.addChild( label );
-            r.sendToBack();
+            var label = utility.generateLabel2( r, view, targetGroup.children[0] );
+			featureGroup.children[glyphGroup.name + '-label'].addChild(label);
+            label.bringToFront();
           }
-
-          targetGroup.addChild( r );
-          glyphGroup.addChild( r );
+          featureGroup.addChild( r );
+          r.sendToBack();
         }
-      }
+      } catch (err) {console.log(err);}
+	  }
     };
   } );

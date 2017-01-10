@@ -85,7 +85,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
             thisC.placeGlyph( loc, view, backbone, glyph, glyphGroup );
           }
         } );
-        utility.generateViewControl( view.groupName, glyphGroup );
+        utility.generateViewControl( view.groupName, backbone );
       },
       /**
        * Place the current feature on the backbone
