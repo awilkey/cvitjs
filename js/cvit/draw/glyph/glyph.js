@@ -74,8 +74,8 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         glyphGroup.name = view.groupName;
         view.config = view.key === view.groupName ? config[ view.key ] : thisC.mergeConfig( config[ view.key ], config[ view.groupName ] );
         view.zoom = view.yScale;
-        view.xoffset = typeof( view.config.offset ) != "undefined" ? parseInt( view.config.offset ) : 0;
-        view.yOffset = typeof( config.general.chrom_font_size ) ? view.yOffset + parseInt( config.general.chrom_font_size ) : view.yOffset;
+//        view.xoffset = typeof( view.config.offset ) != "undefined" ? parseInt( view.config.offset ) : 0;
+//        view.yOffset = typeof( config.general.chrom_font_size ) ? view.yOffset + parseInt( config.general.chrom_font_size ) : view.yOffset;
         view.pileup = typeof( view.config.pileup_gap ) != "undefined" ? parseInt( view.config.pileup_gap ) : 0;
         view.context = thisC;
         view.centWidth = view.chromWidth + ( 2 * parseInt( config.centromere.centromere_overhang ) );
@@ -108,22 +108,6 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
           }
         } );
         return editedConfig;
-      },
-      /**
-       * Generate left/right zero based on backbone and configuration
-       *
-       * @param config [Object] Configuration object meeting the cvitconfig.json schema
-       * @param backbone [paperGroup] A paper group that contains the chromosome backbone of the cvit drawing (optional)
-       *
-       * @return [array] Starting left or right X positions for features based on backbone. 
-       */
-      setXLoc( config, backbone ) {
-        var xlocs = {};
-        backbone.children.forEach( function( chromosome ) {
-          var localBB = chromosome.children[ chromosome.name ];
-          xlocs[ chromosome.name ] = backbone.children[ chromosome.name ].position.x; //localBB.strokeBounds.x + localBB.strokeBounds.width;
-        } );
-        return xlocs;
       }
     };
   } );

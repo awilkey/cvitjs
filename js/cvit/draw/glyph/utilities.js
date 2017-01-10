@@ -116,6 +116,7 @@ define( [ 'jquery', 'bootstrap' ],
 	   */
       testCollision: function( feature, featureGroup, view ) {
         var pGap = view.pileup;
+		console.log(view);
         // Set the expected number of hits for the given feature to avoid infinte loop
         var minGroup = typeof( feature.children ) != "undefined" ? feature.children.length : 1;
 		console.log(minGroup);
@@ -175,13 +176,12 @@ define( [ 'jquery', 'bootstrap' ],
 
 		var groupOverlap = paper.project.getItems({
 				overlapping: feature.strokeBounds,
-				class: paper.Group });
-		if(groupOverlap){
-		  for(var j = 0; j< groupOverlap.length; j++){
-		   if(groupOverlap[j].parent.name === 'view' && groupOverlap[j].name !== fPName){
-		     moveBackbone(pGap);
-		   }
-		  }
+				class: paper.Group,
+				name : function(value){return value !== fPName;},
+				_parent : function(value){return value.name === 'view';}
+        });
+		if(groupOverlap.length > 0){
+		 moveBackbone(0); 
 		}
 
       },
