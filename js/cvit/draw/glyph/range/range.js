@@ -32,7 +32,7 @@ define( [ 'jquery', 'glyph/utilities' ],
       draw: function( range, group, view, glyphGroup ) {
         var target = range.seqName;
         var targetGroup = group.children[ target ];
-		var gGroup = glyphGroup.name;
+        var gGroup = glyphGroup.name;
         if ( targetGroup ) {
           if ( targetGroup.children[ gGroup ] == undefined ) {
             var g = new paper.Group();

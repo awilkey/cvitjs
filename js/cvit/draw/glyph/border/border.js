@@ -33,7 +33,7 @@ define( [ 'jquery', 'glyph/utilities' ],
         console.log( "drawing border" );
         var target = border.seqName;
         var targetGroup = group.children[ target ];
-		var gName = glyphGroup.name
+        var gName = glyphGroup.name
         if ( targetGroup ) {
           if ( targetGroup.children[ gName ] == undefined ) {
             var g = new paper.Group();
@@ -62,7 +62,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           if ( parseInt( view.config.fill ) === 1 ) {
             var fillColor = r.info.color ? r.info.color : view.config.color;
             r.fillColor = utility.formatColor( fillColor );
-		  }
+          }
           console.log( targetGroup.children[ target ].strokeWidth );
           r.strokeWidth = targetGroup.children[ target ].strokeWidth;
           var strokeColor = r.info.color ? r.info.color : view.config.border_color;

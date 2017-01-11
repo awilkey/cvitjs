@@ -31,7 +31,7 @@ define( [ 'jquery', 'glyph/utilities' ],
       draw: function( marker, group, view, glyphGroup ) {
         var target = marker.seqName;
         var targetGroup = group.children[ target ];
-		var gName = glyphGroup.name;
+        var gName = glyphGroup.name;
         if ( targetGroup ) {
           if ( targetGroup.children[ gName ] == undefined ) {
             var g = new paper.Group();
