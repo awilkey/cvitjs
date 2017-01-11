@@ -1,6 +1,6 @@
 /*
  *
- * Geneeral CViTjs config
+ * General CViTjs config
  *
  */
 
@@ -13,14 +13,13 @@ body{
 }
 */
 #title-div{
-   /* 
-	* display:none;
-	*/
+/*
+ * display:none; 
+ */
 }	
 #cvit-div{
   padding: 2em 0 0 0;
 }
-
 .cvit{
   clear:both;
 }
@@ -61,6 +60,7 @@ body{
  * Menu modal configuration
  *
  */
+
 .menu-modal{
 width:50em;
 }

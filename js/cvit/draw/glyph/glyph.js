@@ -45,8 +45,6 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
           var myView = viewSettings.view;
           myView.key = viewSettings.key;
           myView.groupName = viewSettings.groupName;
-          console.log( view.key );
-          console.log( view.groupName );
           require( [ myGlyph ], function( myGlyph ) {
             deferred.resolve( thisC.prepareGlyph( data, config, viewSettings, backbone, myGlyph ) ).done( paper.view.draw() );
           } );
@@ -71,21 +69,19 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         var view = viewSettings.view;
         view.key = viewSettings.key;
         view.groupName = viewSettings.groupName;
+		console.log("CViTjs: Drawing " + view.groupName);
         glyphGroup.name = view.groupName;
         view.config = view.key === view.groupName ? config[ view.key ] : thisC.mergeConfig( config[ view.key ], config[ view.groupName ] );
         view.zoom = view.yScale;
-        view.xoffset = typeof( view.config.offset ) != "undefined" ? parseInt( view.config.offset ) : 0;
-        view.yOffset = typeof( config.general.chrom_font_size ) ? view.yOffset + parseInt( config.general.chrom_font_size ) : view.yOffset;
         view.pileup = typeof( view.config.pileup_gap ) != "undefined" ? parseInt( view.config.pileup_gap ) : 0;
         view.context = thisC;
         view.centWidth = view.chromWidth + ( 2 * parseInt( config.centromere.centromere_overhang ) );
-        view.xloc = thisC.setXLoc( config, backbone );
         locations.forEach( function( loc ) {
           if ( ( view.config.dataFilter && loc.source === view.config.dataFilter ) || !view.config.dataFilter ) {
             thisC.placeGlyph( loc, view, backbone, glyph, glyphGroup );
           }
         } );
-        utility.generateViewControl( view.groupName, glyphGroup );
+        utility.generateViewControl( view.groupName, backbone );
       },
       /**
        * Place the current feature on the backbone
@@ -108,22 +104,6 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
           }
         } );
         return editedConfig;
-      },
-      /**
-       * Generate left/right zero based on backbone and configuration
-       *
-       * @param config [Object] Configuration object meeting the cvitconfig.json schema
-       * @param backbone [paperGroup] A paper group that contains the chromosome backbone of the cvit drawing (optional)
-       *
-       * @return [array] Starting left or right X positions for features based on backbone. 
-       */
-      setXLoc: function( config, backbone ) {
-        var xlocs = {};
-        backbone.children.forEach( function( chromosome ) {
-          var localBB = chromosome.children[ chromosome.name ];
-          xlocs[ chromosome.name ] = backbone.children[ chromosome.name ].bounds.right; //localBB.strokeBounds.x + localBB.strokeBounds.width;
-        } );
-        return xlocs;
       }
     };
   } );

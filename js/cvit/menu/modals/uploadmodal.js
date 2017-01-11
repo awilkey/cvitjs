@@ -47,20 +47,11 @@ define( [ 'jquery', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities',
                 console.log( event );
                 var fileContents = event.target;
                 var newFeatures = file.parse.gff( event.target.result );
-                console.log( newFeatures );
                 for ( var fkey in newFeatures ) {
-                  console.log( fkey );
                   console.log( newFeatures );
                   thisc.view.viewName = this.name.slice( 0, this.name.lastIndexOf( '.' ) ) + " " + fkey;
                   //upmod.checkBack(thisc.group,newFeatures[ fkey ].features,this.name);
-                  if ( thisc.conf[ fkey ] !== undefined ) {
-                    thisc.conf[ thisc.view.viewName ] = thisc.conf[ fkey ];
-                  } else {
-                    thisc.conf[ thisc.view.viewName ] = thisc.conf[ range ];
-                  }
-                  console.log( newFeatures[ fkey ] );
-                  console.log( thisc.view.viewName );
-                  var rangeGet = glyph.drawGlyph( newFeatures[ fkey ], thisc.conf, thisc.view, thisc.group ).then( function() {
+                  var rangeGet = glyph.drawGlyph( newFeatures[ fkey ], 'range:range', thisc.conf, thisc.view, thisc.group ).then( function() {
                     paper.view.draw();
                   } );
                 }
@@ -86,9 +77,6 @@ define( [ 'jquery', 'cvit/file/file', 'draw/glyph/glyph', 'glyph/utilities',
        *
        */
       checkBack: function( backbone, features, filename ) {
-        console.log( "boom!" );
-        console.log( backbone );
-        console.log( features );
         for ( var i = 0; i < features.length; i++ ) {
           var feature = features[ i ];
           console.log( feature.seqName );

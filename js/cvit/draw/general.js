@@ -28,11 +28,11 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
        */
       drawGlyph: function( data, config, view, backbone ) {
 
+
         // Set and draw border
         var background = new paper.Path.Rectangle( {
           point: [ 0, 0 ],
           size: [ paper.view.size.width, paper.view.size.height ],
-          strokeColor: 'white',
           selected: true
         } );
         background.fillColor = 'white';
@@ -83,11 +83,11 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
         var deferred = new $.Deferred();
         var myGlyph = 'glyph/' + config.general.glyph + '/' + config.general.shape;
         var moo = require( [ myGlyph ], function( myGlyph ) {
-          deferred.resolve( myGlyph.draw( data, config, view ) );
-          background.sendToBack();
-          paper.view.draw();
+          deferred.resolve( myGlyph.draw( data, config, view ) ).done( function() {
+            background.sendToBack();
+            paper.view.draw();
+          } );
         } );
-
         return deferred.promise();
       }
     };
