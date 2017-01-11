@@ -30,7 +30,7 @@ define( [ 'jquery', 'glyph/utilities' ],
        */
 
       draw: function( range, group, view, glyphGroup ) {
-		var target = range.seqName;
+        var target = range.seqName;
         var targetGroup = group.children[ target ];
         if ( targetGroup ) {
           if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
@@ -39,13 +39,13 @@ define( [ 'jquery', 'glyph/utilities' ],
             var labelGroup = new paper.Group();
             labelGroup.name = glyphGroup.name + '-label';
             targetGroup.addChild( g );
-            g.addChild(labelGroup);
+            g.addChild( labelGroup );
           }
-		  var featureGroup = targetGroup.children[glyphGroup.name];
-		  var featureWidth = parseInt(view.config.width);
+          var featureGroup = targetGroup.children[ glyphGroup.name ];
+          var featureWidth = parseInt( view.config.width );
           var yLoc = ( ( range.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
-          var xOffset = parseInt(view.config.offset);
-          var chrEdge = 1/xOffset > 0 ? targetGroup.children[target].strokeBounds.right : targetGroup.children[target].strokeBounds.left - featureWidth;
+          var xOffset = parseInt( view.config.offset );
+          var chrEdge = 1 / xOffset > 0 ? targetGroup.children[ target ].strokeBounds.right : targetGroup.children[ target ].strokeBounds.left - featureWidth;
           var xLoc = ( chrEdge + xOffset );
           var point = new paper.Point( xLoc, yLoc );
           var size = new paper.Size( featureWidth, ( range.end - range.start ) * view.zoom );
@@ -64,13 +64,13 @@ define( [ 'jquery', 'glyph/utilities' ],
           };
           if ( parseInt( view.config.draw_label ) === 1 ) {
             point.y = r.position.y;
-            var label = utility.generateLabel2( r, view, targetGroup.children[0] );
-            featureGroup.children[glyphGroup.name + '-label'].addChild(label);
+            var label = utility.generateLabel2( r, view, targetGroup.children[ 0 ] );
+            featureGroup.children[ glyphGroup.name + '-label' ].addChild( label );
             label.bringToFront();
           }
           featureGroup.addChild( r );
           r.sendToBack();
         }
-	  }
+      }
     };
   } );

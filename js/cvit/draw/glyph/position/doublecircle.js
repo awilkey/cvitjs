@@ -39,13 +39,13 @@ define( [ 'jquery', 'glyph/utilities' ],
             targetGroup.addChild( g );
           }
           var featureGroup = targetGroup.children[ glyphGroup.name ];
-          var featureWidth = parseInt(view.config.width);
-		  var radius = featureWidth/2; 
+          var featureWidth = parseInt( view.config.width );
+          var radius = featureWidth / 2;
           var yLoc = ( ( position.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
-          var xOffset = parseInt(view.config.offset);
-          var chrEdge = 1/xOffset > 0 ? targetGroup.children[target].strokeBounds.right : targetGroup.children[target].strokeBounds.left - featureWidth; 
-          var xLoc = ( chrEdge + xOffset ); 
-		  console.log(xLoc);
+          var xOffset = parseInt( view.config.offset );
+          var chrEdge = 1 / xOffset > 0 ? targetGroup.children[ target ].strokeBounds.right : targetGroup.children[ target ].strokeBounds.left - featureWidth;
+          var xLoc = ( chrEdge + xOffset );
+          console.log( xLoc );
           var point = new paper.Point( xLoc, yLoc );
           var r = new paper.CompoundPath( {
             children: [

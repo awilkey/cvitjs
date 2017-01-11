@@ -36,16 +36,16 @@ define( [ 'jquery', 'glyph/utilities' ],
           if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
             var g = new paper.Group();
             g.name = glyphGroup.name;
-			var labelGroup = new paper.Group();
-			labelGroup.name = glyphGroup.name + '-label';
+            var labelGroup = new paper.Group();
+            labelGroup.name = glyphGroup.name + '-label';
             targetGroup.addChild( g );
-			g.addChild(labelGroup);
+            g.addChild( labelGroup );
           }
           var featureGroup = targetGroup.children[ glyphGroup.name ];
-          var featureWidth = parseInt(view.config.width);
+          var featureWidth = parseInt( view.config.width );
           var yLoc = ( ( position.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
-          var xOffset = parseInt(view.config.offset);
-          var chrEdge = 1/xOffset > 0 ? targetGroup.children[target].strokeBounds.right : targetGroup.children[target].strokeBounds.left - featureWidth; 
+          var xOffset = parseInt( view.config.offset );
+          var chrEdge = 1 / xOffset > 0 ? targetGroup.children[ target ].strokeBounds.right : targetGroup.children[ target ].strokeBounds.left - featureWidth;
           var xLoc = ( chrEdge + xOffset );
           var point = new paper.Point( xLoc, yLoc );
           var size = new paper.Size( featureWidth, featureWidth );
@@ -65,11 +65,11 @@ define( [ 'jquery', 'glyph/utilities' ],
           };
           if ( parseInt( view.config.draw_label ) === 1 ) {
             point.y = r.position.y;
-            var label = utility.generateLabel2( r, view, targetGroup.children[0] );
-			featureGroup.children[glyphGroup.name + '-label'].addChild(label);
+            var label = utility.generateLabel2( r, view, targetGroup.children[ 0 ] );
+            featureGroup.children[ glyphGroup.name + '-label' ].addChild( label );
             label.bringToFront();
           }
-		  console.log(targetGroup);
+          console.log( targetGroup );
           featureGroup.addChild( r );
           r.sendToBack();
         }

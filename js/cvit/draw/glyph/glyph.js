@@ -74,8 +74,8 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         glyphGroup.name = view.groupName;
         view.config = view.key === view.groupName ? config[ view.key ] : thisC.mergeConfig( config[ view.key ], config[ view.groupName ] );
         view.zoom = view.yScale;
-//        view.xoffset = typeof( view.config.offset ) != "undefined" ? parseInt( view.config.offset ) : 0;
-//        view.yOffset = typeof( config.general.chrom_font_size ) ? view.yOffset + parseInt( config.general.chrom_font_size ) : view.yOffset;
+        //        view.xoffset = typeof( view.config.offset ) != "undefined" ? parseInt( view.config.offset ) : 0;
+        //        view.yOffset = typeof( config.general.chrom_font_size ) ? view.yOffset + parseInt( config.general.chrom_font_size ) : view.yOffset;
         view.pileup = typeof( view.config.pileup_gap ) != "undefined" ? parseInt( view.config.pileup_gap ) : 0;
         view.context = thisC;
         view.centWidth = view.chromWidth + ( 2 * parseInt( config.centromere.centromere_overhang ) );
