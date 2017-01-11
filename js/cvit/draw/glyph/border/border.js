@@ -23,41 +23,32 @@ define( [ 'jquery', 'glyph/utilities' ],
       /**
        * Draws the glyph of a given feature.
        *
-       * @param {object} centromere - The centromere to draw.
-       * @param {paper.group} group - Paper group that holds the backbomes.
+       * @param {object} centromere - The border to draw.
+       * @param {paper.group} group - Paper group that holds the backbones.
        * @param {object} view - object that contains configuration information.
-       * @param {paper.group} glyphGroup - Paper group that will hold the centromere.
+       * @param {paper.group} glyphGroup - Paper group that will hold the border.
        */
 
       draw: function( border, group, view, glyphGroup ) {
         console.log( "drawing border" );
         var target = border.seqName;
         var targetGroup = group.children[ target ];
+		var gName = glyphGroup.name
         if ( targetGroup ) {
-          if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
+          if ( targetGroup.children[ gName ] == undefined ) {
             var g = new paper.Group();
-            g.name = glyphGroup.name;
+            g.name = gName;
             var labelGroup = new paper.Group();
-            labelGroup.name = glyphGroup.name + '-label';
+            labelGroup.name = gName + '-label';
             targetGroup.addChild( g );
             g.addChild( labelGroup );
             console.log( view.config );
-            if ( parseInt( view.config.fill ) === 1 ) {
-              var fill = new paper.Path.Rectangle(
-                targetGroup.children[ 0 ].bounds.left,
-                targetGroup.children[ 0 ].bounds.top,
-                targetGroup.children[ 0 ].bounds.width,
-                targetGroup.children[ 0 ].bounds.height );
-              fill.fillColor = 'black';
-              g.addChild( fill );
-              fill.sendToBack();
-            }
           }
 
-          var featureGroup = targetGroup.children[ glyphGroup.name ];
-          var featureWidth = targetGroup.children[ 0 ].bounds.width;
-          var yLoc = ( ( border.start ) * view.yScale ) + targetGroup.children[ 0 ].bounds.top;
-          var chrCenter = targetGroup.children[ 0 ].position.x;
+          var featureGroup = targetGroup.children[ gName ];
+          var featureWidth = targetGroup.children[ target ].bounds.width;
+          var yLoc = ( ( border.start ) * view.yScale ) + targetGroup.children[ target ].bounds.top;
+          var chrCenter = targetGroup.children[ target ].position.x;
           var xLoc = chrCenter;
           var fLen = view.yScale * ( border.end - border.start );
           console.log( fLen );
@@ -68,19 +59,20 @@ define( [ 'jquery', 'glyph/utilities' ],
           r.info = border.attribute;
           border.name = r.info.name ? r.info.name : '';
           r.thisColor = 'black';
-          var fillColor = r.info.color ? r.info.color : view.config.color;
-          r.fillColor = utility.formatColor( fillColor );
-
-          console.log( targetGroup.children[ 0 ].strokeWidth );
-          r.strokeWidth = targetGroup.children[ 0 ].strokeWidth;
+          if ( parseInt( view.config.fill ) === 1 ) {
+            var fillColor = r.info.color ? r.info.color : view.config.color;
+            r.fillColor = utility.formatColor( fillColor );
+		  }
+          console.log( targetGroup.children[ target ].strokeWidth );
+          r.strokeWidth = targetGroup.children[ target ].strokeWidth;
           var strokeColor = r.info.color ? r.info.color : view.config.border_color;
-          r.strokeColor = utility.formatColor( 'green' );
+          r.strokeColor = utility.formatColor( strokeColor );
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, position );
           };
           if ( parseInt( view.config.draw_label ) === 1 ) {
             point.y = r.position.y;
-            var label = utility.generateLabel2( r, view, targetGroup.children[ 0 ] );
+            var label = utility.generateLabel( r, view, targetGroup.children[ target ] );
             featureGroup.children[ glyphGroup.name + '-label' ].addChild( label );
             label.bringToFront();
           }

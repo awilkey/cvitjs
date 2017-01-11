@@ -31,18 +31,19 @@ define( [ 'jquery', 'glyph/utilities' ],
       draw: function( marker, group, view, glyphGroup ) {
         var target = marker.seqName;
         var targetGroup = group.children[ target ];
+		var gName = glyphGroup.name;
         if ( targetGroup ) {
-          if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
+          if ( targetGroup.children[ gName ] == undefined ) {
             var g = new paper.Group();
-            g.name = glyphGroup.name;
+            g.name = gName;
             var labelGroup = new paper.Group();
-            labelGroup.name = glyphGroup.name + '-label';
+            labelGroup.name = gName + '-label';
             targetGroup.addChild( g );
             g.addChild( labelGroup );
           }
-          var featureGroup = targetGroup.children[ glyphGroup.name ];
+          var featureGroup = targetGroup.children[ gName ];
           var featureWidth = parseInt( view.config.width );
-          var yLoc = ( ( marker.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
+          var yLoc = ( ( marker.start ) * view.yScale ) + targetGroup.children[ target ].bounds.top;
           var xOffset = parseInt( view.config.offset );
           var chrEdge = 1 / xOffset > 0 ? targetGroup.children[ target ].strokeBounds.right : targetGroup.children[ target ].strokeBounds.left - featureWidth;
           var xLoc = ( chrEdge + xOffset );
@@ -60,8 +61,8 @@ define( [ 'jquery', 'glyph/utilities' ],
           };
           if ( parseInt( view.config.draw_label ) === 1 ) {
             point.y = r.position.y;
-            var label = utility.generateLabel( marker, view, point, xLoc );
-            featureGroup.children[ glyphGroup.name + '-label' ].addChild( label );
+            var label = utility.generateLabel( marker, view, targetGroup.children[ target ] );
+            featureGroup.children[ gName + '-label' ].addChild( label );
             label.bringToFront();
           }
           featureGroup.addChild( r );

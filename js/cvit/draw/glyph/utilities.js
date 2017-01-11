@@ -198,7 +198,7 @@ define( [ 'jquery', 'bootstrap' ],
        *
        */
       //** TODO: Find good solution for overlapping labels
-      generateLabel2: function( feature, view, backBone ) {
+      generateLabel: function( feature, view, backBone ) {
         var labelOffset = parseInt( view.config.label_offset );
         var label = new paper.PointText( feature.position );
         label.content = feature.info.name !== undefined ? feature.info.name.trim() : '';
@@ -211,30 +211,6 @@ define( [ 'jquery', 'bootstrap' ],
         } else {
           label.position.x = backBone.strokeBounds.left + labelOffset - ( label.strokeBounds.width / 2 );
         }
-        return label;
-      },
-      //** TODO: Make better, currently is a mess with overlapping labels
-      generateLabel: function( feature, view, point, xOffset ) {
-        var labelOffset = parseInt( view.config.label_offset );
-
-        if ( labelOffset < 0 ) {
-          point.x = xOffset - ( view.centWidth / 2 ) - labelOffset;
-        } else {
-          point.x = xOffset + ( view.centWidth / 2 ) + labelOffset;
-        }
-
-        var test = xOffset + view.centWidth / 2 + labelOffset;
-        var label = new paper.PointText( point );
-        label.content = feature.attribute.name !== undefined ? feature.attribute.name.trim() : '';
-        var fill = typeof( view.config.label_color ) != 'undefined' ? view.config.label_color : 'black';
-        label.fillColor = this.formatColor( fill );
-        label.fontSize = parseInt( view.config.font_size );
-
-        if ( labelOffset < 0 ) {
-          label.position = new paper.Point( point.x - label.strokeBounds.width, point.y );
-        }
-
-        label.position.y = point.y;
         return label;
       },
       /*

@@ -32,13 +32,14 @@ define( [ 'jquery', 'glyph/utilities' ],
       draw: function( position, group, view, glyphGroup ) {
         var target = position.seqName;
         var targetGroup = group.children[ target ];
+		var gName = glyphGroup.name;
         if ( targetGroup ) {
-          if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
+          if ( targetGroup.children[ gName ] == undefined ) {
             var g = new paper.Group();
-            g.name = glyphGroup.name;
+            g.name = gName;
             targetGroup.addChild( g );
           }
-          var featureGroup = targetGroup.children[ glyphGroup.name ];
+          var featureGroup = targetGroup.children[ gName ];
           var featureWidth = parseInt( view.config.width );
           var yLoc = ( ( position.start ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
           var xOffset = parseInt( view.config.offset );
@@ -62,7 +63,7 @@ define( [ 'jquery', 'glyph/utilities' ],
           };
           if ( parseInt( view.config.draw_label ) === 1 ) {
             point.y = r.position.y;
-            var label = utility.generateLabel( position, view, point, xLoc );
+            var label = utility.generateLabel( position, view, targetGroup.children[target]);
             targetGroup.addChild( label );
             glyphGroup.addChild( label );
             label.bringToFront();

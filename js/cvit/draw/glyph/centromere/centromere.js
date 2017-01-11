@@ -30,22 +30,22 @@ define( [ 'jquery', 'glyph/utilities' ],
        */
 
       draw: function( centromere, group, view, glyphGroup ) {
-        try {
-          var target = centromere.seqName;
+		  var target = centromere.seqName;
           var targetGroup = group.children[ target ];
+		  var gName = glyphGroup.name;
           if ( targetGroup ) {
-            if ( targetGroup.children[ glyphGroup.name ] == undefined ) {
+            if ( targetGroup.children[ gName ] == undefined ) {
               var g = new paper.Group();
-              g.name = glyphGroup.name;
+              g.name = gName;
               var labelGroup = new paper.Group();
-              labelGroup.name = glyphGroup.name + '-label';
+              labelGroup.name = gName + '-label';
               targetGroup.addChild( g );
               g.addChild( labelGroup );
             }
-            console.log( glyphGroup.name );
-            var featureGroup = targetGroup.children[ glyphGroup.name ];
+            console.log( gName );
+            var featureGroup = targetGroup.children[ gName ];
             var featureWidth = view.centWidth;
-            var yLoc = ( ( centromere.start ) * view.yScale ) + targetGroup.children[ 0 ].bounds.top;
+            var yLoc = ( ( centromere.start ) * view.yScale ) + targetGroup.children[ target ].bounds.top;
             var chrCenter = targetGroup.children[ target ].position.x;
             var xLoc = ( chrCenter );
             var point = new paper.Point( xLoc, yLoc );
@@ -63,16 +63,13 @@ define( [ 'jquery', 'glyph/utilities' ],
             };
             if ( parseInt( view.config.draw_label ) === 1 ) {
               point.y = r.position.y;
-              var label = utility.generateLabel2( r, view, targetGroup.children[ 0 ] );
-              featureGroup.children[ glyphGroup.name + '-label' ].addChild( label );
+              var label = utility.generateLabel( r, view, targetGroup.children[ target ] );
+              featureGroup.children[ gName + '-label' ].addChild( label );
               label.bringToFront();
             }
             featureGroup.addChild( r );
             r.sendToBack();
           }
-        } catch ( err ) {
-          console.log( err );
-        }
       }
     };
   } );
