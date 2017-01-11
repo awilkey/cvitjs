@@ -136,17 +136,20 @@ define( [ 'jquery', 'bootstrap' ],
         var side = chrGroup.children[ 0 ].position.x < feature.position.x ? true : false;
         var index = baseGroup.children.indexOf( chrGroup );
         var moveBackbone = function( pileupOffset ) {
+		  var groupBounds;
+		  var i;
+		  var group;
           if ( side ) {
-            var groupBounds = feature.strokeBounds.right - baseGroup.children[ index + 1 ].strokeBounds.left;
-            for ( var i = index + 1; i < length; i++ ) {
-              var group = baseGroup.children[ i ];
+            groupBounds = feature.strokeBounds.right - baseGroup.children[ index + 1 ].strokeBounds.left;
+            for ( i = index + 1; i < length; i++ ) {
+              group = baseGroup.children[ i ];
               group.position.x += pileupOffset + groupBounds;
               layer.children[ group.name + "Label" ].position.x += pileupOffset + groupBounds;
             }
           } else {
-            var groupBounds = baseGroup.children[ index - 1 ].strokeBounds.right - feature.strokeBounds.left;
-            for ( var i = index - 1; i > -1; i-- ) {
-              var group = baseGroup.children[ i ];
+             groupBounds = baseGroup.children[ index - 1 ].strokeBounds.right - feature.strokeBounds.left;
+            for ( i = index - 1; i > -1; i-- ) {
+              group = baseGroup.children[ i ];
               group.position.x -= pileupOffset + groupBounds;
               layer.children[ group.name + "Label" ].position.x -= pileupOffset + groupBounds;
             }
@@ -170,7 +173,7 @@ define( [ 'jquery', 'bootstrap' ],
             }
 
           }
-          var testItem = getItem();
+          testItem = getItem();
         }
 
         var groupOverlap = paper.project.getItems( {

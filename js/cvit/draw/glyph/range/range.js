@@ -34,7 +34,7 @@ define( [ 'jquery', 'glyph/utilities' ],
         var targetGroup = group.children[ target ];
         var gGroup = glyphGroup.name;
         if ( targetGroup ) {
-          if ( targetGroup.children[ gGroup ] == undefined ) {
+          if ( targetGroup.children[ gGroup ] === undefined ) {
             var g = new paper.Group();
             g.name = gGroup;
             var labelGroup = new paper.Group();

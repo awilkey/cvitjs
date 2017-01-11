@@ -69,7 +69,7 @@ define( [ 'require', 'jquery', 'glyph/utilities' ],
         var view = viewSettings.view;
         view.key = viewSettings.key;
         view.groupName = viewSettings.groupName;
-		console.log("CViTjs: Drawing " + view.groupName);
+        console.log( "CViTjs: Drawing " + view.groupName );
         glyphGroup.name = view.groupName;
         view.config = view.key === view.groupName ? config[ view.key ] : thisC.mergeConfig( config[ view.key ], config[ view.groupName ] );
         view.zoom = view.yScale;

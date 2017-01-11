@@ -34,13 +34,13 @@ define( [ 'jquery', 'glyph/utilities' ],
         var targetGroup = group.children[ target ];
         var gName = glyphGroup.name;
         if ( targetGroup ) {
-          if ( targetGroup.children[ gName ] == undefined ) {
+          if ( targetGroup.children[ gName ] === undefined ) {
             var g = new paper.Group();
             g.name = gName;
             targetGroup.addChild( g );
-			var lGroup = new paper.Group();
-			lGroup.name = gName + '-label';
-			g.addChild(lGroup);
+            var lGroup = new paper.Group();
+            lGroup.name = gName + '-label';
+            g.addChild( lGroup );
           }
           var featureGroup = targetGroup.children[ gName ];
           var featureWidth = parseInt( view.config.width );
@@ -73,10 +73,10 @@ define( [ 'jquery', 'glyph/utilities' ],
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, position );
           };
-         if ( parseInt( view.config.draw_label ) === 1 ) {
+          if ( parseInt( view.config.draw_label ) === 1 ) {
             point.y = r.position.y;
             var label = utility.generateLabel( r, view, targetGroup.children[ target ] );
-		    featureGroup.children[ gName + '-label'].addChild( label);
+            featureGroup.children[ gName + '-label' ].addChild( label );
             label.bringToFront();
           }
           featureGroup.addChild( r );
