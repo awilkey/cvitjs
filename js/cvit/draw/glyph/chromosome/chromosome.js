@@ -15,8 +15,8 @@
  */
 
 
-define( [ 'jquery' ],
-  function( $ ) {
+define( [ 'jquery', 'glyph/utilities' ],
+  function( $, utility ) {
 
     return {
       draw: function( data, config, view ) {
@@ -30,12 +30,14 @@ define( [ 'jquery' ],
         //view.zoom = data.zoom;
         //view.xoffset = Math.floor( ( $( '#cvit-canvas' ).width() - 200 ) / chromosomes.length );
         //view.yoffset = 50;
-		console.log("CHR");
-		console.log(config);
-		console.log(data);
-        view.xSep = Math.floor( ( $( '#cvit-canvas' ).width() - ( 2*view.xOffset ) - ( view.chromWidth * chromosomes.length ) ) / ( chromosomes.length + 1 ) );
-		console.log("xSep: "+ view.xSep);
-        //console.log(view);
+        view.rulerWidth = paper.project.layers[ 1 ].children.text.maxOff;
+        var minSep = parseInt( config.chrom_spacing );
+        if ( config.fixed_chrom_spacing == 1 ) {
+          view.xSep = minSep;
+        } else {
+          view.xSep = ( $( '#cvit-canvas' ).width() - ( 2 * view.rulerWidth ) - ( chromosomes.length * view.chromWidth ) ) / ( chromosomes.length + 1 );
+          view.sSep = view.xSep > minSep ? view.xSep : minSep;
+        }
         chromosomes.forEach( function( chromosome ) {
           cGroup.addChild( thisC.placeChromosome( chromosome, cGroup, view ) );
         } );
@@ -46,10 +48,13 @@ define( [ 'jquery' ],
         var chr = new paper.Group();
         var xPos = group.strokeBounds.x + group.strokeBounds.width;
         var yPos = view.yOffset + parseInt( view.config.chrom_font_size );
-        xPos = parseInt( view.config.fixed_chrom_spacing ) === 0 ? xPos + view.xSep : xPos + parseInt( view.config.chrom_spacing );
-		if (xPos < view.xOffset) xPos = view.xOffset + 2*(parseInt(view.config.image_padding));
-        if ( xPos < parseInt( view.config.image_padding ) ) xPos += parseInt( view.config.image_padding );
-        //console.log("xPos = " + xPos);
+        if ( xPos === 0 ) {
+          xPos = view.rulerWidth + view.xSep;
+        } else {
+          xPos = parseInt( view.config.fixed_chrom_spacing ) === 0 ? xPos + view.xSep : xPos + parseInt( view.config.chrom_spacing );
+        }
+        //if (xPos < view.xOffset) xPos = view.xSep+ view.rulerWidth + (parseInt(view.config.image_padding));
+        //if ( xPos < parseInt( view.config.image_padding ) ) xPos += view.rulerWidth +parseInt( view.config.image_padding );
         var startOffset = ( chromosome.start - view.xMin ) * view.yScale;
 
         var point = new paper.Point( xPos, yPos + startOffset );
@@ -60,10 +65,10 @@ define( [ 'jquery' ],
         chr.name = chromosome.seqName;
         r.info = chromosome.attribute;
         r.thisColor = 'black';
-        r.fillColor = new paper.Color( view.config.chrom_color );
+        r.fillColor = utility.formatColor( view.config.chrom_color );
         if ( parseInt( view.config.chrom_border ) === 1 ) {
           r.strokeWidth = 2;
-          r.strokeColor = new paper.Color( view.config.chrom_border_color );
+          r.strokeColor = utility.formatColor( view.config.chrom_border_color );
         }
 
         r.name = chr.name;
@@ -76,7 +81,8 @@ define( [ 'jquery' ],
         label.justification = 'center';
         label.content = chr.name;
         label.fontSize = parseInt( view.config.chrom_font_size );
-        label.fillColor = new paper.Color( view.config.chrom_label_color );
+        label.fillColor = utility.formatColor( view.config.chrom_label_color );
+        label.name = chr.name + "Label";
         return chr;
       }
     };

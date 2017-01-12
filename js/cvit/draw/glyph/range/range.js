@@ -32,33 +32,45 @@ define( [ 'jquery', 'glyph/utilities' ],
       draw: function( range, group, view, glyphGroup ) {
         var target = range.seqName;
         var targetGroup = group.children[ target ];
+        var gGroup = glyphGroup.name;
         if ( targetGroup ) {
-          var yLoc = ( ( range.start - view.xMin ) * view.yScale ) + targetGroup.children[ target ].bounds.y;
-          var xLoc = ( view.xloc[ target ] + parseInt( view.config.offset ) );
+          if ( targetGroup.children[ gGroup ] === undefined ) {
+            var g = new paper.Group();
+            g.name = gGroup;
+            var labelGroup = new paper.Group();
+            labelGroup.name = gGroup + '-label';
+            targetGroup.addChild( g );
+            g.addChild( labelGroup );
+          }
+          var featureGroup = targetGroup.children[ gGroup ];
+          var featureWidth = parseInt( view.config.width );
+          var yLoc = ( ( range.start ) * view.yScale ) + targetGroup.children[ target ].bounds.top;
+          var xOffset = parseInt( view.config.offset );
+          var chrEdge = 1 / xOffset > 0 ? targetGroup.children[ target ].strokeBounds.right : targetGroup.children[ target ].strokeBounds.left - featureWidth;
+          var xLoc = ( chrEdge + xOffset );
           var point = new paper.Point( xLoc, yLoc );
-          var size = new paper.Size( parseInt( view.config.width ), ( range.end - range.start ) * view.zoom );
+          var size = new paper.Size( featureWidth, ( range.end - range.start ) * view.zoom );
           var rectangle = new paper.Rectangle( point, size );
           var r = new paper.Path.Rectangle( rectangle );
           if ( parseInt( view.config.enable_pileup ) === 1 ) {
-            utility.testCollision( r, glyphGroup, view.pileup );
+            utility.testCollision( r, featureGroup, view );
           }
           range.name = range.attribute.name ? range.attribute.name : '';
           r.info = range.attribute;
           r.thisColor = 'black';
-          r.fillColor = new paper.Color( view.config.color );
+          var fillColor = r.info.color ? r.info.color : view.config.color;
+          r.fillColor = utility.formatColor( fillColor );
           r.onMouseDown = function( event ) {
             utility.attachPopover( r, range );
           };
-
           if ( parseInt( view.config.draw_label ) === 1 ) {
-			point.y = r.position.y;
-            var label = utility.generateLabel( range, view, point, xLoc );
-            targetGroup.addChild( label );
-            glyphGroup.addChild( label );
+            point.y = r.position.y;
+            var label = utility.generateLabel( r, view, targetGroup.children[ target ] );
+            featureGroup.children[ gGroup + '-label' ].addChild( label );
+            label.bringToFront();
           }
-          targetGroup.addChild( r );
-          glyphGroup.addChild( r );
-
+          featureGroup.addChild( r );
+          r.sendToBack();
         }
       }
     };

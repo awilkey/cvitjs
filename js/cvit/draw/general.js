@@ -20,19 +20,19 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
        * by only requesting/loading the files for the glyphs actually used.
        *
        * @param data [Object] Feature to draw
-       * @param track [String] a string of the format {glyph}:{subglyph}.
+       * @param track [Array] a array of strings [{glyph},{subglyph}].
        * @param config [Object] Configuration object meeting the cvitconfig.json schema
        * @param backbone [paperGroup] A paper group that contains the chromosome backbone of the cvit drawing (optional)
        *
        * @return [promise] A jQuery promise, so that the glyphs can be drawn in an ansync form. 
        */
-      drawGlyph: function( data, track, config, view, backbone ) {
+      drawGlyph: function( data, config, view, backbone ) {
+
 
         // Set and draw border
         var background = new paper.Path.Rectangle( {
           point: [ 0, 0 ],
           size: [ paper.view.size.width, paper.view.size.height ],
-          strokeColor: 'white',
           selected: true
         } );
         background.fillColor = 'white';
@@ -45,49 +45,49 @@ define( [ 'require', 'jquery', 'draw/rulers/rulers' ],
         // Set and place title
         if ( config.general.title ) {
           console.log( "CViTjs: Setting title" );
-          var cvitTitle = config.general.title.split(/\<[\/i]+\>/);
+          var cvitTitle = config.general.title.split( /<[\/i]+>/ );
           var titleLoc;
-          var titleSize =  parseInt( config.general.title_font_size );
+          var titleSize = parseInt( config.general.title_font_size );
           var titleX;
-		  var titleY;
+          var titleY;
           if ( config.general.title_location ) {
             var titlePos = config.general.title_location.match( /\((.*)\,(.*)\)/ );
-            titleX = parseInt( titlePos[ 1 ] )  ;
+            titleX = parseInt( titlePos[ 1 ] );
             titleY = parseInt( titlePos[ 2 ] ) + titleSize;
           } else {
-		  	titleX = parseInt( config.general.image_padding ) + parseInt( config.general.border_width );
-          	titleY = titleX + titleSize;
-		  	var heightAllow = parseInt(config.general.title_height);
-		  	if(heightAllow > titleY){
-		  	  titleY = heightAllow;
-		  	}
-		 }
+            titleX = parseInt( config.general.image_padding ) + parseInt( config.general.border_width );
+            titleY = titleX + titleSize;
+            var heightAllow = parseInt( config.general.title_height );
+            if ( heightAllow > titleY ) {
+              titleY = heightAllow;
+            }
+          }
           titleLoc = new paper.Point( titleX, titleY );
-		  console.log("Title lengtht: "+ cvitTitle.length);
-		  for(var i = 0; i< cvitTitle.length; i++){
+          console.log( "Title lengtht: " + cvitTitle.length );
+          for ( var i = 0; i < cvitTitle.length; i++ ) {
             var title = new paper.PointText( titleLoc );
-            title.content = cvitTitle[i];
+            title.content = cvitTitle[ i ];
             title.fontSize = titleSize;
-			title.fontWeight = (i%2)===1 ? "Italic":"normal";
+            title.fontWeight = ( i % 2 ) === 1 ? "Italic" : "normal";
             //console.log( 'tc: ' + config.general.title_color );
             title.fillColor = new paper.Color( config.general.title_color );
-			titleLoc.x += title.strokeBounds.width;
-		  }
+            titleLoc.x += title.strokeBounds.width;
+          }
           //title.name = 'cvitTitle';
         }
         console.log( "CViTjs: Setting rulers" );
-		rulers.draw(data.chromosome, config, view);
-        
-		var rFSize = parseInt(config.general.ruler_font_size);
-		view.xOffset += parseInt(config.general.tick_line_width) + (data.chromosome.max.toString().length * rFSize);
-        var deferred = new $.Deferred();
-        var glyph = track.match( /(.*)\:(.*)/ );
-        var myGlyph = 'glyph/' + glyph[ 1 ] + '/' + glyph[ 2 ];
-        var moo = require( [ myGlyph ], function( myGlyph ) {
-          deferred.resolve( myGlyph.draw( data, config, view ) );
-          background.sendToBack();
-        } );
+        rulers.draw( data.chromosome, config, view );
 
+        var rFSize = parseInt( config.general.ruler_font_size );
+        view.xOffset += parseInt( config.general.tick_line_width ) + ( data.chromosome.max.toString().length * rFSize );
+        var deferred = new $.Deferred();
+        var myGlyph = 'glyph/' + config.general.glyph + '/' + config.general.shape;
+        var moo = require( [ myGlyph ], function( myGlyph ) {
+          deferred.resolve( myGlyph.draw( data, config, view ) ).done( function() {
+            background.sendToBack();
+            paper.view.draw();
+          } );
+        } );
         return deferred.promise();
       }
     };

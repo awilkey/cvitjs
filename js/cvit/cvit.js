@@ -28,19 +28,21 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
   function( $, paper, file, menu, general, glyph, cvitConf, zoom ) {
 
     return {
-      init: function() {
+      init: function( dataset ) {
         // Good Practice to store this context in a variable, to use later.
         var thisC = this;
-
         // Change this if you want to set your main configuration file somewhere else.
         var viewConf = '';
         var defaultData = '';
         this.conf = {};
         this.data = {};
         this.viewInfo = {};
-
         // try to load main configuration information.
-        var locations = thisC.getSettings( file.parse.conf( cvitConf ) );
+        var gConf = file.parse.conf( cvitConf );
+        var locations = thisC.getSettings( gConf, dataset );
+        console.log( locations );
+        thisC.dataset = locations[ 1 ];
+        locations = locations[ 0 ];
         viewConf = locations.conf;
         defaultData = locations.defaultData;
 
@@ -49,23 +51,43 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         try {
           var canvas = '<canvas id="cvit-canvas" style="background-color:#6f6f6f;"  resize>';
           var overlay = $( '<div id="overlay" class="hover_div" style="position:absolute; display:block;">' );
+          var cHeight = 500;
+          var cWidth = 1000;
+          console.log( 'data.' + thisC.dataset );
+          if ( gConf[ 'data.' + thisC.dataset ].width !== undefined ) {
+            cWidth = parseInt( gConf[ 'data.' + thisC.dataset ].width );
+          } else if ( gConf.general.width !== undefined ) {
+            cWidth = parseInt( gConf.general.width );
+          }
+          if ( gConf[ 'data.' + thisC.dataset ].height !== undefined ) {
+            cHeight = parseInt( gConf[ 'data.' + thisC.dataset ].height );
+          } else if ( gConf.general.height !== undefined ) {
+            cHeight = parseInt( gConf.general.height );
+          }
           $( canvas ).css( 'position', 'absolute' );
           $( '#cvit-div' ).css( 'position', 'relative' );
           $( '#cvit-div' ).append( overlay );
           $( '#cvit-div' ).append( canvas );
-          $( '#cvit-canvas' ).width( 1000 );
-          $( '#cvit-canvas' ).height( 500 );
+          $( '#cvit-canvas' ).width( cWidth );
+          $( '#cvit-canvas' ).height( cHeight );
           $( '#cvit-canvas' ).css( "background-color", "white" );
           paper.setup( 'cvit-canvas' );
         } catch ( err ) {
+          console.log( err );
           console.log( 'CViTjs: Error: Was not able to find canvas.' );
           return;
         }
-
+        // cleans up pathing based on the require baseURL found in require-config.js
+        // used for when your url root isn't the same as your jbrowse root (embedded in page) 
+        var cvitBase = require.toUrl( '' ).split( '/' );
+        cvitBase.splice( cvitBase.length - 3, 3 );
+        cvitBase = cvitBase.length > 0 ? cvitBase.join( '\/' ) + '/' : '';
+        viewConf = cvitBase + viewConf;
+        defaultData = cvitBase + defaultData;
         // read view configuration and baseGff (ASYNC)
         // .then(success,failure)
 
-        var readConfig = file.getFile( viewConf ).then(
+        var readConfig = file.getFile( viewConf, true ).then(
           function( result ) {
             console.log( "CViTjs: Successfully loaded configuration." );
             thisC.conf = result;
@@ -84,12 +106,11 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
           } );
 
 
-        $.when( readChromosome, readConfig ).then(
+        var backbone = $.when( readChromosome, readConfig ).then(
           function( result ) {
             if ( thisC.data.chromosome === undefined || thisC.data.chromosome === null ) {
               throw new Error( 'CViTjs: Error: No chromosome data loaded.' );
             }
-
             // set glyphs for the data sections in the form glyph:display.
             var featureGlyph;
             var display;
@@ -102,22 +123,23 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
             thisC.viewInfo.chromWidth = parseInt( thisC.conf.general.chrom_width );
             thisC.viewInfo.xMin = thisC.data.chromosome.min;
             thisC.data.zoom = thisC.view.setZoom( thisC.data.chromosome.min, thisC.data.chromosome.max );
-
             //actually draw the darn glyohs
             var cvitView = new paper.Group();
-			cvitView.name = 'backbone';
-            var group = general.drawGlyph( thisC.data, thisC.data.chromosome.glyph, thisC.conf, thisC.viewInfo ).then( function( group ) {
+            cvitView.name = 'backbone';
+            var group = general.drawGlyph( thisC.data, thisC.conf, thisC.viewInfo ).then( function( group ) {
               paper.view.draw();
               group.name = 'view';
               cvitView.addChild( group );
               menu.build( thisC.conf, thisC.viewInfo, group );
-              for ( var dataGroup in thisC.data ) {
-                if ( thisC.data.hasOwnProperty( dataGroup ) ) {
-                  thisC.viewInfo.viewName = dataGroup;
-                  if ( dataGroup !== "general" && thisC.data[ dataGroup ].glyph ) {
-                    var rangeGet = glyph.drawGlyph( thisC.data[ dataGroup ], thisC.data[ dataGroup ].glyph, thisC.conf, thisC.viewInfo, group ).then(
+              paper.view.draw();
+              for ( var confGroup in thisC.conf ) {
+                if ( thisC.conf.hasOwnProperty( confGroup ) ) {
+                  thisC.viewInfo.viewName = confGroup;
+                  var dataLoc = thisC.conf[ confGroup ].dataLoc;
+                  if ( thisC.data[ dataLoc ] ) {
+                    var rangeGet = glyph.drawGlyph( thisC.data[ dataLoc ], thisC.conf, thisC.viewInfo, group ).then(
                       function() {
-                        paper.view.draw();
+                        //      paper.view.draw();
                       },
                       function( errorMessage ) {
                         console.log( errorMessage );
@@ -127,16 +149,19 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
                 }
               }
               paper.view.draw();
+              return group;
             } );
+
+
             //Enable zoom and pan controls
             zoom.enableZoom( paper.view.bounds );
-
+            return group;
           },
 
           function( errorMessage ) {
             console.log( errorMessage );
           } );
-
+        return backbone;
       },
 
       /**
@@ -156,24 +181,23 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
         getBounds: function( chromosomeData ) {
           var min = 0;
           var max = 0;
-		  var chrMin = chromosomeData.features[0].seqName;
-		  var chrMax = chromosomeData.features[0].seqName;
+          var chrMin = chromosomeData.features[ 0 ].seqName;
+          var chrMax = chromosomeData.features[ 0 ].seqName;
           chromosomeData.features.forEach( function( data ) {
-				  console.log(data);
             if ( data.start < min ) {
               min = data.start;
-			  chrMin = data.seqName;
+              chrMin = data.seqName;
             }
-            if (data.end > max ) {
+            if ( data.end > max ) {
               max = data.end;
-			  chrMax = data.seqName;
+              chrMax = data.seqName;
             }
           } );
           // Set min and max of the chromosome
           chromosomeData.min = min;
-		  chromosomeData.minSeq = chrMin;
+          chromosomeData.minSeq = chrMin;
           chromosomeData.max = max;
-		  chromosomeData.maxSeq = chrMax;
+          chromosomeData.maxSeq = chrMax;
         },
 
         /**
@@ -182,20 +206,29 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
          */
         setGlyphs: function() {
           var thisC = this;
-          $.each( thisC.data, function( key, value ) {
-            if ( thisC.data[ key ].glyph === undefined ) {
-              // chromosome is set in the conf field of general, so need to work around
-              if ( key === 'chromosome' ) {
-                featureGlyph = key;
-                display = featureGlyph;
-                // if specific subshape isn't defined, default to using key as shape
-              } else {
-                featureGlyph = thisC.conf[ key ].glyph ? thisC.conf[ key ].glyph : key;
-                display = thisC.conf[ key ].shape ? thisC.conf[ key ].shape : featureGlyph;
-              }
-
-              thisC.data[ key ].glyph = featureGlyph + ':' + display;
+          $.each( thisC.conf, function( key, value ) {
+            var featureGlyph;
+            var display;
+            if ( key === 'general' ) {
+              thisC.conf[ key ].glyph = "chromosome";
+              thisC.conf[ key ].shape = "chromosome";
             }
+            if ( thisC.conf[ key ].glyph === undefined ) {
+              thisC.conf[ key ].glyph = key;
+            }
+
+            if ( thisC.conf[ key ].shape === undefined ) {
+              thisC.conf[ key ].shape = thisC.conf[ key ].glyph;
+            }
+
+            if ( thisC.conf[ key ].feature ) {
+              var dataLoc = thisC.conf[ key ].feature.match( /(.*)\:(.*)/ );
+              thisC.conf[ key ].dataFilter = dataLoc[ 1 ];
+              thisC.conf[ key ].dataLoc = dataLoc[ 2 ];
+            } else {
+              thisC.conf[ key ].dataLoc = key;
+            }
+
           } );
         },
 
@@ -219,12 +252,24 @@ define( [ 'jquery', 'paper', 'cvit/file/file', 'cvit/menu/menus', 'draw/general'
        *
        * @return {{conf:String, defaultData:String}} 
        */
-      getSettings: function( mainConf ) {
+      getSettings: function( mainConf, dataset ) {
         var query = window.location.search;
         var data = query.match( /data=(\w+)/ );
-        var settings = mainConf[ 'data.' + data[ 1 ] ];
-        if ( settings ) {
-          return settings;
+        var confSettings;
+        var confKey;
+        if ( dataset ) {
+          confSettings = mainConf[ 'data.' + dataset ];
+          confKey = dataset;
+        } else if ( !!data ) {
+          confSettings = mainConf[ 'data.' + data[ 1 ] ];
+          confKey = data[ 1 ];
+        } else if ( 'general' in mainConf && 'data_default' in mainConf.general ) {
+          var default_data = mainConf.general.data_default;
+          confSettings = mainConf[ 'data.' + default_data ];
+          confKey = default_data;
+        }
+        if ( confSettings !== undefined ) {
+          return [ confSettings, confKey ];
         } else {
           throw 'Data not found';
         }
