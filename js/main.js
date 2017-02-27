@@ -6,6 +6,17 @@ require(["cvit/cvit"],function(cvit){
 		console.log("CViTjs: Starting CViTJS");
 		// cvit.init(dataset) to have the provided dataset
 		//override defaults or URI string
-	 
-		cvit.init();
+        var passedData = document.getElementById('cvit-div');
+        var dataset = undefined;
+        var gff = undefined;
+        
+        if(passedData.dataset.dataset){
+            dataset= passedData.dataset.dataset;
+        }
+
+        if(dataset !== undefined){
+          cvit.init(dataset);
+        } else { 
+		  cvit.init();
+        }
 	});
