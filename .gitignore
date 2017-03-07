@@ -9,3 +9,4 @@ data/**/.*
 #ignore .DS_Store
 /**/.DS_Store
 /**/*.swp
+.publish

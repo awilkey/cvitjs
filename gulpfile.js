@@ -4,6 +4,7 @@ var gulp = require('gulp');
 // Include plugins
 var jshint = require('gulp-jshint');
 var beautify = require('gulp-js-beautify');
+var ghPages = require('gulp-gh-pages');
 // Lint task
 
 gulp.task('lint', function(){
@@ -27,3 +28,9 @@ gulp.task('watch', function(){
 
 //Default task
 gulp.task('default',['lint','beautify','watch']);
+
+gulp.task('deploy', function() {
+	return gulp.src(['img/**', 'js/**', 'data/**', 'index.html'])
+	.pipe(ghPages());
+});
+
